@@ -13,7 +13,6 @@
 
 @interface CCiPhoneTaskViewController ()
 
-@property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) NSPredicate *incompletePredicate;
 @property (strong, nonatomic) NSPredicate *assignedPredicate;
@@ -36,7 +35,6 @@
 @implementation CCiPhoneTaskViewController
 @synthesize tableView = _tableView;
 @synthesize displayOptions = _displayOptions;
-@synthesize context = _context;
 @synthesize request = _request;
 @synthesize allPredicate = _allPredicate;
 @synthesize incompletePredicate = _incompletePredicate;
@@ -85,7 +83,7 @@
 
 -(IBAction)insertTask{
     // Show task detail form
-    Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:self.context];
+    Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     newTask.completed = [NSNumber numberWithBool:NO];
     newTask.taskProject = self.sourceProject;
     newTask.level = [NSNumber numberWithInt:0];
@@ -115,8 +113,8 @@
 }
 
 -(IBAction)cancelPopover{
-    [self.context save:nil];
-    [self.context deleteObject:self.currentTask];
+    [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
+    [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.currentTask];
     [self.taskFRC performFetch:nil];
     [self.tableView reloadData];
     self.currentTask = nil;
@@ -132,7 +130,7 @@
     if (self.isNew && self.currentTask != nil) {
         self.currentTask.taskProject = self.sourceProject;
         [self.sourceProject addProjectTaskObject:self.currentTask];
-        [self.context save:nil];
+        [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
     }
 }
 
@@ -168,7 +166,7 @@
     NSArray *sortDescriptors = [NSArray arrayWithObjects: rowOrderDescriptor, nil];
     [self.request setSortDescriptors:sortDescriptors];
     self.taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request
-                                                       managedObjectContext:self.context
+                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                          sectionNameKeyPath:nil
                                                                   cacheName:nil];
     self.taskFRC.delegate = self;
@@ -200,7 +198,6 @@
 -(void)viewDidUnload{
     self.tableView = nil;
     self.displayOptions = nil;
-    self.context = nil;
     self.taskFRC = nil;
     self.request = nil;
     self.allPredicate = nil;
@@ -245,7 +242,7 @@
         subTask.superTask = nil;
         subTask.visible = [NSNumber numberWithBool:YES];
     }
-    [self.context deleteObject:self.currentTask];
+    [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.currentTask];
     
     NSError *fetchError = nil;
     @try {
@@ -456,7 +453,7 @@
     [self reSortSubTasksWithTasks:things];
     
     NSError *error = [[NSError alloc] init];
-    if (![self.context save:&error]){
+    if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Core Data Error" message:@"The save failed your data didn't persist" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
     }
@@ -489,14 +486,6 @@
 }
 
 #pragma mark - Lazy Getters
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _context = application.managedObjectContext;
-    }
-    return _context;
-}
-
 -(NSFetchRequest *)request{
     if (_request == nil) {
         _request = [[NSFetchRequest alloc] initWithEntityName:@"Task"];

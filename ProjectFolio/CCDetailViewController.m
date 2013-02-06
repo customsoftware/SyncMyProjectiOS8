@@ -24,6 +24,7 @@
 @property (strong, nonatomic) CCEmailer *emailer;
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) UIMenuItem *longPressMenu;
+@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property NSInteger lastButton;
 @end
 
@@ -34,7 +35,7 @@
 @synthesize masterPopoverController = _masterPopoverController;
 @synthesize fetchedProjectsController = _fetchedProjectsController;
 @synthesize controllingCellIndex = _controllingCellIndex;
-@synthesize managedObjectContext = _managedObjectContext;
+// @synthesize managedObjectContext = _managedObjectContext;
 @synthesize popover = _popover;
 @synthesize project = _project;
 @synthesize activeTimer = _activeTimer;
@@ -427,7 +428,7 @@
     self.masterPopoverController = nil;
     self.fetchedProjectsController = nil;
     self.controllingCellIndex = nil;
-    self.managedObjectContext = nil;
+    // self.managedObjectContext = nil;
     self.activeTimer = nil;
     
     self.time = nil;
@@ -515,12 +516,7 @@
 }
 
 -(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
+    return [[CoreData sharedModel:nil] managedObjectContext];
 }
 
 -(CCEmailer *)emailer{

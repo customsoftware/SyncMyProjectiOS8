@@ -10,7 +10,6 @@
 
 @interface CCAuxPriorityViewController ()
 
-@property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSFetchedResultsController *priorityFRC;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
 @property (strong, nonatomic) CCAuxPriorityEditorViewController *editor;
@@ -23,7 +22,6 @@
 @implementation CCAuxPriorityViewController
 
 @synthesize tableView = _tableView;
-@synthesize context = _context;
 @synthesize priorityFRC = _priorityFRC;
 @synthesize fetchRequest = _fetchRequest;
 @synthesize editor = _editor;
@@ -35,7 +33,7 @@
 -(IBAction)insertPriority:(UIBarButtonItem *)sender{
     Priority * newPriority = [NSEntityDescription
                               insertNewObjectForEntityForName:@"Priority"
-                              inManagedObjectContext:self.context];
+                              inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     self.selectedPath = nil;
     self.theNewPriority = newPriority;
     self.editor.contentSizeForViewInPopover = self.view.bounds.size;
@@ -45,7 +43,7 @@
 -(void)saveUpdatedDetail:(NSString *)newValue{
     if (self.selectedPath == nil) {
         self.theNewPriority.priority = newValue;
-        [self.context save:nil];
+        [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
     } else {
         Priority *priority = [self.priorityFRC objectAtIndexPath:self.selectedPath];
         priority.priority = newValue;
@@ -72,14 +70,14 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Priority" inManagedObjectContext:self.context];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Priority" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *purchaseDescriptor = [[NSSortDescriptor alloc] initWithKey:@"priority" ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObjects: purchaseDescriptor, nil];
     [self.fetchRequest setSortDescriptors:sortDescriptors];
     [self.fetchRequest setEntity:entity];
     self.priorityFRC.delegate = self;
     self.priorityFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                          managedObjectContext:self.context
+                                                          managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                             sectionNameKeyPath:nil
                                                                      cacheName:nil];
 }
@@ -94,7 +92,6 @@
 
 -(void)viewDidUnload{
     self.tableView = nil;
-    self.context = nil;
     self.fetchRequest = nil;
     self.priorityFRC = nil;
     self.editor = nil;
@@ -128,7 +125,7 @@
     NSMutableArray *workingArray = [[NSMutableArray alloc]initWithArray:self.priorityList];
     [workingArray removeObjectAtIndex:indexPath.row];
     
-    [self.context deleteObject:[self.priorityFRC objectAtIndexPath:indexPath]];
+    [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:[self.priorityFRC objectAtIndexPath:indexPath]];
     
     NSError *fetchError = nil;
     @try {
@@ -178,14 +175,6 @@
 }
 
 #pragma mark - Lazy Getters
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _context = application.managedObjectContext;
-    }
-    return _context;
-}
-
 -(NSFetchRequest *)fetchRequest{
     if (_fetchRequest == nil) {
         _fetchRequest = [[NSFetchRequest alloc] init];

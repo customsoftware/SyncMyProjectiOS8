@@ -23,7 +23,6 @@
 
 @interface CCTaskViewDetailsController : UIViewController<UITableViewDataSource,UITableViewDelegate,ABPeoplePickerNavigationControllerDelegate,MFMailComposeViewControllerDelegate,ParentDelegate,CCPopoverControllerDelegate,CCNotesDelegate,CCCategoryTaskDelegate>
 
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) Task *activeTask;
 @property (strong, nonatomic) NSIndexPath *selectedIndexPath;
 @property (weak, nonatomic) id<CCPopoverControllerDelegate>taskDelegate;

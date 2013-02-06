@@ -27,7 +27,6 @@
 @synthesize dateFormatter = _dateFormatter;
 @synthesize endDateFormatter = _endDateFormatter;
 @synthesize numberFormatter = _numberFormatter;
-@synthesize managedObjectContext = _managedObjectContext;
 @synthesize childController = _childController;
 @synthesize startup = _startup;
 @synthesize logger = _logger;
@@ -91,13 +90,13 @@
        } else {
         
             // Delete the managed object for the given index path
-            [self.managedObjectContext deleteObject:[self.displayTimers objectAtIndex:[indexPath row]]];
+            [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:[self.displayTimers objectAtIndex:[indexPath row]]];
             [self.displayTimers removeObjectAtIndex:[indexPath row]];
              
             // Save the context.
             NSError *error = [[NSError alloc] init];
             @try {
-                if (![self.managedObjectContext save:&error]){
+                if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
                     self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                     [self.logger releaseLogger];
                 }
@@ -203,7 +202,6 @@
     self.dateFormatter = nil;
     self.endDateFormatter = nil;
     self.numberFormatter = nil;
-    self.managedObjectContext = nil;
     self.childController = nil;
     
     [super viewDidUnload];
@@ -220,15 +218,6 @@
         _childController = [self.storyboard instantiateViewControllerWithIdentifier:@"timerDetails"];
     }
     return _childController;
-}
-
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
 }
 
 @end

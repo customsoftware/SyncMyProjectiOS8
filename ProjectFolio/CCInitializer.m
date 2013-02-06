@@ -9,18 +9,10 @@
 #import "CCInitializer.h"
 #define kInterval 730000
 
-@interface CCInitializer ()
-
-@property (strong, nonatomic) NSManagedObjectContext *context;
-
-@end
-
 @implementation CCInitializer
 
-@synthesize context = _context;
-
 -(Project *)addProjectWithName:(NSString *)projectName{
-    Project *newProject = [NSEntityDescription insertNewObjectForEntityForName:@"Project" inManagedObjectContext:self.context];
+    Project *newProject = [NSEntityDescription insertNewObjectForEntityForName:@"Project" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     newProject.projectName = projectName;
     newProject.dateCreated = [NSDate date];
     newProject.dateStart = newProject.dateCreated;
@@ -30,7 +22,7 @@
 }
 
 -(Task *)addTaskWithTitle:(NSString *)projectName andNotes:(NSString *)notes toProject:(Project *)project{
-    Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:self.context];
+    Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     newTask.title = projectName;
     newTask.taskProject = project;
     newTask.notes = notes;
@@ -42,7 +34,7 @@
 }
 
 -(void)addTaskWithTitle:(NSString *)projectName andNotes:(NSString *)notes toAnotherTask:(Task *)parentTask inProject:(Project *)project{
-    Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:self.context];
+    Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     newTask.title = projectName;
     newTask.notes = notes;
     newTask.taskProject = project;
@@ -55,7 +47,7 @@
 }
 
 -(void)createAnExpense:(NSString *)item forAmount:(NSNumber *)amount boughtFrom:(NSString *)vendor forProject:(Project *)project{
-    Deliverables *newExpense = [NSEntityDescription insertNewObjectForEntityForName:@"Expense" inManagedObjectContext:self.context];
+    Deliverables *newExpense = [NSEntityDescription insertNewObjectForEntityForName:@"Expense" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     newExpense.amount = amount;
     newExpense.paidTo = vendor;
     newExpense.pmtDescription = item;
@@ -109,18 +101,6 @@
     Project *lateProject = [self addProjectWithName:@"Late Project"];
     lateProject.dateStart = [NSDate dateWithTimeInterval:-kInterval sinceDate:[NSDate date]];
     lateProject.dateFinish = [NSDate dateWithTimeInterval:-24000 sinceDate:[NSDate date]];
-    [self.context save:nil];
+    [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
 }
-
-#pragma mark - Lazy Getters
-
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _context = application.managedObjectContext;
-        
-    }
-    return _context;
-}
-
 @end

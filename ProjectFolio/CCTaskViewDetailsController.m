@@ -526,15 +526,6 @@
     return _ownerController;
 }
 
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
-}
-
 -(CCAuxDurationViewController *)durationController{
     if (_durationController == nil) {
         _durationController = [self.storyboard instantiateViewControllerWithIdentifier:@"durationViewController"];

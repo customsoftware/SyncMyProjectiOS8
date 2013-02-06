@@ -12,14 +12,12 @@
 
 @property (strong, nonatomic) NSFetchedResultsController * taskFRC;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSMutableArray *displayList;
 @end
 
 @implementation CCParentTaskViewController
 @synthesize popDelegate = _popDelegate;
 @synthesize taskFRC = _taskFRC;
-@synthesize managedObjectContext = _managedObjectContext;
 @synthesize fetchRequest = _fetchRequest;
 @synthesize parentTask = _parentTask;
 @synthesize activeTask = _activeTask;
@@ -53,7 +51,7 @@
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo target:self action:@selector(cancelParent)];
     self.navigationItem.rightBarButtonItem = cancelButton;
     
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *taskDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObjects: taskDescriptor, nil];
     [self.fetchRequest setSortDescriptors:sortDescriptors];
@@ -70,7 +68,7 @@
     [self.fetchRequest setPredicate:completedPredicate];
     
     self.taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                       managedObjectContext:self.managedObjectContext
+                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                          sectionNameKeyPath:nil
                                                                   cacheName:@"taskListCache"];
     
@@ -99,7 +97,6 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     self.popDelegate = nil;
-    self.managedObjectContext = nil;
     self.taskFRC = nil;
     self.fetchRequest = nil;
 }
@@ -134,8 +131,6 @@
     return cell;
 }
 
-
-
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -159,15 +154,6 @@
         _fetchRequest = [[NSFetchRequest alloc] init];
     }
     return _fetchRequest;
-}
-
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
 }
 
 @end

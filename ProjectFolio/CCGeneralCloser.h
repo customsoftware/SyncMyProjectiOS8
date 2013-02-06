@@ -13,7 +13,6 @@
 
 @interface CCGeneralCloser : UIViewController
 @property (strong, nonatomic) MFMailComposeViewController *mailComposer;
-@property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
 @property (strong, nonatomic) NSFetchedResultsController *eventFRC;

@@ -8,16 +8,7 @@
 
 #import "CCVisibleFixer.h"
 
-@interface CCVisibleFixer ()
-
-@property (strong, nonatomic) NSManagedObjectContext *context;
-
-
-@end
-
 @implementation CCVisibleFixer
-@synthesize context = _context;
-
 
 -(BOOL)fixAllVisible{
     BOOL retValue = YES;
@@ -29,7 +20,7 @@
     NSArray *sortDescriptors = [NSArray arrayWithObjects: rowOrderDescriptor, nil];
     [request setSortDescriptors:sortDescriptors];
     NSFetchedResultsController * taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:request
-                                                       managedObjectContext:self.context
+                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                          sectionNameKeyPath:nil
                                                                   cacheName:nil];
     NSError *fetchError = [[NSError alloc] init];
@@ -45,15 +36,5 @@
     }
     
     return retValue;
-}
-
-
-
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _context = application.managedObjectContext;
-    }
-    return _context;
 }
 @end

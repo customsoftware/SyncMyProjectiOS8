@@ -10,9 +10,7 @@
 
 @interface CCAuxTaskCloneDrillController ()
 
-@property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSFetchRequest *request;
-// @property (strong, nonatomic) NSFetchedResultsController *taskFRC;
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) Project * donorProject;
 @property (strong, nonatomic) Project * gainingProject;
@@ -31,7 +29,6 @@
 @synthesize allPredicate = _allPredicate;
 @synthesize donorProject = _donorProject;
 @synthesize gainingProject = _gainingProject;
-@synthesize context = _context;
 @synthesize taskArray = _taskArray;
 @synthesize driller = _driller;
 @synthesize selectedIndex = _selectedIndex;
@@ -80,8 +77,6 @@
 
 -(void)viewDidUnload{
     self.request = nil;
-    self.context = nil;
-    // self.taskFRC = nil;
     self.allPredicate = nil;
     self.donorProject = nil;
     self.taskArray = nil;
@@ -166,7 +161,7 @@
         maxDisplay = maxDisplay + 1;
         
         Task *task = self.selectedTask;
-        Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:self.context];
+        Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
         newTask.completed = [NSNumber numberWithBool:NO];
         newTask.notes = task.notes;
         newTask.title = task.title;
@@ -182,7 +177,7 @@
         
         for (Task *cloneTask in self.selectedTask.subTasks) {
             // Put it in the super class
-            Task *newSubTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:self.context];
+            Task *newSubTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
             newSubTask.completed = [NSNumber numberWithBool:NO];
             newSubTask.notes = cloneTask.notes;
             newSubTask.title = cloneTask.title;
@@ -222,14 +217,6 @@
 }
 
 #pragma mark - Lazy Getters
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _context = application.managedObjectContext;
-    }
-    return _context;
-}
-
 -(NSFetchRequest *)request{
     if (_request == nil) {
         _request = [[NSFetchRequest alloc] initWithEntityName:@"Task"];

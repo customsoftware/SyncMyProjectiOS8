@@ -22,7 +22,6 @@
 @property (strong, nonatomic) CCDetailViewController *projectDetailController;
 @property (strong, nonatomic) Task *task;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
 @property (strong, nonatomic) NSFetchedResultsController *taskFRC;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;

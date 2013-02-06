@@ -21,13 +21,13 @@
 
 @property (strong, nonatomic) UIWindow *window;
 
-@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+/*@property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
-@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
+@property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;*/
 @property (strong, nonatomic) EKEventStore *eventStore;
 @property (strong, nonatomic) CCErrorLogger *errorLogger;
 
-- (void)saveContext;
+// - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 - (void)releaseLogger;
 - (BOOL)iCloudIsAvailableNow;

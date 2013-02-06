@@ -176,7 +176,7 @@
 -(NSFetchRequest *)fetchRequest{
     if (fetchRequest == nil) {
         fetchRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:self.context];
+        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
         [fetchRequest setEntity:entity];
         NSSortDescriptor *nullDescriptor = [[NSSortDescriptor alloc]initWithKey:@"projectName" ascending:YES];
         NSArray *sortDescriptors = [NSArray arrayWithObject:nullDescriptor];
@@ -187,19 +187,10 @@
     return fetchRequest;
 }
 
--(NSManagedObjectContext *)context{
-    if (context == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        context = application.managedObjectContext;
-        
-    }
-    return context;
-}
-
 -(NSFetchedResultsController *)controller{
     if (controller == nil) {
         controller = [[NSFetchedResultsController alloc]
-                      initWithFetchRequest:self.fetchRequest managedObjectContext:self.context sectionNameKeyPath:nil cacheName:nil];
+                      initWithFetchRequest:self.fetchRequest managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
     }
     return controller;
 }

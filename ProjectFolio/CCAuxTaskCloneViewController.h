@@ -15,7 +15,6 @@
 
 @interface CCAuxTaskCloneViewController : UITableViewController<NSFetchedResultsControllerDelegate,UIActionSheetDelegate,CCProjectTaskDelegate>
 
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
 @property (strong, nonatomic) NSFetchedResultsController *projectFRC;
 @property (strong, nonatomic) Project *selectedProject;

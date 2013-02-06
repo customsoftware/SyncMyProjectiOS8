@@ -33,7 +33,6 @@
 @synthesize projectNotes = _projectNotes;
 @synthesize fetchedProjectsController = _fetchedProjectsController;
 @synthesize controllingCellIndex = _controllingCellIndex;
-@synthesize managedObjectContext = _managedObjectContext;
 @synthesize project = _project;
 @synthesize activeTimer = _activeTimer;
 @synthesize calendar, deliverable, time, settings;
@@ -245,7 +244,7 @@
         
         for (NSString * taskString in componentsSeparatedByNewLines) {
             if ([taskString length] > 0) {
-                Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:self.managedObjectContext];
+                Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
                 newTask.completed = [NSNumber numberWithBool:NO];
                 if ([taskString length] > 35) {
                     newTask.notes = taskString;
@@ -396,7 +395,6 @@
     self.projectNotes = nil;
     self.fetchedProjectsController = nil;
     self.controllingCellIndex = nil;
-    self.managedObjectContext = nil;
     self.activeTimer = nil;
     
     self.time = nil;
@@ -440,7 +438,7 @@
     if (_fetchedProjectsController == nil) {
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project"
-                                                  inManagedObjectContext:self.managedObjectContext];
+                                                  inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
         [fetchRequest setEntity:entity];
         NSSortDescriptor *activeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"active" ascending:NO];
         NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"complete" ascending:YES];
@@ -448,20 +446,11 @@
         NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, completeDescriptor, endDateDescriptor, nil];
         [fetchRequest setSortDescriptors:sortDescriptors];
         
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"ProjectList"];
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext] sectionNameKeyPath:nil cacheName:@"ProjectList"];
         
         _fetchedProjectsController = aFetchedResultsController;
     }
     return _fetchedProjectsController;
-}
-
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
 }
 
 -(CCEmailer *)emailer{

@@ -23,7 +23,6 @@
 @property double billableAmount;
 @property CGRect originalSize;
 @property (strong, nonatomic) CCEmailer *emailer;
-@property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
 @property (strong, nonatomic) NSFetchedResultsController *timerFRC;
 @property (strong, nonatomic) Project *controllingProject;
@@ -46,7 +45,6 @@
 @synthesize remainingBudget = _remainingBudget;
 @synthesize time = _time;
 @synthesize emailer = _emailer;
-@synthesize context = _context;
 @synthesize fetchRequest = _fetchRequest;
 @synthesize timerFRC = _timerFRC;
 @synthesize projectDelegate = _projectDelegate;
@@ -109,10 +107,10 @@
                 if ( time.start != nil && time.end != nil){
                     time.billed = [[NSNumber alloc] initWithBool:YES];
                 } else if ( time.end == nil && [self.billableTimers indexOfObject:time] > 0){
-                    [self.context deleteObject:time];
+                    [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:time];
                 }
             }
-            [self.context save:nil];
+            [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
             [self viewWillAppear:YES];
         }
     }
@@ -234,7 +232,7 @@
                 if ( time.start != nil && time.end != nil){
                     time.billed = [[NSNumber alloc] initWithBool:YES];
                 } else if ( time.end == nil && [self.billableTimers indexOfObject:time] > 0){
-                    [self.context deleteObject:time];
+                    [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:time];
                 }
             }
             [self viewWillAppear:YES];
@@ -325,14 +323,14 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"WorkTime" inManagedObjectContext:self.context];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *allDescriptor = [[NSSortDescriptor alloc] initWithKey:@"start" ascending:NO];
     NSArray *sortDescriptors = [NSArray arrayWithObjects: allDescriptor, nil];
     [self.fetchRequest setSortDescriptors:sortDescriptors];
     [self.fetchRequest setEntity:entity];
     self.timerFRC.delegate = self;
     self.timerFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                          managedObjectContext:self.context
+                                                          managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                             sectionNameKeyPath:nil
                                                                      cacheName:nil];
     
@@ -369,7 +367,6 @@
     self.billableTimers = nil;
     self.fetchRequest = nil;
     self.timerFRC = nil;
-    self.context = nil;
     self.timerDetails = nil;
 }
 
@@ -384,14 +381,6 @@
         _fetchRequest = [[NSFetchRequest alloc] init];
     }
     return _fetchRequest;
-}
-
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _context = application.managedObjectContext;
-    }
-    return _context;
 }
 
 @end

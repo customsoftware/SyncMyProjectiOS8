@@ -17,7 +17,6 @@
 
 @interface CCCalendarViewController : UITableViewController<EKEventEditViewDelegate,EKEventViewDelegate,CCLoggerDelegate>
 
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) Project *project;
 @property (strong, nonatomic) Calendar *meeting;
 @property (strong, nonatomic) NSIndexPath *selectedIndexPath;

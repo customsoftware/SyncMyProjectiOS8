@@ -7,33 +7,12 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CCAppDelegate.m"
-         timestampString = "381818943.891919"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "333"
-         endingLineNumber = "333"
-         landmarkName = "-persistentStoreDidChange:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;Change Detected!&quot;)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
          filePath = "ProjectFolio/CCCalendarViewController.m"
-         timestampString = "381818117.207952"
+         timestampString = "381822105.502601"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "47"
-         endingLineNumber = "47"
+         startingLineNumber = "46"
+         endingLineNumber = "46"
          landmarkName = "-insertEvent"
          landmarkType = "5">
          <Actions>
@@ -50,11 +29,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "Yes"
          filePath = "ProjectFolio/CCCalendarViewController.m"
-         timestampString = "381818155.387473"
+         timestampString = "381822105.502601"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "326"
-         endingLineNumber = "326"
+         startingLineNumber = "324"
+         endingLineNumber = "324"
          landmarkName = "-tableView:commitEditingStyle:forRowAtIndexPath:"
          landmarkType = "5">
          <Actions>
@@ -113,11 +92,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "Yes"
          filePath = "ProjectFolio/CCDeliverableViewController.m"
-         timestampString = "381818402.823844"
+         timestampString = "381822105.502601"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "136"
-         endingLineNumber = "136"
+         startingLineNumber = "135"
+         endingLineNumber = "135"
          landmarkName = "-insertDeliverable"
          landmarkType = "5">
          <Actions>
@@ -239,11 +218,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "Yes"
          filePath = "ProjectFolio/CCiPhoneTaskViewController.m"
-         timestampString = "381818943.891919"
+         timestampString = "381822105.502601"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "446"
-         endingLineNumber = "446"
+         startingLineNumber = "443"
+         endingLineNumber = "443"
          landmarkName = "-tableView:moveRowAtIndexPath:toIndexPath:"
          landmarkType = "5">
          <Actions>
@@ -281,11 +260,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "Yes"
          filePath = "ProjectFolio/CCProjectTimer.m"
-         timestampString = "381819053.999806"
+         timestampString = "381822105.502601"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "67"
-         endingLineNumber = "67"
+         startingLineNumber = "65"
+         endingLineNumber = "65"
          landmarkName = "-startTimingNameForProject:"
          landmarkType = "5">
          <Actions>

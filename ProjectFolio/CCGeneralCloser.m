@@ -31,7 +31,6 @@
 @synthesize mailComposer = _mailComposer;
 @synthesize subjectLine = _subjectLine;
 @synthesize callingView = _callingView;
-@synthesize context = _context;
 @synthesize mode = _mode;
 
 #pragma mark - Life Cycle
@@ -148,7 +147,7 @@
 
 
 -(NSArray *)getBillableArray{
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"WorkTime" inManagedObjectContext:self.context];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *projectDescriptor = [[NSSortDescriptor alloc] initWithKey:@"workProject.projectName" ascending:YES];
     NSSortDescriptor *startDescriptor = [[NSSortDescriptor alloc] initWithKey:@"start" ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObjects:projectDescriptor, startDescriptor, nil];
@@ -162,7 +161,7 @@
     }
     [self.fetchRequest setPredicate:completedPredicate];
     self.eventFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                       managedObjectContext:self.context
+                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                          sectionNameKeyPath:nil
                                                                   cacheName:nil];
     NSError *requestError = nil;
@@ -345,14 +344,6 @@
         _callingViewiPhone = (CCiPhoneMasterViewController *)navigationController.topViewController;
     }
     return _callingViewiPhone;
-}
-
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        CCAppDelegate *appDelegate = (CCAppDelegate *)[UIApplication sharedApplication].delegate;
-        _context = appDelegate.managedObjectContext;
-    }
-    return _context;
 }
 
 -(NSFetchRequest *)fetchRequest{

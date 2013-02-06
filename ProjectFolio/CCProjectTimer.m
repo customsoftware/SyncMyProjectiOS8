@@ -14,7 +14,6 @@
 @interface CCProjectTimer ()
 
 @property (strong, nonatomic) WorkTime *timer;
-@property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSDateFormatter *formatter;
 @property (strong, nonatomic) Project *parentProject;
 @property (strong, nonatomic) CCSettingsControl *defaults;
@@ -24,7 +23,6 @@
 @implementation CCProjectTimer
 
 @synthesize timer = _timer;
-@synthesize context = _context;
 @synthesize formatter = _formatter;
 @synthesize parentProject = _parentProject;
 @synthesize defaults = _defaults;
@@ -37,10 +35,10 @@
 }
 
 -(void)startTimer{    
-    WorkTime *time = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:self.context];
+    WorkTime *time = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     self.timer = time;
     // NSLog(@"Timer started");
-    if (self.timer != nil && self.context != nil) {
+    if (self.timer != nil && [[CoreData sharedModel:nil] managedObjectContext] != nil) {
         self.timer.billed = [NSNumber numberWithBool:NO];
         self.timer.start = [[NSDate alloc]init];
         [self.parentProject addProjectWorkObject:self.timer ];
@@ -72,7 +70,6 @@
         // NSLog(@"Timer stopped");
         self.timer = nil;
         self.parentProject = nil;
-        self.context = nil;
         self.defaults =nil;
     }
 }
@@ -92,14 +89,6 @@
         [_formatter setDateStyle:NSDateFormatterMediumStyle];
     }
     return _formatter;
-}
-
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        CCAppDelegate * application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _context = application.managedObjectContext;
-    }
-    return _context;
 }
 
 @end

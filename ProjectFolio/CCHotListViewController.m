@@ -37,7 +37,6 @@
 @implementation CCHotListViewController
 @synthesize task = _task;
 @synthesize dateFormatter = _dateFormatter;
-@synthesize managedObjectContext = _managedObjectContext;
 @synthesize fetchRequest = _fetchRequest;
 @synthesize taskFRC = _taskFRC;
 @synthesize emailer = _emailer;
@@ -114,7 +113,7 @@
     [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
     [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];
     
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *dueWhenDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dueDate" ascending:YES];
     NSSortDescriptor *projectDescriptor = [[NSSortDescriptor alloc] initWithKey:@"taskProject.dateFinish" ascending:NO];
     NSSortDescriptor *taskDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
@@ -124,7 +123,7 @@
     [self.fetchRequest setPredicate:self.allPredicate];
 
     self.taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                       managedObjectContext:self.managedObjectContext
+                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                          sectionNameKeyPath:nil
                                                                   cacheName:nil];
     
@@ -151,7 +150,6 @@
     // Release any retained subviews of the main view.
     self.task = nil;
     self.dateFormatter = nil;
-    self.managedObjectContext = nil;
     self.taskFRC = nil;
     self.fetchRequest = nil;
     self.latePredicate = nil;
@@ -376,15 +374,6 @@
         _fetchRequest = [[NSFetchRequest alloc] init];
     }
     return _fetchRequest;
-}
-
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
 }
 
 -(NSPredicate *)allPredicate {

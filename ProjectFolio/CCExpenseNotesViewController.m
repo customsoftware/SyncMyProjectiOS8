@@ -58,12 +58,9 @@
         int nextLevel = [parentTask.level integerValue];
         nextLevel++;
         float newDisplayOrder = [parentTask.displayOrder floatValue] + 0.1f;
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        NSManagedObjectContext *context = application.managedObjectContext;
-        
         for (NSString * taskString in componentsSeparatedByNewLines) {
             if ([taskString length] > 0) {
-                Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:context];
+                Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
                 newTask.completed = [NSNumber numberWithBool:NO];
                 if ([taskString length] > 35) {
                     newTask.notes = taskString;

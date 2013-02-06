@@ -13,7 +13,6 @@
 @end
 
 @implementation CCProjectSwitchTableViewController
-@synthesize managedObjectContext = _managedObjectContext;
 @synthesize fetchRequest = _fetchRequest;
 @synthesize projectFRC = _projectFRC;
 @synthesize selectedProject = _selectedProject;
@@ -34,7 +33,7 @@
 {
     [super viewDidLoad];
 
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *projectNameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"projectName" ascending:YES];
     NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"complete" ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObjects: projectNameDescriptor, completeDescriptor, nil];
@@ -45,7 +44,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     self.projectFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                       managedObjectContext:self.managedObjectContext
+                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                          sectionNameKeyPath:nil
                                                                   cacheName:nil];
     
@@ -69,7 +68,6 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     self.fetchRequest = nil;
-    self.managedObjectContext = nil;
     self.projectFRC = nil;
     self.selectedProject = nil;
     self.currentTimer = nil;
@@ -151,9 +149,9 @@
     if (indexPath != nil) {
         Project *newProject = [self.projectFRC objectAtIndexPath:indexPath];
         if (![self.selectedProject.projectName isEqualToString:newProject.projectName]){
-            WorkTime *transferedEvent = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:self.managedObjectContext];
+            WorkTime *transferedEvent = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
             
-            if (transferedEvent != nil && self.managedObjectContext != nil) {
+            if (transferedEvent != nil && [[CoreData sharedModel:nil] managedObjectContext] != nil) {
                 transferedEvent.billed = self.currentTimer.billed;
                 transferedEvent.start = self.currentTimer.start;
                 transferedEvent.end = self.currentTimer.end;
@@ -171,15 +169,6 @@
 }
 
 #pragma mark - Lazy Getters
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
-}
-
 -(NSFetchRequest *)fetchRequest{
     if (_fetchRequest == nil) {
         _fetchRequest = [[NSFetchRequest alloc] init];

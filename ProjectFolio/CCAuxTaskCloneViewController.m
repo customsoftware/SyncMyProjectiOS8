@@ -17,7 +17,6 @@
 @end
 
 @implementation CCAuxTaskCloneViewController
-@synthesize managedObjectContext = _managedObjectContext;
 @synthesize fetchRequest = _fetchRequest;
 @synthesize projectFRC = _projectFRC;
 @synthesize selectedProject = _selectedProject;
@@ -39,7 +38,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *projectNameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"projectName" ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObjects: projectNameDescriptor, nil];
     [self.fetchRequest setSortDescriptors:sortDescriptors];
@@ -49,7 +48,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     self.projectFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                          managedObjectContext:self.managedObjectContext
+                                                          managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                             sectionNameKeyPath:nil
                                                                      cacheName:nil];
     
@@ -73,7 +72,6 @@
     [super viewDidUnload];
     // Release any retained subviews of the main view.
     self.fetchRequest = nil;
-    self.managedObjectContext = nil;
     self.projectFRC = nil;
     self.selectedProject = nil;
     self.formatter = nil;
@@ -94,7 +92,7 @@
         [self.selectedProject removeProjectTask:self.selectedProject.projectTask];
         
         for (Task *task in workingArray) {
-            Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:self.managedObjectContext];
+            Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
             newTask.completed = [NSNumber numberWithBool:NO];
             newTask.notes = task.notes;
             newTask.title = task.title;
@@ -192,15 +190,6 @@
 }
 
 #pragma mark - Lazy Getters
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
-}
-
 -(NSFetchRequest *)fetchRequest{
     if (_fetchRequest == nil) {
         _fetchRequest = [[NSFetchRequest alloc] init];

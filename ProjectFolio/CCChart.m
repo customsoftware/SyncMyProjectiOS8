@@ -263,12 +263,9 @@
 
 -(NSFetchedResultsController *)fetchedProjectsController{
     if (_fetchedProjectsController == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        NSManagedObjectContext * context = application.managedObjectContext;
-        
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project"
-                                                  inManagedObjectContext:context];
+                                                  inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
         [fetchRequest setEntity:entity];
         NSSortDescriptor *activeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dateFinish" ascending:YES];
         NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, nil];
@@ -278,7 +275,7 @@
         
         NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
                                                                  initWithFetchRequest:fetchRequest
-                                                                 managedObjectContext:context
+                                                                 managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                                  sectionNameKeyPath:nil cacheName:nil];
         
         _fetchedProjectsController = aFetchedResultsController;
@@ -288,12 +285,9 @@
 
 -(NSFetchedResultsController *)taskFRC{
     if (_taskFRC == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        NSManagedObjectContext * context = application.managedObjectContext;
-        
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"Task"
-                                                  inManagedObjectContext:context];
+                                                  inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
         [fetchRequest setEntity:entity];
         //NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"completed" ascending:YES];
         NSSortDescriptor *activeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"displayOrder" ascending:YES];
@@ -304,7 +298,7 @@
         
         NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
                                                                  initWithFetchRequest:fetchRequest
-                                                                 managedObjectContext:context
+                                                                 managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                                  sectionNameKeyPath:nil cacheName:nil];
         
         _taskFRC = aFetchedResultsController;

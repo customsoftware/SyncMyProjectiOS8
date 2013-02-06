@@ -30,7 +30,6 @@
 @synthesize selectedCell = _selectedCell;
 @synthesize deliverable = _deliverable;
 @synthesize numberFormatter = _numberFormatter;
-@synthesize managedObjectContext = _managedObjectContext;
 @synthesize dateFormatter = _dateFormatter;
 @synthesize popController = _popController;
 @synthesize fetchRequest = _fetchRequest;
@@ -107,8 +106,8 @@
 }
 
 -(IBAction)cancelPopover{
-    [self.managedObjectContext save:nil];
-    [self.managedObjectContext deleteObject:self.deliverable];
+    [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
+    [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.deliverable];
     [self.expenseFRC performFetch:nil];
     [self.tableView reloadData];
     self.deliverable = nil;
@@ -119,12 +118,12 @@
     if (self.isNew && self.deliverable != nil) {
         self.deliverable.expenseProject = self.project;
         [self.project addProjectExpenseObject:self.deliverable];
-        [self.managedObjectContext save:nil];
+        [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
     }
 }
 
 -(IBAction)insertDeliverable{
-    Deliverables *newDeliverable = [NSEntityDescription insertNewObjectForEntityForName:@"Expense" inManagedObjectContext:self.managedObjectContext];
+    Deliverables *newDeliverable = [NSEntityDescription insertNewObjectForEntityForName:@"Expense" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     if (newDeliverable != nil) {
         newDeliverable.expensed = DELIVER_ACTIVE;
         newDeliverable.expenseProject = self.project;
@@ -180,7 +179,7 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Expense" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Expense" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *paidDateDescriptor = [[NSSortDescriptor alloc] initWithKey:@"datePaid" ascending:NO];
     NSSortDescriptor *purchaseDescriptor = [[NSSortDescriptor alloc] initWithKey:@"pmtDescription" ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObjects: paidDateDescriptor, purchaseDescriptor, nil];
@@ -188,7 +187,7 @@
     [self.fetchRequest setEntity:entity];
     self.expenseFRC.delegate = self;
     self.expenseFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                          managedObjectContext:self.managedObjectContext
+                                                          managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                             sectionNameKeyPath:nil
                                                                      cacheName:nil];
 }
@@ -202,7 +201,6 @@
     self.selectedIndexPath = nil;
     self.childController = nil;
     self.deliverable = nil;
-    self.managedObjectContext = nil;
     self.numberFormatter = nil;
     self.popController = nil;
     self.fetchRequest = nil;
@@ -294,8 +292,8 @@
     // Test to see if the object exists...
     NSError *error = [[NSError alloc] init];
     @try {
-        [self.managedObjectContext deleteObject:self.deliverable];
-        if (![self.managedObjectContext save:&error]){
+        [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.deliverable];
+        if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
             self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
             [self.logger releaseLogger];
         }
@@ -394,15 +392,6 @@
         _fetchRequest = [[NSFetchRequest alloc] init];
     }
     return _fetchRequest;
-}
-
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
 }
 
 -(NSPredicate *)billedPredicate{

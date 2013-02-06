@@ -20,7 +20,6 @@
 @interface CCDeliverableViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,CCPopoverControllerDelegate,CCEmailDelegate,CCLoggerDelegate>
 
 @property (strong, nonatomic) Project *project;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
 @property (strong, nonatomic) NSFetchedResultsController *expenseFRC;
 @property (strong, nonatomic) CCExpenseDetailsViewController *childController;

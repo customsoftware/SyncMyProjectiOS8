@@ -22,7 +22,6 @@
 
 @interface CCTimeViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,CCLoggerDelegate>
 
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) Project *project;
 @property (strong, nonatomic) WorkTime *time;
 @property (strong, nonatomic) NSIndexPath *selectedIndexPath;

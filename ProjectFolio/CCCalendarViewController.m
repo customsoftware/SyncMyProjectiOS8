@@ -21,7 +21,6 @@
 @synthesize childController = _childController;
 @synthesize calendarController = _calendarController;
 @synthesize selectedCell = _selectedCell;
-@synthesize managedObjectContext = _managedObjectContext;
 @synthesize endDateFormatter = _endDateFormatter;
 @synthesize dateFormatter = _dateFormatter;
 @synthesize logger = _logger;
@@ -29,7 +28,7 @@
 #pragma mark - IBActions
 
 -(IBAction)insertEvent{
-    Calendar *newMeeting = [NSEntityDescription insertNewObjectForEntityForName:@"Calendar" inManagedObjectContext:self.managedObjectContext];
+    Calendar *newMeeting = [NSEntityDescription insertNewObjectForEntityForName:@"Calendar" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     if (newMeeting != nil) {
         newMeeting.event = @"New meeting";
         newMeeting.start = [NSDate date];
@@ -66,12 +65,12 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     if ([self.meeting.event isEqualToString:@"Delete me"]) {
-        [self.managedObjectContext deleteObject:self.meeting];
+        [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
         
         // Save the context.
         NSError *error = [[NSError alloc] init];
         @try {
-            if (![self.managedObjectContext save:&error]){
+            if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
                 self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                 [self.logger releaseLogger];
             }
@@ -109,7 +108,6 @@
     self.childController = nil;
     self.selectedCell = nil;
     self.meeting = nil;
-    self.managedObjectContext = nil;
     self.dateFormatter = nil;
     self.endDateFormatter = nil;
     self.logger = nil;
@@ -137,13 +135,13 @@
         UIAlertView *alert = [[UIAlertView alloc]
                               initWithTitle:@"Deleted Event" message:@"The meeting has been deleted elsewhere" delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         [alert show];
-        [self.managedObjectContext deleteObject:self.meeting];
+        [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
         
         // Save the context.
         // Save the context.
         NSError *error = [[NSError alloc] init];
         @try {
-            if (![self.managedObjectContext save:&error]){
+            if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
                 self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                 [self.logger releaseLogger];
             }
@@ -175,7 +173,7 @@
     switch (action) {
         case EKEventEditViewActionCanceled:
             //NSLog(@"cancelled");
-            [self.managedObjectContext deleteObject:self.meeting];
+            [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
             [self.navigationController dismissModalViewControllerAnimated:YES];
             break;
             
@@ -191,7 +189,7 @@
             
         case EKEventEditViewActionDeleted:
             //NSLog(@"Here we remove the calendar");
-            [self.managedObjectContext deleteObject:self.meeting];
+            [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
             [self.navigationController dismissModalViewControllerAnimated:YES];
             break;
             
@@ -201,7 +199,7 @@
     // Save the context.
     NSError *error = [[NSError alloc] init];
     @try {
-        if (![self.managedObjectContext save:&error]){
+        if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
             self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
             [self.logger releaseLogger];
         }
@@ -233,7 +231,7 @@
             break;
             
         case EKEventViewActionDeleted:
-            [self.managedObjectContext deleteObject:self.meeting];
+            [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
             [self.navigationController dismissModalViewControllerAnimated:YES];
             break;
             
@@ -243,7 +241,7 @@
     // Save the context.
     NSError *error = [[NSError alloc] init];
     @try {
-        if (![self.managedObjectContext save:&error]){
+        if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
             self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
             [self.logger releaseLogger];
         }
@@ -303,12 +301,12 @@
      if (editingStyle == UITableViewCellEditingStyleDelete) {
      // Delete the row from the data source
          self.meeting = [[self.project.projectCalendar allObjects] objectAtIndex:[indexPath row]];
-         [self.managedObjectContext deleteObject:self.meeting];
+         [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
          
          // Save the context.
          NSError *error = [[NSError alloc] init];
          @try {
-             if (![self.managedObjectContext save:&error]){
+             if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
                  self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                  [self.logger releaseLogger];
              }
@@ -361,15 +359,6 @@
         _childController = [[EKEventEditViewController alloc] init];
     }
     return _childController;
-}
-
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _managedObjectContext = application.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
 }
 
 -(EKEventViewController *)calendarController{

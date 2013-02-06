@@ -11,7 +11,6 @@
 @interface CCCategoryTaskViewController ()
 
 @property (strong, nonatomic) Priority *currentCategory;
-@property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSFetchedResultsController *categoryFRC;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
 
@@ -21,7 +20,6 @@
 @implementation CCCategoryTaskViewController
 @synthesize categoryDelegate = _categoryDelegate;
 @synthesize currentCategory = _currentCategory;
-@synthesize context = _context;
 @synthesize categoryFRC = _categoryFRC;
 @synthesize fetchRequest = _fetchRequest;
 
@@ -43,7 +41,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Priority" inManagedObjectContext:self.context];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Priority" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *categoryDescriptor = [[NSSortDescriptor alloc] initWithKey:@"priority" ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObjects: categoryDescriptor, nil];
     [self.fetchRequest setSortDescriptors:sortDescriptors];
@@ -51,7 +49,7 @@
     // [self.fetchRequest setPredicate:self.allPredicate];
     
     self.categoryFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                       managedObjectContext:self.context
+                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                          sectionNameKeyPath:nil
                                                                   cacheName:nil];
     
@@ -64,7 +62,6 @@
 {
     self.categoryDelegate = nil;
     self.currentCategory = nil;
-    self.context = nil;
     self.categoryFRC = nil;
     self.fetchRequest = nil;
     [super viewDidUnload];
@@ -124,27 +121,11 @@
 }
 
 #pragma mark - Lazy Getters
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        _context = application.managedObjectContext;
-        
-    }
-    return _context;
-}
-
 -(NSFetchRequest *)fetchRequest{
     if (_fetchRequest == nil) {
         _fetchRequest = [[NSFetchRequest alloc] init];
     }
     return _fetchRequest;
 }
-
-/*-(NSPredicate *)allPredicate {
-    if (_allPredicate == nil) {
-        _allPredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate != nil"];
-    }
-    return _allPredicate;
-}*/
 
 @end

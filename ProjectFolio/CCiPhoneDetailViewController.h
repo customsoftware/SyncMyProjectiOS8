@@ -26,7 +26,6 @@
 @property (strong, nonatomic) IBOutlet UITextView *projectNotes;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedProjectsController;
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) Project *project;
 @property (strong, nonatomic) CCProjectTimer *activeTimer;
 
