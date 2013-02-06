@@ -48,17 +48,6 @@ static CoreData *sharedModel = nil;
     return sharedModel;
 }
     
-	/*@synchronized(self){
-		if(sharedModel == nil)
-			sharedModel = [[self alloc] initWithDelegate:delegate];
-		else {
-			if(delegate)
-				[sharedModel.delegates addObject:delegate];
-		}
-	}
-	return sharedModel;
-}*/
-
 #pragma mark - Class Methods
 + (id)allocWithZone:(NSZone *)zone{
     @synchronized(self) {
