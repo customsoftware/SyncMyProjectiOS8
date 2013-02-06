@@ -35,13 +35,11 @@
 }
 
 -(void)startTimer{    
-    WorkTime *time = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-    self.timer = time;
-    // NSLog(@"Timer started");
+    self.timer = [CoreData createNewTimerForProject:self.parentProject];
     if (self.timer != nil && [[CoreData sharedModel:nil] managedObjectContext] != nil) {
         self.timer.billed = [NSNumber numberWithBool:NO];
         self.timer.start = [[NSDate alloc]init];
-        [self.parentProject addProjectWorkObject:self.timer ];
+        // [self.parentProject addProjectWorkObject:self.timer ];
         [self.defaults saveString:self.parentProject.projectName atKey:kSelectedProject];
         
     } else {

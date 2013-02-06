@@ -82,10 +82,7 @@
 
 -(IBAction)insertTask{
     // Show task detail form
-    Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:self.context];
-    newTask.completed = [NSNumber numberWithBool:NO];
-    newTask.taskProject = self.sourceProject;
-    newTask.level = [NSNumber numberWithInt:0];
+    Task *newTask = [CoreData createTask:nil inProject:self.sourceProject];
     self.currentTask = newTask;
     self.isNew = YES;
     [self showTaskDetails:self.tableView rowIndex:nil];

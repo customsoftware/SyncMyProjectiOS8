@@ -365,7 +365,7 @@
 		24FC595915BE0C9900606750 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone_Storyboard.storyboard; sourceTree = "<group>"; };
 		24FCFD5615D0BACC00D42060 /* PF201208061.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF201208061.xcdatamodel; sourceTree = "<group>"; };
-		905E857E16C2013E00B64CB8 /* PF20130205.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = PF20130205.xcdatamodel; sourceTree = "<group>"; };
+		905E857E16C2013E00B64CB8 /* PF20130205.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF20130205.xcdatamodel; sourceTree = "<group>"; };
 		905E858116C2046100B64CB8 /* Fm20121218ATo20130205.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = Fm20121218ATo20130205.xcmappingmodel; sourceTree = "<group>"; };
 		905E858716C20D6C00B64CB8 /* Task+CategoryTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Task+CategoryTask.h"; sourceTree = "<group>"; };
 		905E858816C20D6C00B64CB8 /* Task+CategoryTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Task+CategoryTask.m"; sourceTree = "<group>"; };
@@ -513,6 +513,8 @@
 				905E859116C212CD00B64CB8 /* Task.m */,
 				905E858D16C212CA00B64CB8 /* Project.h */,
 				905E858E16C212CB00B64CB8 /* Project.m */,
+				24264D11166E175B00E0DEFB /* CoreData.h */,
+				24264D12166E175B00E0DEFB /* CoreData.m */,
 				905E858616C205DE00B64CB8 /* Categories */,
 				2471B887166105760052F7AD /* MappingModels */,
 			);
@@ -562,8 +564,6 @@
 				24C4DE4F165C999A004643CF /* CCInitializer.m */,
 				24E9BAE81669D2A300DBC616 /* CCSettingsControl.h */,
 				24E9BAE91669D2A300DBC616 /* CCSettingsControl.m */,
-				24264D11166E175B00E0DEFB /* CoreData.h */,
-				24264D12166E175B00E0DEFB /* CoreData.m */,
 			);
 			name = "General Objects";
 			sourceTree = "<group>";

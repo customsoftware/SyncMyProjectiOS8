@@ -34,7 +34,6 @@ static CoreData *sharedModel = nil;
 @synthesize iCloudAvailable = _iCloudAvailable;
 
 #pragma mark - Singleton Creation
-
 + (id)sharedModel:(id<CoreDataDelegate>)delegate{
 	@synchronized(self){
 		if(sharedModel == nil)
@@ -46,6 +45,8 @@ static CoreData *sharedModel = nil;
 	}
 	return sharedModel;
 }
+
+#pragma mark - Class Methods
 + (id)allocWithZone:(NSZone *)zone{
     @synchronized(self) {
         if(sharedModel == nil)  {
@@ -61,6 +62,64 @@ static CoreData *sharedModel = nil;
 + (void)removeDelegate:(id<CoreDataDelegate>)delegate{
 	[sharedModel.delegates removeObjectIdenticalTo:delegate];
 }
+
++ (Project *)createProjectWithName:(NSString *)newProjectName{
+    Project *newProject = [NSEntityDescription
+                           insertNewObjectForEntityForName:@"Project"
+                           inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+    newProject.projectName = newProjectName;
+    newProject.dateCreated = [NSDate date];
+    newProject.dateModified = newProject.dateCreated;
+    newProject.projectUUID = [[CoreData sharedModel:nil] getUUID];
+    
+    return newProject;
+}
+
++ (Task *)createTask:(NSString *)newTask inProject:(Project *)owningProject{
+    Task *theNewTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+    theNewTask.completed = [NSNumber numberWithBool:NO];
+    theNewTask.taskProject = owningProject;
+    [owningProject addProjectTaskObject:theNewTask];
+    theNewTask.title = newTask;
+    theNewTask.level = [NSNumber numberWithInt:0];
+    theNewTask.dateCreated = [NSDate date];
+    theNewTask.dateModified = theNewTask.dateCreated;
+    theNewTask.taskUUID = [[CoreData sharedModel:nil] getUUID];
+    
+    return theNewTask;
+}
+
++ (Deliverables *)createExpenseInProject:(Project *)owningProject{
+    Deliverables *newDeliverable = [NSEntityDescription insertNewObjectForEntityForName:@"Expense" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+    newDeliverable.expenseProject = owningProject;
+    [owningProject addProjectExpenseObject:newDeliverable];
+    newDeliverable.dateCreated = [NSDate date];
+    newDeliverable.dateModified = newDeliverable.dateCreated;
+    newDeliverable.expenseUUID = [[CoreData sharedModel:nil] getUUID];
+    
+    return newDeliverable;
+}
+
++ (WorkTime *)createNewTimerForProject:(Project *)owningProject{
+    WorkTime *time = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+    [owningProject addProjectWorkObject:time];
+    time.workProject = owningProject;
+    time.dateCreated = [NSDate date];
+    time.dateModified = time.dateCreated;
+    time.timerUUID = [[CoreData sharedModel:nil] getUUID];
+    
+    return time;
+}
+
++ (WorkTime *)createNewTimerForProject:(Project *)owningProject andTask:(Task *)owningTask{
+    WorkTime *newTimer = [CoreData createNewTimerForProject:owningProject];
+    newTimer.workTask = owningTask;
+    [owningTask addTaskTimerObject:newTimer];
+    return newTimer;
+}
+
+
+#pragma mark - Instance methods
 - (id)initWithDelegate:(id<CoreDataDelegate>)newDelegate{
     self = [super init];
 	if(self){
@@ -90,6 +149,14 @@ static CoreData *sharedModel = nil;
         __managedObjectContext = [self managedObjectContext];
 	}
 	return self;
+}
+
+- (NSString *)getUUID{
+    CFUUIDRef theUUID = CFUUIDCreate(NULL);
+    CFStringRef string = CFUUIDCreateString(NULL, theUUID);
+    NSString* returnString = (__bridge_transfer NSString*)string;
+    CFRelease(theUUID);
+    return returnString;
 }
 
 #pragma mark - Accessors

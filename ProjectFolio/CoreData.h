@@ -37,10 +37,18 @@
 
 // Singleton Creation
 + (id)sharedModel:(id<CoreDataDelegate>)delegate;
+
+#pragma mark - Class methods
 + (id)allocWithZone:(NSZone *)zone;
 + (void)addDelegate:(id<CoreDataDelegate>)delegate;
 + (void)removeDelegate:(id<CoreDataDelegate>)delegate;
++ (Project *)createProjectWithName:(NSString *)newProjectName;
++ (Task *)createTask:(NSString *)newTask inProject:(Project *)owningProject;
++ (Deliverables *)createExpenseInProject:(Project *)owningProject;
++ (WorkTime *)createNewTimerForProject:(Project *)owningProject;
++ (WorkTime *)createNewTimerForProject:(Project *)owningProject andTask:(Task *)owningTask;
 
+#pragma mark - Instance methods
 - (id)initWithDelegate:(id<CoreDataDelegate>)newDelegate;
 
 // Context Operations
@@ -49,6 +57,7 @@
 - (void)rollback;
 - (void)reset;
 - (BOOL)saveContext;
+- (NSString * )getUUID;
 
 #pragma mark - Accessors
 -(NSFetchedResultsController *)projectsFRCwithSortDescriptors:(NSArray *)sortDescriptors andFetchRequest:(NSFetchRequest *)request andDelegate:(id)delegate;

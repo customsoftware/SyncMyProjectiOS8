@@ -123,10 +123,9 @@
 }
 
 -(IBAction)insertDeliverable{
-    Deliverables *newDeliverable = [NSEntityDescription insertNewObjectForEntityForName:@"Expense" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+    Deliverables *newDeliverable = [CoreData createExpenseInProject:self.project];
     if (newDeliverable != nil) {
         newDeliverable.expensed = DELIVER_ACTIVE;
-        newDeliverable.expenseProject = self.project;
         newDeliverable.datePaid = [NSDate date];
         self.deliverable = newDeliverable;
         self.isNew = YES;

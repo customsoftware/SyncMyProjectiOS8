@@ -206,36 +206,10 @@
     if([buttonTitle isEqualToString:[self yesButtonTitle]]){
         if ([[alertView textFieldAtIndex:0].text isEqualToString:@""]) {
         } else {
-        Project *newProject = [NSEntityDescription
-                               insertNewObjectForEntityForName:@"Project" 
-                               inManagedObjectContext:self.managedObjectContext];
-            if (newProject == nil) {
-                self.logger = [[CCErrorLogger alloc] initWithErrorString:@"Failed to create a new project" andDelegate:self];
-                [self.logger releaseLogger];
-            } else {
-                newProject.projectName = [alertView textFieldAtIndex:0].text;
-                newProject.dateCreated = [NSDate date];
-                newProject.dateStart = newProject.dateCreated;
-                newProject.projectNotes = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", newProject.projectName];
-                
-                // NSError *error = [[NSError alloc] init];
-                CoreData *sharedModel = [CoreData sharedModel:self];
-                [sharedModel saveContext];
-                /*@try {
-                    if (![self.managedObjectContext save:&error]){
-                        self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
-                        [self.logger releaseLogger];
-                    }
-                    self.activeProject = newProject;
-                    NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
-                    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-                    [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
-                }
-                @catch (NSException *exception) {
-                    self.logger = [[CCErrorLogger alloc] initWithErrorString:exception.reason andDelegate:self];
-                    [self.logger releaseLogger];
-                }*/
-            }
+            Project *newProject = [CoreData createProjectWithName:[alertView textFieldAtIndex:0].text];
+            newProject.dateStart = newProject.dateCreated;
+            newProject.projectNotes = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", newProject.projectName];
+            [[CoreData sharedModel:self] saveContext];
         }
     }
 }
