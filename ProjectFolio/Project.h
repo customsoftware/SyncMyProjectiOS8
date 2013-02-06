@@ -2,7 +2,7 @@
 //  Project.h
 //  ProjectFolio
 //
-//  Created by Ken Cluff on 11/24/12.
+//  Created by Kenneth Cluff on 2/5/13.
 //
 //
 
@@ -23,6 +23,7 @@
 @property (nonatomic, retain) NSDecimalNumber * costBudget;
 @property (nonatomic, retain) NSDate * dateCreated;
 @property (nonatomic, retain) NSDate * dateFinish;
+@property (nonatomic, retain) NSDate * dateModified;
 @property (nonatomic, retain) NSDate * dateStart;
 @property (nonatomic, retain) NSString * dueTo;
 @property (nonatomic, retain) NSString * dueToFirst;
@@ -34,12 +35,13 @@
 @property (nonatomic, retain) NSString * projectCalendarName;
 @property (nonatomic, retain) NSString * projectName;
 @property (nonatomic, retain) NSString * projectNotes;
+@property (nonatomic, retain) NSString * projectUUID;
 @property (nonatomic, retain) NSNumber * systemRecord;
 @property (nonatomic, retain) NSSet *projectCalendar;
 @property (nonatomic, retain) NSSet *projectExpense;
+@property (nonatomic, retain) Priority *projectPriority;
 @property (nonatomic, retain) NSSet *projectTask;
 @property (nonatomic, retain) NSSet *projectWork;
-@property (nonatomic, retain) Priority *projectPriority;
 @end
 
 @interface Project (CoreDataGeneratedAccessors)

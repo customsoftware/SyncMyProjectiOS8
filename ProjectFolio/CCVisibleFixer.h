@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "CCAppDelegate.h"
-#import "Task.h"
+#import "Task+CategoryTask.h"
 
 @interface CCVisibleFixer : NSObject
 

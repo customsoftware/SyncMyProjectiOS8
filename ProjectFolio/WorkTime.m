@@ -2,22 +2,27 @@
 //  WorkTime.m
 //  ProjectFolio
 //
-//  Created by Ken Cluff on 11/24/12.
+//  Created by Kenneth Cluff on 2/5/13.
 //
 //
 
 #import "WorkTime.h"
 #import "Project.h"
+#import "Task.h"
 
 
 @implementation WorkTime
 
 @dynamic billed;
 @dynamic dateBilled;
+@dynamic dateCreated;
+@dynamic dateModified;
 @dynamic displayOrder;
 @dynamic elapseTime;
 @dynamic end;
 @dynamic start;
+@dynamic timerUUID;
 @dynamic workProject;
+@dynamic workTask;
 
 @end

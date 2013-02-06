@@ -2,7 +2,7 @@
 //  Project.m
 //  ProjectFolio
 //
-//  Created by Ken Cluff on 11/24/12.
+//  Created by Kenneth Cluff on 2/5/13.
 //
 //
 
@@ -26,6 +26,7 @@
 @dynamic costBudget;
 @dynamic dateCreated;
 @dynamic dateFinish;
+@dynamic dateModified;
 @dynamic dateStart;
 @dynamic dueTo;
 @dynamic dueToFirst;
@@ -37,23 +38,12 @@
 @dynamic projectCalendarName;
 @dynamic projectName;
 @dynamic projectNotes;
+@dynamic projectUUID;
 @dynamic systemRecord;
 @dynamic projectCalendar;
 @dynamic projectExpense;
+@dynamic projectPriority;
 @dynamic projectTask;
 @dynamic projectWork;
-@dynamic projectPriority;
-
--(NSNumber *)isOverDue{
-    BOOL isProjectOverDue = NO;
-    
-    NSDate *today = [NSDate date];
-    if (self.dateFinish != nil) {
-        if ([self.dateFinish compare:today] == NSOrderedAscending){
-            isProjectOverDue = YES;
-        }
-    }
-    return  [NSNumber numberWithBool:isProjectOverDue];
-}
 
 @end

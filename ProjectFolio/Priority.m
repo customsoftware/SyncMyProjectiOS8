@@ -2,7 +2,7 @@
 //  Priority.m
 //  ProjectFolio
 //
-//  Created by Ken Cluff on 11/24/12.
+//  Created by Kenneth Cluff on 2/5/13.
 //
 //
 
@@ -13,8 +13,11 @@
 
 @implementation Priority
 
+@dynamic dateCreated;
+@dynamic dateModified;
 @dynamic priority;
-@dynamic priorityTask;
+@dynamic priorityUUID;
 @dynamic priorityProject;
+@dynamic priorityTask;
 
 @end

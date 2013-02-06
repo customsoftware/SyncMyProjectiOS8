@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Task.h"
+#import "Task+CategoryTask.h"
 #import "Priority.h"
 #import "CCTaskDueDateViewController.h"
 #import "CCAppDelegate.h"

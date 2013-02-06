@@ -2,7 +2,7 @@
 //  Calendar.h
 //  ProjectFolio
 //
-//  Created by Ken Cluff on 11/24/12.
+//  Created by Kenneth Cluff on 2/5/13.
 //
 //
 
@@ -13,6 +13,9 @@
 
 @interface Calendar : NSManagedObject
 
+@property (nonatomic, retain) NSString * calendarUUID;
+@property (nonatomic, retain) NSDate * dateCreated;
+@property (nonatomic, retain) NSDate * dateModified;
 @property (nonatomic, retain) NSString * event;
 @property (nonatomic, retain) NSString * eventID;
 @property (nonatomic, retain) NSDecimalNumber * interval;

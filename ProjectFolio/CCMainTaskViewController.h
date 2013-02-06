@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Task.h"
+#import "Task+CategoryTask.h"
 // #import "CCAppDelegate.h"
 #import "Project.h"
 #import "CCProjectTaskDelegate.h"

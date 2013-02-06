@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "CCAppDelegate.h"
 #import "Task.h"
-#import "Project.h"
+#import "Project+CategoryProject.h"
 #import "CCTaskViewDetailsController.h"
 #import "CCPopoverControllerDelegate.h"
 #import "CCEmailer.h"

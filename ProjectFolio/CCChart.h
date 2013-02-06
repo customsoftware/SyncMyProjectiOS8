@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "Project.h"
-#import "Task.h"
+#import "Task+CategoryTask.h"
 #import "CCAppDelegate.h"
 
 @protocol CCTaskChartDelegate <NSObject>

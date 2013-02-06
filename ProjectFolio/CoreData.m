@@ -171,9 +171,7 @@ static CoreData *sharedModel = nil;
 
 - (void)mergeChangesFrom_iCloud:(NSNotification *)notification {
     
-	NSLog(@"Merging in changes from iCloud...");
-    
-    NSManagedObjectContext* moc = [self managedObjectContext];
+	NSManagedObjectContext* moc = [self managedObjectContext];
     
     [moc performBlock:^{
         
@@ -330,7 +328,6 @@ static CoreData *sharedModel = nil;
 
 #pragma mark - iCloud Functionality
 - (void)persistentStoreDidChange:(NSNotification*)notification{
-    NSLog(@"Change Detected!");
     [__managedObjectContext performBlockAndWait:^(void){
         [__managedObjectContext mergeChangesFromContextDidSaveNotification:notification];
         if (self.projectFRC != nil) {

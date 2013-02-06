@@ -2,7 +2,7 @@
 //  Calendar.m
 //  ProjectFolio
 //
-//  Created by Ken Cluff on 11/24/12.
+//  Created by Kenneth Cluff on 2/5/13.
 //
 //
 
@@ -12,6 +12,9 @@
 
 @implementation Calendar
 
+@dynamic calendarUUID;
+@dynamic dateCreated;
+@dynamic dateModified;
 @dynamic event;
 @dynamic eventID;
 @dynamic interval;

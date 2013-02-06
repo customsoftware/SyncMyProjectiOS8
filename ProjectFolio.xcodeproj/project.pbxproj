@@ -63,11 +63,6 @@
 		2471B8841661045F0052F7AD /* Model20121001To1117.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 2471B8831661045F0052F7AD /* Model20121001To1117.xcmappingmodel */; };
 		2471B886166104A50052F7AD /* ModelFm201208252To0911A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 2471B885166104A50052F7AD /* ModelFm201208252To0911A.xcmappingmodel */; };
 		2471B889166105B60052F7AD /* ModelFm20121117To1124.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 2471B888166105B60052F7AD /* ModelFm20121117To1124.xcmappingmodel */; };
-		2471B88C166106890052F7AD /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 2471B88B166106890052F7AD /* Project.m */; };
-		2471B88F1661068A0052F7AD /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 2471B88E1661068A0052F7AD /* Calendar.m */; };
-		2471B8921661068B0052F7AD /* Priority.m in Sources */ = {isa = PBXBuildFile; fileRef = 2471B8911661068B0052F7AD /* Priority.m */; };
-		2471B8981661068B0052F7AD /* WorkTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 2471B8971661068B0052F7AD /* WorkTime.m */; };
-		2471B89B1661068C0052F7AD /* Deliverables.m in Sources */ = {isa = PBXBuildFile; fileRef = 2471B89A1661068B0052F7AD /* Deliverables.m */; };
 		247736E01663AE160070E9CE /* ProFo_Icon_114x114.png in Resources */ = {isa = PBXBuildFile; fileRef = 247736DF1663AE160070E9CE /* ProFo_Icon_114x114.png */; };
 		24792BB6160C88AD00B8A650 /* plane.png in Resources */ = {isa = PBXBuildFile; fileRef = 24792BB5160C88AD00B8A650 /* plane.png */; };
 		24792BB9160C8CA700B8A650 /* home.png in Resources */ = {isa = PBXBuildFile; fileRef = 24792BB8160C8CA700B8A650 /* home.png */; };
@@ -102,7 +97,6 @@
 		24A98B3C15B275B000ABBB85 /* CCMasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24A98B3B15B275B000ABBB85 /* CCMasterViewController.m */; };
 		24A98B3F15B275B000ABBB85 /* CCDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24A98B3E15B275B000ABBB85 /* CCDetailViewController.m */; };
 		24B5694A16108B6D00ADC5DB /* ModelFm20120922.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 24B5694916108B6D00ADC5DB /* ModelFm20120922.xcmappingmodel */; };
-		24BC9D9E1657EF76002B4A8A /* Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 24BC9D9D1657EF76002B4A8A /* Category.m */; };
 		24BC9DA1165841E3002B4A8A /* CCAuxPriorityViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24BC9DA0165841E3002B4A8A /* CCAuxPriorityViewController.m */; };
 		24BC9DA416584ABB002B4A8A /* CCAuxPriorityEditorViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24BC9DA316584ABB002B4A8A /* CCAuxPriorityEditorViewController.m */; };
 		24C4DE50165C999A004643CF /* CCInitializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 24C4DE4F165C999A004643CF /* CCInitializer.m */; };
@@ -118,7 +112,6 @@
 		24D54C98160C199A00E17A38 /* 172-pricetag.png in Resources */ = {isa = PBXBuildFile; fileRef = 24D54C97160C199A00E17A38 /* 172-pricetag.png */; };
 		24D658681648B362002B194C /* CCAuxTaskCloneDrillController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D658671648B362002B194C /* CCAuxTaskCloneDrillController.m */; };
 		24D78BF5166EF021004DC068 /* ModelFm20121124To1204.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 24D78BF4166EF021004DC068 /* ModelFm20121124To1204.xcmappingmodel */; };
-		24D78BF8166EF063004DC068 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D78BF7166EF063004DC068 /* Task.m */; };
 		24D8710815E72B3000134E52 /* CCBarObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 24D8710715E72B3000134E52 /* CCBarObject.m */; };
 		24E376B515E24A7200286A8A /* 19-gear.png in Resources */ = {isa = PBXBuildFile; fileRef = 24E376B415E24A7200286A8A /* 19-gear.png */; };
 		24E376B715E24ABA00286A8A /* 83-calendar.png in Resources */ = {isa = PBXBuildFile; fileRef = 24E376B615E24ABA00286A8A /* 83-calendar.png */; };
@@ -142,6 +135,16 @@
 		24FC163415F566A800BB86AB /* CCAuxSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24FC163315F566A800BB86AB /* CCAuxSettingsViewController.m */; };
 		24FC595A15BE0C9A00606750 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FC595915BE0C9900606750 /* Settings.bundle */; };
 		24FCDF0016639B9B005919D0 /* iPhone_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */; };
+		905E858216C2046100B64CB8 /* Fm20121218ATo20130205.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 905E858116C2046100B64CB8 /* Fm20121218ATo20130205.xcmappingmodel */; };
+		905E858916C20D6C00B64CB8 /* Task+CategoryTask.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E858816C20D6C00B64CB8 /* Task+CategoryTask.m */; };
+		905E858C16C20EA300B64CB8 /* Project+CategoryProject.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E858B16C20EA300B64CB8 /* Project+CategoryProject.m */; };
+		905E858F16C212CB00B64CB8 /* Project.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E858E16C212CB00B64CB8 /* Project.m */; };
+		905E859216C212CE00B64CB8 /* Task.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E859116C212CD00B64CB8 /* Task.m */; };
+		905E859516C212CF00B64CB8 /* SharedMeta.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E859416C212CE00B64CB8 /* SharedMeta.m */; };
+		905E859816C212D000B64CB8 /* WorkTime.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E859716C212D000B64CB8 /* WorkTime.m */; };
+		905E859B16C212D200B64CB8 /* Deliverables.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E859A16C212D100B64CB8 /* Deliverables.m */; };
+		905E859E16C212D300B64CB8 /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E859D16C212D300B64CB8 /* Calendar.m */; };
+		905E85A116C212D400B64CB8 /* Priority.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E85A016C212D400B64CB8 /* Priority.m */; };
 		90DF5DFD16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 90DF5DFC16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel */; };
 /* End PBXBuildFile section */
 
@@ -243,16 +246,6 @@
 		2471B8831661045F0052F7AD /* Model20121001To1117.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = Model20121001To1117.xcmappingmodel; sourceTree = "<group>"; };
 		2471B885166104A50052F7AD /* ModelFm201208252To0911A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ModelFm201208252To0911A.xcmappingmodel; sourceTree = "<group>"; };
 		2471B888166105B60052F7AD /* ModelFm20121117To1124.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ModelFm20121117To1124.xcmappingmodel; sourceTree = "<group>"; };
-		2471B88A166106890052F7AD /* Project.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Project.h; sourceTree = "<group>"; };
-		2471B88B166106890052F7AD /* Project.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Project.m; sourceTree = "<group>"; };
-		2471B88D1661068A0052F7AD /* Calendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Calendar.h; sourceTree = "<group>"; };
-		2471B88E1661068A0052F7AD /* Calendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Calendar.m; sourceTree = "<group>"; };
-		2471B8901661068B0052F7AD /* Priority.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Priority.h; sourceTree = "<group>"; };
-		2471B8911661068B0052F7AD /* Priority.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Priority.m; sourceTree = "<group>"; };
-		2471B8961661068B0052F7AD /* WorkTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WorkTime.h; sourceTree = "<group>"; };
-		2471B8971661068B0052F7AD /* WorkTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WorkTime.m; sourceTree = "<group>"; };
-		2471B8991661068B0052F7AD /* Deliverables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Deliverables.h; sourceTree = "<group>"; };
-		2471B89A1661068B0052F7AD /* Deliverables.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Deliverables.m; sourceTree = "<group>"; };
 		247736DF1663AE160070E9CE /* ProFo_Icon_114x114.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ProFo_Icon_114x114.png; path = ../ProFo_Icon_114x114.png; sourceTree = "<group>"; };
 		24792BB5160C88AD00B8A650 /* plane.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = plane.png; path = "../../../Downloads/open-source-icons/PNG/black/plane.png"; sourceTree = "<group>"; };
 		24792BB8160C8CA700B8A650 /* home.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = home.png; path = "../../../Downloads/open-source-icons/PNG/black/home.png"; sourceTree = "<group>"; };
@@ -305,8 +298,6 @@
 		24B5694816108B1900ADC5DB /* PF20120924B.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF20120924B.xcdatamodel; sourceTree = "<group>"; };
 		24B5694916108B6D00ADC5DB /* ModelFm20120922.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ModelFm20120922.xcmappingmodel; sourceTree = "<group>"; };
 		24BC9D8F16578CBD002B4A8A /* PF20121117A.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF20121117A.xcdatamodel; sourceTree = "<group>"; };
-		24BC9D9C1657EF76002B4A8A /* Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Category.h; sourceTree = "<group>"; };
-		24BC9D9D1657EF76002B4A8A /* Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Category.m; sourceTree = "<group>"; };
 		24BC9D9F165841E3002B4A8A /* CCAuxPriorityViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAuxPriorityViewController.h; sourceTree = "<group>"; };
 		24BC9DA0165841E3002B4A8A /* CCAuxPriorityViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAuxPriorityViewController.m; sourceTree = "<group>"; };
 		24BC9DA216584ABB002B4A8A /* CCAuxPriorityEditorViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAuxPriorityEditorViewController.h; sourceTree = "<group>"; };
@@ -340,8 +331,6 @@
 		24D658661648B362002B194C /* CCAuxTaskCloneDrillController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCAuxTaskCloneDrillController.h; sourceTree = "<group>"; };
 		24D658671648B362002B194C /* CCAuxTaskCloneDrillController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCAuxTaskCloneDrillController.m; sourceTree = "<group>"; };
 		24D78BF4166EF021004DC068 /* ModelFm20121124To1204.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ModelFm20121124To1204.xcmappingmodel; sourceTree = "<group>"; };
-		24D78BF6166EF063004DC068 /* Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
-		24D78BF7166EF063004DC068 /* Task.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Task.m; sourceTree = "<group>"; };
 		24D8710615E72B3000134E52 /* CCBarObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCBarObject.h; sourceTree = "<group>"; };
 		24D8710715E72B3000134E52 /* CCBarObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCBarObject.m; sourceTree = "<group>"; };
 		24E376B415E24A7200286A8A /* 19-gear.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "19-gear.png"; sourceTree = "<group>"; };
@@ -376,7 +365,27 @@
 		24FC595915BE0C9900606750 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone_Storyboard.storyboard; sourceTree = "<group>"; };
 		24FCFD5615D0BACC00D42060 /* PF201208061.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF201208061.xcdatamodel; sourceTree = "<group>"; };
-		90DF5DFB16BA41AF003B745E /* PF20121218A.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = PF20121218A.xcdatamodel; sourceTree = "<group>"; };
+		905E857E16C2013E00B64CB8 /* PF20130205.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = file; path = PF20130205.xcdatamodel; sourceTree = "<group>"; };
+		905E858116C2046100B64CB8 /* Fm20121218ATo20130205.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = Fm20121218ATo20130205.xcmappingmodel; sourceTree = "<group>"; };
+		905E858716C20D6C00B64CB8 /* Task+CategoryTask.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Task+CategoryTask.h"; sourceTree = "<group>"; };
+		905E858816C20D6C00B64CB8 /* Task+CategoryTask.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Task+CategoryTask.m"; sourceTree = "<group>"; };
+		905E858A16C20EA300B64CB8 /* Project+CategoryProject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Project+CategoryProject.h"; sourceTree = "<group>"; };
+		905E858B16C20EA300B64CB8 /* Project+CategoryProject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Project+CategoryProject.m"; sourceTree = "<group>"; };
+		905E858D16C212CA00B64CB8 /* Project.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Project.h; sourceTree = "<group>"; };
+		905E858E16C212CB00B64CB8 /* Project.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Project.m; sourceTree = "<group>"; };
+		905E859016C212CD00B64CB8 /* Task.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Task.h; sourceTree = "<group>"; };
+		905E859116C212CD00B64CB8 /* Task.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Task.m; sourceTree = "<group>"; };
+		905E859316C212CE00B64CB8 /* SharedMeta.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SharedMeta.h; sourceTree = "<group>"; };
+		905E859416C212CE00B64CB8 /* SharedMeta.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SharedMeta.m; sourceTree = "<group>"; };
+		905E859616C212D000B64CB8 /* WorkTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WorkTime.h; sourceTree = "<group>"; };
+		905E859716C212D000B64CB8 /* WorkTime.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WorkTime.m; sourceTree = "<group>"; };
+		905E859916C212D100B64CB8 /* Deliverables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Deliverables.h; sourceTree = "<group>"; };
+		905E859A16C212D100B64CB8 /* Deliverables.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Deliverables.m; sourceTree = "<group>"; };
+		905E859C16C212D200B64CB8 /* Calendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Calendar.h; sourceTree = "<group>"; };
+		905E859D16C212D300B64CB8 /* Calendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Calendar.m; sourceTree = "<group>"; };
+		905E859F16C212D300B64CB8 /* Priority.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Priority.h; sourceTree = "<group>"; };
+		905E85A016C212D400B64CB8 /* Priority.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Priority.m; sourceTree = "<group>"; };
+		90DF5DFB16BA41AF003B745E /* PF20121218A.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF20121218A.xcdatamodel; sourceTree = "<group>"; };
 		90DF5DFC16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ModelFm20121204to1218A.xcmappingmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -490,20 +499,21 @@
 			isa = PBXGroup;
 			children = (
 				24A98B3715B275B000ABBB85 /* ProjectFolio.xcdatamodeld */,
-				24D78BF6166EF063004DC068 /* Task.h */,
-				24D78BF7166EF063004DC068 /* Task.m */,
-				2471B8991661068B0052F7AD /* Deliverables.h */,
-				2471B89A1661068B0052F7AD /* Deliverables.m */,
-				2471B8961661068B0052F7AD /* WorkTime.h */,
-				2471B8971661068B0052F7AD /* WorkTime.m */,
-				2471B8901661068B0052F7AD /* Priority.h */,
-				2471B8911661068B0052F7AD /* Priority.m */,
-				2471B88D1661068A0052F7AD /* Calendar.h */,
-				2471B88E1661068A0052F7AD /* Calendar.m */,
-				2471B88A166106890052F7AD /* Project.h */,
-				2471B88B166106890052F7AD /* Project.m */,
-				24BC9D9C1657EF76002B4A8A /* Category.h */,
-				24BC9D9D1657EF76002B4A8A /* Category.m */,
+				905E859F16C212D300B64CB8 /* Priority.h */,
+				905E85A016C212D400B64CB8 /* Priority.m */,
+				905E859C16C212D200B64CB8 /* Calendar.h */,
+				905E859D16C212D300B64CB8 /* Calendar.m */,
+				905E859916C212D100B64CB8 /* Deliverables.h */,
+				905E859A16C212D100B64CB8 /* Deliverables.m */,
+				905E859616C212D000B64CB8 /* WorkTime.h */,
+				905E859716C212D000B64CB8 /* WorkTime.m */,
+				905E859316C212CE00B64CB8 /* SharedMeta.h */,
+				905E859416C212CE00B64CB8 /* SharedMeta.m */,
+				905E859016C212CD00B64CB8 /* Task.h */,
+				905E859116C212CD00B64CB8 /* Task.m */,
+				905E858D16C212CA00B64CB8 /* Project.h */,
+				905E858E16C212CB00B64CB8 /* Project.m */,
+				905E858616C205DE00B64CB8 /* Categories */,
 				2471B887166105760052F7AD /* MappingModels */,
 			);
 			name = "Data Objects";
@@ -583,6 +593,7 @@
 				245B2FB215D5314200CBB390 /* Model_Fm201208081_To201208091.xcmappingmodel */,
 				24D78BF4166EF021004DC068 /* ModelFm20121124To1204.xcmappingmodel */,
 				90DF5DFC16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel */,
+				905E858116C2046100B64CB8 /* Fm20121218ATo20130205.xcmappingmodel */,
 			);
 			name = MappingModels;
 			sourceTree = "<group>";
@@ -732,6 +743,17 @@
 				24CD32E3166719E10067424A /* CCiPhoneDetailViewController.m */,
 			);
 			name = iPhoneObjects;
+			sourceTree = "<group>";
+		};
+		905E858616C205DE00B64CB8 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				905E858716C20D6C00B64CB8 /* Task+CategoryTask.h */,
+				905E858816C20D6C00B64CB8 /* Task+CategoryTask.m */,
+				905E858A16C20EA300B64CB8 /* Project+CategoryProject.h */,
+				905E858B16C20EA300B64CB8 /* Project+CategoryProject.m */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -896,7 +918,6 @@
 				24EFD7F81619B5240063BD14 /* CCVisibleFixer.m in Sources */,
 				24064A2D161A877900FA9AE9 /* ModelFm20120927Fto1001A.xcmappingmodel in Sources */,
 				24D658681648B362002B194C /* CCAuxTaskCloneDrillController.m in Sources */,
-				24BC9D9E1657EF76002B4A8A /* Category.m in Sources */,
 				24BC9DA1165841E3002B4A8A /* CCAuxPriorityViewController.m in Sources */,
 				24BC9DA416584ABB002B4A8A /* CCAuxPriorityEditorViewController.m in Sources */,
 				24C4DE50165C999A004643CF /* CCInitializer.m in Sources */,
@@ -905,19 +926,23 @@
 				2471B8841661045F0052F7AD /* Model20121001To1117.xcmappingmodel in Sources */,
 				2471B886166104A50052F7AD /* ModelFm201208252To0911A.xcmappingmodel in Sources */,
 				2471B889166105B60052F7AD /* ModelFm20121117To1124.xcmappingmodel in Sources */,
-				2471B88C166106890052F7AD /* Project.m in Sources */,
-				2471B88F1661068A0052F7AD /* Calendar.m in Sources */,
-				2471B8921661068B0052F7AD /* Priority.m in Sources */,
-				2471B8981661068B0052F7AD /* WorkTime.m in Sources */,
-				2471B89B1661068C0052F7AD /* Deliverables.m in Sources */,
 				24CB5C8F16648E3C006F8622 /* CCiPhoneMasterViewController.m in Sources */,
 				24CD32E0166714700067424A /* CCiPhoneTaskViewController.m in Sources */,
 				24CD32E4166719E10067424A /* CCiPhoneDetailViewController.m in Sources */,
 				24E9BAEA1669D2A300DBC616 /* CCSettingsControl.m in Sources */,
 				24264D13166E175B00E0DEFB /* CoreData.m in Sources */,
 				24D78BF5166EF021004DC068 /* ModelFm20121124To1204.xcmappingmodel in Sources */,
-				24D78BF8166EF063004DC068 /* Task.m in Sources */,
 				90DF5DFD16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel in Sources */,
+				905E858216C2046100B64CB8 /* Fm20121218ATo20130205.xcmappingmodel in Sources */,
+				905E858916C20D6C00B64CB8 /* Task+CategoryTask.m in Sources */,
+				905E858C16C20EA300B64CB8 /* Project+CategoryProject.m in Sources */,
+				905E858F16C212CB00B64CB8 /* Project.m in Sources */,
+				905E859216C212CE00B64CB8 /* Task.m in Sources */,
+				905E859516C212CF00B64CB8 /* SharedMeta.m in Sources */,
+				905E859816C212D000B64CB8 /* WorkTime.m in Sources */,
+				905E859B16C212D200B64CB8 /* Deliverables.m in Sources */,
+				905E859E16C212D300B64CB8 /* Calendar.m in Sources */,
+				905E85A116C212D400B64CB8 /* Priority.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1066,6 +1091,7 @@
 		24A98B3715B275B000ABBB85 /* ProjectFolio.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				905E857E16C2013E00B64CB8 /* PF20130205.xcdatamodel */,
 				90DF5DFB16BA41AF003B745E /* PF20121218A.xcdatamodel */,
 				24C57E8F166EEE68006693D5 /* PF20121204A.xcdatamodel */,
 				2471B881166103050052F7AD /* PF20121124A.xcdatamodel */,
@@ -1095,7 +1121,7 @@
 				24C70D3815CB9A5600642460 /* PF20120802.xcdatamodel */,
 				24A98B3815B275B000ABBB85 /* ProjectFolio.xcdatamodel */,
 			);
-			currentVersion = 90DF5DFB16BA41AF003B745E /* PF20121218A.xcdatamodel */;
+			currentVersion = 905E857E16C2013E00B64CB8 /* PF20130205.xcdatamodel */;
 			path = ProjectFolio.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;
