@@ -35,7 +35,20 @@ static CoreData *sharedModel = nil;
 
 #pragma mark - Singleton Creation
 + (id)sharedModel:(id<CoreDataDelegate>)delegate{
-	@synchronized(self){
+    static CoreData *sharedModel = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+		if(sharedModel == nil)
+			sharedModel = [[self alloc] initWithDelegate:delegate];
+		else {
+			if(delegate)
+				[sharedModel.delegates addObject:delegate];
+		}
+    });
+    return sharedModel;
+}
+    
+	/*@synchronized(self){
 		if(sharedModel == nil)
 			sharedModel = [[self alloc] initWithDelegate:delegate];
 		else {
@@ -44,7 +57,7 @@ static CoreData *sharedModel = nil;
 		}
 	}
 	return sharedModel;
-}
+}*/
 
 #pragma mark - Class Methods
 + (id)allocWithZone:(NSZone *)zone{
