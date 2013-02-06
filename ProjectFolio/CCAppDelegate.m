@@ -22,11 +22,6 @@
 @implementation CCAppDelegate
 
 @synthesize window = _window;
-/*
-@synthesize managedObjectContext = __managedObjectContext;
-@synthesize managedObjectModel = __managedObjectModel;
-@synthesize persistentStoreCoordinator = __persistentStoreCoordinator;
-*/
 @synthesize eventStore = _eventStore;
 @synthesize errorLogger = _errorLogger;
 @synthesize projectTimer = _projectTimer;
