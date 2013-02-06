@@ -340,8 +340,6 @@
     } else {
         self.activeProject = [self.filteredProjects objectAtIndex:indexPath.row];
     }
-    NSLog(@"Current Project name: %@", self.activeProject.projectName);
-    
     [self sendTimerStopNotification];
     [self sendTimerStartNotificationForProject];
     self.controllingCellIndex = indexPath;

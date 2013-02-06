@@ -133,7 +133,7 @@
         self.isNew = YES;
         [self showDeliverableDetails:self.tableView rowIndex:nil];
     } else {
-        NSLog(@"Failed to create new deliverable");
+        // NSLog(@"Failed to create new deliverable");
     }
 }
 

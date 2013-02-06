@@ -64,7 +64,6 @@
         self.parentProject = newProject;
         [self startTimer];
     }
-    NSLog(@"New parent timer: %@", self.parentProject.projectName);
 }
 
 -(void)releaseTimer{

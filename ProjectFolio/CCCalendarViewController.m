@@ -44,7 +44,7 @@
     //[self calendarEditor:self.tableView rowIndex:nil];
     [self showNewMeetingDetails:self.tableView rowIndex:nil];
     } else {
-        NSLog(@"failed to create meeting");
+        //NSLog(@"failed to create meeting");
     }
 
 }
@@ -323,7 +323,7 @@
      }
      else if (editingStyle == UITableViewCellEditingStyleInsert) {
      // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-         NSLog(@"Insert called");
+         // NSLog(@"Insert called");
      }
  }
  

@@ -330,7 +330,6 @@
 #pragma mark - iCloud Functionality
 
 - (void)persistentStoreDidChange:(NSNotification*)notification{
-    NSLog(@"Change Detected!");
     [__managedObjectContext performBlockAndWait:^(void){
         [__managedObjectContext mergeChangesFromContextDidSaveNotification:notification];
         

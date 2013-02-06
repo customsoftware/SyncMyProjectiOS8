@@ -442,7 +442,6 @@
 -(void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath{
     self.userDrivenDataModelChange = YES;
     NSMutableArray *things = [[self.taskFRC fetchedObjects] mutableCopy];
-    NSLog(@"Moving from: %d to %d", sourceIndexPath.row, destinationIndexPath.row);
     // Grab the item we're moving.
     Task *task = [self.taskFRC objectAtIndexPath:sourceIndexPath];
     

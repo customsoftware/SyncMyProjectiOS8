@@ -86,7 +86,7 @@
         // Project has hourly budget and remaining hours
         NSError *requestError = nil;
         if (![self.controller performFetch:&requestError]) {
-            NSLog(@"Fetch failed");
+            // NSLog(@"Fetch failed");
         }
         
         // Include just projects that have a start date before the finish date of this project

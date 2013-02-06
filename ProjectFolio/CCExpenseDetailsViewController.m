@@ -291,7 +291,7 @@
 -(BOOL) cameraSupportsMedia:(NSString *)paramMediaType sourceType:(UIImagePickerControllerSourceType) paramSourceType{
     __block BOOL result = NO;
     if ([paramMediaType length] == 0) {
-        NSLog(@"Media type is empty");
+        // NSLog(@"Media type is empty");
     } else {
         NSArray *availableMediaTypes = [UIImagePickerController availableMediaTypesForSourceType:paramSourceType];
         [availableMediaTypes enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -369,13 +369,13 @@
         // NSDictionary *metaData = [info objectForKey:UIImagePickerControllerMediaType];
         UIImage *theImage = [info objectForKey:UIImagePickerControllerOriginalImage];
         if (self.receipt == nil) {
-            NSLog(@"The receipt went nil due to memory");
+            // NSLog(@"The receipt went nil due to memory");
         } else if ( theImage == nil){
-            NSLog(@"The image went nil");
+            // NSLog(@"The image went nil");
         }
         if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
             self.receipt.image = theImage;
-            NSLog(@"The receipt loaded: %f", self.receipt.image.size.height);
+            // NSLog(@"The receipt loaded: %f", self.receipt.image.size.height);
         } else {
             self.expense.receipt = UIImagePNGRepresentation(theImage);
         }

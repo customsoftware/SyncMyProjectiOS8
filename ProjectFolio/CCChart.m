@@ -104,7 +104,7 @@
     }
     
     if (self.projectName == nil) {
-        NSLog(@"Bailing: No Project name");
+        // NSLog(@"Bailing: No Project name");
     } else {
         NSError *fetchError;
         rect.size.width = rect.size.width - 21;
