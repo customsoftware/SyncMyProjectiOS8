@@ -78,7 +78,7 @@
 
 -(void)releaseNotes{
     self.activeTask.notes = self.notesController.notes.text;
-    self.notes.text = self.activeTask.notes;
+    self.notes = self.activeTask.notes;
     [self.navigationController dismissModalViewControllerAnimated:YES];
 }
 
@@ -288,7 +288,7 @@
         [self.activeTask.superTask setNewDisplayOrderWith:self.activeTask.superTask.displayOrder];
     }
     self.taskTitle.text = self.activeTask.title;
-    self.notes.text = self.activeTask.notes;
+    self.notes = self.activeTask.notes;
     BOOL activeVal = (self.activeTask.completed == SWITCH_ON) ? YES:NO;
     [self.status setOn:activeVal];
     if ([self.taskDelegate shouldShowCancelButton]) {
@@ -305,7 +305,7 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
-    self.activeTask.notes = self.notes.text;
+    self.activeTask.notes = self.notes;
     [self.taskDelegate savePopoverData];
     [self.view endEditing:YES];
 }
@@ -317,8 +317,8 @@
     self.navigationItem.title = @"Task Details";
     self.taskParameters.delegate = self;
     self.taskParameters.dataSource = self;
-    self.notes.layer.borderWidth = 1.50f;
-    self.notes.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    // self.notes.layer.borderWidth = 1.50f;
+    // self.notes.layer.borderColor = [[UIColor darkGrayColor] CGColor];
 }
 
 - (void)viewDidUnload

@@ -30,7 +30,7 @@
 
 @property (strong, nonatomic) IBOutlet UITextField *taskTitle;
 @property (strong, nonatomic) IBOutlet UISwitch *status;
-@property (strong, nonatomic) IBOutlet UITextView *notes;
+@property (strong, nonatomic) NSString *notes;
 @property (strong, nonatomic) IBOutlet UITableView *taskParameters;
 
 -(IBAction)completeTask:(UISwitch *)sender;
@@ -42,6 +42,7 @@
 -(NSString *)getNotes;
 -(BOOL)isTaskClass;
 -(Task *)getParentTask;
+
 
 -(void)cancelPopover;
 -(void)savePopoverData;

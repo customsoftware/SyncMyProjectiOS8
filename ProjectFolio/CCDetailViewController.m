@@ -97,7 +97,8 @@
     CGFloat blue = [defaults floatForKey:kBlueNameKey];
     CGFloat green = [defaults floatForKey:kGreenNameKey];
     UIColor *newColor = [[UIColor alloc] initWithRed:red green:green blue:blue alpha:alpha];
-    self.projectNotes.backgroundColor = newColor;
+    //self.projectNotes.backgroundColor = newColor;
+    self.view.backgroundColor = newColor;
 }
 
 - (void)configureView
