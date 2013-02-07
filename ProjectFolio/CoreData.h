@@ -47,6 +47,7 @@
 + (Deliverables *)createExpenseInProject:(Project *)owningProject;
 + (WorkTime *)createNewTimerForProject:(Project *)owningProject;
 + (WorkTime *)createNewTimerForProject:(Project *)owningProject andTask:(Task *)owningTask;
++ (id)saveLastModified:(id)recordObject;
 
 #pragma mark - Instance methods
 - (id)initWithDelegate:(id<CoreDataDelegate>)newDelegate;

@@ -43,7 +43,6 @@
 
 @synthesize detailViewController = _detailViewController;
 @synthesize fetchedProjectsController = __fetchedProjectsController;
-@synthesize managedObjectContext = __managedObjectContext;
 @synthesize projectDateController = _projectDateController;
 @synthesize projectPopover = _projectPopover;
 @synthesize projectNameView = _projectNameView;
@@ -209,6 +208,7 @@
             Project *newProject = [CoreData createProjectWithName:[alertView textFieldAtIndex:0].text];
             newProject.dateStart = newProject.dateCreated;
             newProject.projectNotes = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", newProject.projectName];
+            // newProject = [[CoreData sharedModel:nil] saveLastModified:newProject];
             [[CoreData sharedModel:self] saveContext];
         }
     }
@@ -292,8 +292,6 @@
     self.projectPopover = nil;
     self.projectDateController = nil;
     self.projectNameView = nil;
-    self.managedObjectContext = nil;
-    // self.fetchedProjectsController = nil;
     self.detailViewController = nil;
     self.controllingCell = nil;
     self.controllingCellIndex = nil;
@@ -460,12 +458,12 @@
             [self sendTimerStopNotification];
             self.activeProject = nil;
             self.controllingCellIndex = nil;
-            [self.managedObjectContext deleteObject:[self.fetchedProjectsController objectAtIndexPath:indexPath]];
+            [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:[self.fetchedProjectsController objectAtIndexPath:indexPath]];
             
             // Save the context.
             NSError *error = [[NSError alloc] init];
             @try {
-                if (![self.managedObjectContext save:&error]){
+                if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
                     self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                     [self.logger releaseLogger];
                 }
@@ -543,7 +541,7 @@
         NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, completeDescriptor, endDateDescriptor, nil];
         [self.request setSortDescriptors:sortDescriptors];
         
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
         aFetchedResultsController.delegate = self;
         
         sharedModel.projectFRC = aFetchedResultsController;
@@ -683,15 +681,6 @@
 }
 
 #pragma mark - Lazy getters
--(NSManagedObjectContext *)managedObjectContext{
-    if (__managedObjectContext == nil) {
-        CoreData *sharedModel = [CoreData sharedModel:self];
-        __managedObjectContext = sharedModel.managedObjectContext;
-        
-    }
-    return __managedObjectContext;
-}
-
 -(CCMainTaskViewController *)mainTaskController{
     if (_mainTaskController == nil) {
         _mainTaskController = [self.storyboard instantiateViewControllerWithIdentifier:@"mainTaskList"];

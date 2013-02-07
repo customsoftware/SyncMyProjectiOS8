@@ -35,9 +35,6 @@
         UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
         UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
         splitViewController.delegate = (id)navigationController.topViewController;
-        UINavigationController *masterNavigationController = [splitViewController.viewControllers objectAtIndex:0];
-        CCMasterViewController *controller = (CCMasterViewController *)masterNavigationController.topViewController;
-        controller.managedObjectContext = [[CoreData sharedModel:nil] managedObjectContext];
     } else {
         UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
         CCiPhoneMasterViewController *controller = (CCiPhoneMasterViewController *)navigationController.topViewController;

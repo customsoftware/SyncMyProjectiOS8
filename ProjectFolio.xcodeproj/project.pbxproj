@@ -145,6 +145,7 @@
 		905E859B16C212D200B64CB8 /* Deliverables.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E859A16C212D100B64CB8 /* Deliverables.m */; };
 		905E859E16C212D300B64CB8 /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E859D16C212D300B64CB8 /* Calendar.m */; };
 		905E85A116C212D400B64CB8 /* Priority.m in Sources */ = {isa = PBXBuildFile; fileRef = 905E85A016C212D400B64CB8 /* Priority.m */; };
+		90ABA19F16C38054009AB966 /* 179-notepad.png in Resources */ = {isa = PBXBuildFile; fileRef = 90ABA19E16C38053009AB966 /* 179-notepad.png */; };
 		90DF5DFD16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 90DF5DFC16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel */; };
 /* End PBXBuildFile section */
 
@@ -385,6 +386,7 @@
 		905E859D16C212D300B64CB8 /* Calendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Calendar.m; sourceTree = "<group>"; };
 		905E859F16C212D300B64CB8 /* Priority.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Priority.h; sourceTree = "<group>"; };
 		905E85A016C212D400B64CB8 /* Priority.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Priority.m; sourceTree = "<group>"; };
+		90ABA19E16C38053009AB966 /* 179-notepad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "179-notepad.png"; sourceTree = "<group>"; };
 		90DF5DFB16BA41AF003B745E /* PF20121218A.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF20121218A.xcdatamodel; sourceTree = "<group>"; };
 		90DF5DFC16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcmappingmodel; path = ModelFm20121204to1218A.xcmappingmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -673,6 +675,7 @@
 				247736DF1663AE160070E9CE /* ProFo_Icon_114x114.png */,
 				24454114160D504E009BE65A /* 15-tags.png */,
 				2445E2F2163FFD9F0096F738 /* ProFo144.png */,
+				90ABA19E16C38053009AB966 /* 179-notepad.png */,
 				2445E2ED163FFC8C0096F738 /* ProFo72.png */,
 				24E376BA15E24B8100286A8A /* 112-group.png */,
 				241DC41C15E9A8F300886DB3 /* 63-runner.png */,
@@ -846,6 +849,7 @@
 				244D8CF71666503400B1D49A /* Default.png in Resources */,
 				244D8CF91666503900B1D49A /* Default@2x.png in Resources */,
 				244D8CFB1666504C00B1D49A /* Default-568h@2x.png in Resources */,
+				90ABA19F16C38054009AB966 /* 179-notepad.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

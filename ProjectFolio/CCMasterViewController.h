@@ -30,7 +30,6 @@
 @property (strong, nonatomic) UINavigationController *projectDateController;
 @property (strong, nonatomic) UIPopoverController *projectPopover;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedProjectsController;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) UITableViewCell *controllingCell;
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;

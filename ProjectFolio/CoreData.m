@@ -120,6 +120,28 @@ static CoreData *sharedModel = nil;
     return newTimer;
 }
 
++ (id)saveLastModified:(id)recordObject{
+    // Not many times I think it's appropriate to use an embedded return, but this is one of them
+    if ([recordObject isKindOfClass:[Project class]] == YES) {
+        Project * retValue = (Project *)recordObject;
+        retValue.dateModified = [NSDate date];
+        return retValue;
+    } else if ([recordObject isKindOfClass:[Task class]] == YES) {
+        Task * retValue = (Task *)recordObject;
+        retValue.dateModified = [NSDate date];
+        return retValue;
+    } else if ([recordObject isKindOfClass:[WorkTime class]] == YES) {
+        WorkTime * retValue = (WorkTime *)recordObject;
+        retValue.dateModified = [NSDate date];
+        return retValue;
+    } else if ([recordObject isKindOfClass:[Deliverables class]] == YES) {
+        Deliverables * retValue = (Deliverables *)recordObject;
+        retValue.dateModified = [NSDate date];
+        return retValue;
+    }
+    
+    return recordObject;
+}
 
 #pragma mark - Instance methods
 - (id)initWithDelegate:(id<CoreDataDelegate>)newDelegate{
