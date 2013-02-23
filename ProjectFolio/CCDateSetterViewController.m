@@ -42,8 +42,7 @@
     if (sender.selectedSegmentIndex == 0) {
         [self performSegueWithIdentifier:@"projectClone" sender:self];
     } else {
-        CCCanIDoIt *canDo = [[CCCanIDoIt alloc]initWithProject:self.project];
-        canDo = nil;
+        [CCCanIDoIt runAnalysisForProject:self.project];
     }
 }
 
