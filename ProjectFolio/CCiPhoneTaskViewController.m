@@ -339,7 +339,11 @@
         } else {
             detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@ Due: %@", ownerName, [self.dateFormatter stringFromDate:taskItem.dueDate]];
         }
-        cell.imageView.image = nil;
+        if (taskItem.notes.length > 0) {
+            cell.imageView.image = [UIImage imageNamed:@"179-notepad.png"];
+        } else {
+            cell.imageView.image = nil;
+        }
         cell.detailTextLabel.text = detailMessage;
     }
 }
