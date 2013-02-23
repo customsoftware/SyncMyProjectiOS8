@@ -53,24 +53,30 @@
         [self.tableView reloadData];
     }
     NSUInteger rowPointer = -1;
-    for (Project *project in [self.projectFRC fetchedObjects]) {
-        if ([self.selectedProject.projectName isEqualToString:project.projectName]) {
-            rowPointer = [[self.projectFRC fetchedObjects] indexOfObject:project];
-            break;
+    
+    if (self.currentTask != nil) {
+        // Displaying tasks
+        self.navigationItem.title = @"Task List";
+        int i = 0;
+        for (Task *task in self.currentTimer.workProject.projectTask.allObjects) {
+            if ([task.taskUUID isEqualToString:self.currentTask.taskUUID]) {
+                rowPointer = i;
+                break;
+            }
+            i++;
+        }
+    } else {
+        // Displaying projects
+        for (Project *project in [self.projectFRC fetchedObjects]) {
+            if ([self.selectedProject.projectUUID isEqualToString:project.projectUUID]) {
+                rowPointer = [[self.projectFRC fetchedObjects] indexOfObject:project];
+                break;
+            }
         }
     }
     NSIndexPath *projectIndex = [NSIndexPath indexPathForRow:rowPointer inSection:0];
     [self.tableView selectRowAtIndexPath:projectIndex animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.fetchRequest = nil;
-    self.projectFRC = nil;
-    self.selectedProject = nil;
-    self.currentTimer = nil;
+    
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -82,15 +88,27 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    NSInteger retValue;
+    if (self.currentTask == nil) {
+        retValue = [[self.projectFRC sections] count];
+    } else {
+        retValue = 1;
+    }
     // Return the number of sections.
-    return [[self.projectFRC sections] count];
+    return retValue;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    NSInteger retValue;
     // Return the number of rows in the section.
-    id <NSFetchedResultsSectionInfo> sectionInfo = [[self.projectFRC sections] objectAtIndex:section];
-    return [sectionInfo numberOfObjects];
+    if (self.currentTask == nil) {
+        id <NSFetchedResultsSectionInfo> sectionInfo = [[self.projectFRC sections] objectAtIndex:section];
+        retValue = [sectionInfo numberOfObjects];
+    } else {
+        retValue = self.currentTimer.workProject.projectTask.count;
+    }
+    return retValue;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -99,71 +117,46 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     // Configure the cell...
-    cell.textLabel.text = [[self.projectFRC objectAtIndexPath:indexPath] projectName];
+    if (self.currentTask == nil) {
+        cell.textLabel.text = [[self.projectFRC objectAtIndexPath:indexPath] projectName];
+    } else {
+        Task *task = (Task *)self.currentTimer.workProject.projectTask.allObjects[indexPath.row];
+        cell.textLabel.text = task.title;
+    }
+    
     return cell;
 }
-
-/*
-// Override to support conditional editing of the table view.
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
-
-/*
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
-}
-*/
-
-/*
-// Override to support rearranging the table view.
-- (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
-{
-}
-*/
-
-/*
-// Override to support conditional rearranging of the table view.
-- (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    // Return NO if you do not want the item to be re-orderable.
-    return YES;
-}
-*/
 
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if (indexPath != nil) {
-        Project *newProject = [self.projectFRC objectAtIndexPath:indexPath];
-        if (![self.selectedProject.projectName isEqualToString:newProject.projectName]){
-            WorkTime *transferedEvent = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-            
-            if (transferedEvent != nil && [[CoreData sharedModel:nil] managedObjectContext] != nil) {
-                transferedEvent.billed = self.currentTimer.billed;
-                transferedEvent.start = self.currentTimer.start;
-                transferedEvent.end = self.currentTimer.end;
-                transferedEvent.workProject = newProject;
+        if (self.currentTask == nil) {
+            Project *newProject = [self.projectFRC objectAtIndexPath:indexPath];
+            if (![self.selectedProject.projectName isEqualToString:newProject.projectName]){
+                WorkTime *transferedEvent = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
                 
-                [self.selectedProject removeProjectWorkObject:self.currentTimer];
-                
-                if (newProject != nil && transferedEvent != nil) {
-                    [newProject addProjectWorkObject:transferedEvent];
+                if (transferedEvent != nil && [[CoreData sharedModel:nil] managedObjectContext] != nil) {
+                    transferedEvent.billed = self.currentTimer.billed;
+                    transferedEvent.start = self.currentTimer.start;
+                    transferedEvent.end = self.currentTimer.end;
+                    transferedEvent.workProject = newProject;
+                    
+                    [self.selectedProject removeProjectWorkObject:self.currentTimer];
+                    
+                    if (newProject != nil && transferedEvent != nil) {
+                        [newProject addProjectWorkObject:transferedEvent];
+                    }
                 }
             }
+            // Since we're changing projects, we no longer need this. Go all the way to summary
             [self.navigationController popToRootViewControllerAnimated:YES];
+        } else {
+            // Since we're in the same project, go back to see how things look with the change.
+            self.currentTask = self.currentTimer.workProject.projectTask.allObjects[indexPath.row];
+            self.currentTimer.workTask = self.currentTask;
+            [self.navigationController popViewControllerAnimated:YES];
         }
     }
 }
