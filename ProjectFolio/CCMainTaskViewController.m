@@ -9,10 +9,12 @@
 #import "CCMainTaskViewController.h"
 #define TASK_COMPLETE [[NSNumber alloc] initWithInt:1]
 #define TASK_ACTIVE [[NSNumber alloc] initWithInt:0]
+#define kStartNotification @"ProjectTimerStartNotification"
+#define kStartTaskNotification @"TaskTimerStartNotification"
+#define kStopNotification @"ProjectTimerStopNotification"
 
 @interface CCMainTaskViewController ()
 
-@property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) NSPredicate *incompletePredicate;
 @property (strong, nonatomic) NSPredicate *assignedPredicate;
@@ -33,7 +35,6 @@
 @implementation CCMainTaskViewController
 @synthesize tableView = _tableView;
 @synthesize displayOptions = _displayOptions;
-@synthesize context = _context;
 @synthesize request = _request;
 @synthesize allPredicate = _allPredicate;
 @synthesize incompletePredicate = _incompletePredicate;
@@ -84,6 +85,7 @@
     // Show task detail form
     Task *newTask = [CoreData createTask:nil inProject:self.sourceProject];
     self.currentTask = newTask;
+    self.currentTask = [[CoreData sharedModel:nil] saveLastModified:self.currentTask];
     self.isNew = YES;
     [self showTaskDetails:self.tableView rowIndex:nil];
 }
@@ -97,21 +99,19 @@
     } else if ( sender.selectedSegmentIndex == 2){
         [self.taskFRC.fetchRequest setPredicate:self.incompletePredicate];
     }
-    
     [self refreshTableView];
-    
 }
 
 -(IBAction)cancelPopover{
-    [self.context save:nil];
-    [self.context deleteObject:self.currentTask];
+    [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
+    [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.currentTask];
     [self.taskFRC performFetch:nil];
     [self.tableView reloadData];
     self.currentTask = nil;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
-
+#pragma mark - Delegate actions
 -(BOOL)shouldShowCancelButton{
     return  self.isNew;
 }
@@ -120,7 +120,8 @@
     if (self.isNew && self.currentTask != nil) {
         self.currentTask.taskProject = self.sourceProject;
         [self.sourceProject addProjectTaskObject:self.currentTask];
-        [self.context save:nil];
+        self.currentTask = [[CoreData sharedModel:nil] saveLastModified:self.currentTask];
+        [[CoreData sharedModel:self] saveContext];
     }
     
 }
@@ -157,7 +158,7 @@
     NSArray *sortDescriptors = [NSArray arrayWithObjects: rowOrderDescriptor, nil];
     [self.request setSortDescriptors:sortDescriptors];
     self.taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request
-                                                       managedObjectContext:self.context
+                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                          sectionNameKeyPath:nil
                                                                   cacheName:nil];
     self.taskFRC.delegate = self;
@@ -189,7 +190,6 @@
 -(void)viewDidUnload{
     self.tableView = nil;
     self.displayOptions = nil;
-    self.context = nil;
     self.taskFRC = nil;
     self.request = nil;
     self.allPredicate = nil;
@@ -211,6 +211,23 @@
     // Dispose of any resources that can be recreated.
 }
 
+-(void)sendTimerStartNotificationForTask{
+    NSDictionary *projectDictionary = @{ @"Project" :self.currentTask.taskProject,
+                                         @"Task" : self.currentTask };
+    NSNotification *startTimer = [NSNotification notificationWithName:kStartTaskNotification object:nil userInfo:projectDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:startTimer];
+}
+
+-(void)sendTimerStartNotificationForProject{
+    NSDictionary *projectDictionary = @{ @"Project" : self.currentTask.taskProject };
+    [[NSNotificationCenter defaultCenter] postNotificationName:kStartNotification object:nil userInfo:projectDictionary];
+}
+
+-(void)sendTimerStopNotification{
+    NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
+}
+
 #pragma mark - Table Support
 -(void)showTaskDetails:(UITableView *)tableView rowIndex:(NSIndexPath *)indexPath{
     self.detailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"taskDetails"];
@@ -225,15 +242,16 @@
     if (indexPath != nil) {
         self.currentTask = [self.taskFRC objectAtIndexPath:indexPath];
     }
-    
-        // Free the child tasks.. move them all up one level
-        int taskLevel = [self.currentTask.level integerValue];
-        for (Task * subTask in self.currentTask.subTasks) {
-            [subTask setLevelWith:[NSNumber numberWithInt:taskLevel]];
-            subTask.superTask = nil;
-            subTask.visible = [NSNumber numberWithBool:YES];
-        }
-        [self.context deleteObject:self.currentTask];
+    [self sendTimerStopNotification];
+    [self sendTimerStartNotificationForProject];
+    // Free the child tasks.. move them all up one level
+    int taskLevel = [self.currentTask.level integerValue];
+    for (Task * subTask in self.currentTask.subTasks) {
+        [subTask setLevelWith:[NSNumber numberWithInt:taskLevel]];
+        subTask.superTask = nil;
+        subTask.visible = [NSNumber numberWithBool:YES];
+    }
+    [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.currentTask];
 
     NSError *fetchError = nil;
     @try {
@@ -330,7 +348,11 @@
         } else {
             detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@ Due: %@", ownerName, [self.dateFormatter stringFromDate:taskItem.dueDate]];
         }
-        cell.imageView.image = nil;
+        if (taskItem.notes.length > 0) {
+            cell.imageView.image = [UIImage imageNamed:@"179-notepad.png"];
+        } else {
+            cell.imageView.image = nil;
+        }
         cell.detailTextLabel.text = detailMessage;
     }
 }
@@ -449,8 +471,8 @@
     
     [self reSortSubTasksWithTasks:things];
     
-    NSError *error = [[NSError alloc] init];
-    if (![self.context save:&error]){
+    self.currentTask = [[CoreData sharedModel:nil] saveLastModified:self.currentTask];
+    if (![[CoreData sharedModel:self] saveContext]){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Core Data Error" message:@"The save failed your data didn't persist" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
     }
@@ -462,6 +484,9 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     self.currentTask = [self.taskFRC objectAtIndexPath:indexPath];
+    [self sendTimerStopNotification];
+    [self sendTimerStartNotificationForTask];
+#warning Need to handle creation of a new task. If task is new, title wont be set when this is called.
     // Update the detail view contents
     if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
         // What we do here is make the sub
@@ -483,15 +508,6 @@
 }
 
 #pragma mark - Lazy Getters
--(NSManagedObjectContext *)context{
-    if (_context == nil) {
-        // CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-        CoreData *sharedModel = [CoreData sharedModel:self];
-        _context = sharedModel.managedObjectContext;
-    }
-    return _context;
-}
-
 -(NSFetchRequest *)request{
     if (_request == nil) {
         _request = [[NSFetchRequest alloc] initWithEntityName:@"Task"];

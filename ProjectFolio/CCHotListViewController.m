@@ -9,6 +9,7 @@
 #import "CCHotListViewController.h"
 #import "CCDetailViewController.h"
 #define kStartNotification @"ProjectTimerStartNotification"
+#define kStartTaskNotification @"TaskTimerStartNotification"
 #define kStopNotification @"ProjectTimerStopNotification"
 
 #define TASK_COMPLETE [[NSNumber alloc] initWithInt:1]
@@ -47,7 +48,7 @@
 @synthesize filteredTasks = _filteredTasks;
 
 -(void)sendTimerStartNotificationForProject{
-    NSDictionary *projectDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:self.task.taskProject, @"Project", nil];
+    NSDictionary *projectDictionary = @{ @"Project" : self.task.taskProject };
     [[NSNotificationCenter defaultCenter] postNotificationName:kStartNotification object:nil userInfo:projectDictionary];
 }
 
@@ -55,6 +56,14 @@
     NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
 }
+
+-(void)sendTimerStartNotificationForTask{
+    NSDictionary *projectDictionary = @{ @"Project" : self.task.taskProject,
+                                         @"Task" : self.task };
+    NSNotification *startTimer = [NSNotification notificationWithName:kStartTaskNotification object:nil userInfo:projectDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:startTimer];
+}
+
 
 #pragma mark - Delegate actions
 -(void)didFinishWithError:(NSError *)error{
@@ -201,6 +210,11 @@
     detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@ Due: %@", ownerName, [self.dateFormatter stringFromDate:self.task.dueDate]];
     cell.textLabel.text = [[NSString alloc]initWithFormat:@"%@: %@", self.task.taskProject.projectName, self.task.title];
     cell.detailTextLabel.text = detailMessage;
+    if (self.task.notes.length > 0) {
+        cell.imageView.image = [UIImage imageNamed:@"179-notepad.png"];
+    } else {
+        cell.imageView.image = nil;
+    }
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -320,7 +334,7 @@
     if (self.selectedIndex.row == indexPath.row && self.projectTimer != nil ) {
         // Do nothing
     } else {
-        [self sendTimerStartNotificationForProject];
+        [self sendTimerStartNotificationForTask];
         self.selectedIndex = indexPath;
         if (tableView == self.tableView){
             [self updateDetailControllerForIndexPath:indexPath inTable:tableView];
