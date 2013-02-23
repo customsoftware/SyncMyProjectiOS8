@@ -10,12 +10,45 @@
 #define PROJECT_COMPLETE [[NSNumber alloc] initWithInt:1]
 #define DAYS (24*60*60)
 
-@implementation CCCanIDoIt{
-    NSFetchRequest *fetchRequest;
-    NSManagedObjectContext *context;
-    NSFetchedResultsController *controller;
+@interface CCCanIDoIt ()
+
+@property (strong, nonatomic) NSFetchRequest *fetchRequest;
+@property (strong, nonatomic) NSManagedObjectContext *context;
+@property (strong, nonatomic) NSFetchedResultsController *controller;
+
+@end
+
+@implementation CCCanIDoIt
+
+#pragma mark - API
++(void)runAnalysisForProject:(Project *)project{
+    CCCanIDoIt * computer = [[CCCanIDoIt alloc] init];
+    
+    NSString * projectName = project.projectName;
+    
+    NSString * analysisResult = [computer analyzeProject:project];
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:projectName
+                          message:analysisResult
+                          delegate:self
+                          cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
 }
 
+-(CCCanIDoIt *)initWithProject:(Project *)project{
+    CCCanIDoIt * retvalue = [super init];
+    // Do some logic here with the project
+    NSString * projectName = project.projectName;
+    
+    NSString * analysisResult = [self analyzeProject:project];
+    UIAlertView *alert = [[UIAlertView alloc]
+                          initWithTitle:projectName
+                          message:analysisResult
+                          delegate:self
+                          cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+    return retvalue;
+}
 
 -(int)workDay{
     return 8;
@@ -86,112 +119,94 @@
         // Project has hourly budget and remaining hours
         NSError *requestError = nil;
         if (![self.controller performFetch:&requestError]) {
-            // NSLog(@"Fetch failed");
-        }
-        
-        // Include just projects that have a start date before the finish date of this project
-        NSArray *projectList = self.controller.fetchedObjects;
-        NSDate *comparisonDate;
-        NSMutableArray *averageTimes = [[NSMutableArray alloc]init];
-        
-        //NSLog(@"How many project: %d", [projectList count]);
-        for (Project *competingProject in projectList) {
-            if ([competingProject.dateStart laterDate:project.dateFinish] && [competingProject.hourBudget floatValue] > 0.0f && ![competingProject.projectName isEqualToString:project.projectName]) {
-                float competingProjectHours = [self getRemainingHoursForProject:competingProject];
-                if (competingProjectHours > 0) {
-                    
-                    // NSLog(@"We need to consider hours for %@", competingProject.projectName);
-                    float competingProjectWorkDays = [self getWorkDays:[competingProject.dateFinish timeIntervalSinceNow]/DAYS];
-                    if (competingProjectWorkDays > 0) {
-                        //NSLog(@"Project: %@ Remaining hours %f Available Days %f", competingProject.projectName, competingProjectHours, competingProjectWorkDays);
+            // Include just projects that have a start date before the finish date of this project
+            NSArray *projectList = self.controller.fetchedObjects;
+            NSDate *comparisonDate;
+            NSMutableArray *averageTimes = [[NSMutableArray alloc]init];
+            
+            //NSLog(@"How many project: %d", [projectList count]);
+            for (Project *competingProject in projectList) {
+                if ([competingProject.dateStart laterDate:project.dateFinish] && [competingProject.hourBudget floatValue] > 0.0f && ![competingProject.projectName isEqualToString:project.projectName]) {
+                    float competingProjectHours = [self getRemainingHoursForProject:competingProject];
+                    if (competingProjectHours > 0) {
                         
-                        // Compute average burn rate for these projects
-                        float averageBurnRate = competingProjectHours/competingProjectWorkDays;
-                        
-                        // Get overlapping days
-                        if ([competingProject.dateFinish timeIntervalSinceDate:project.dateFinish] > 0) {
-                            comparisonDate = [competingProject.dateFinish laterDate:project.dateFinish];
+                        // NSLog(@"We need to consider hours for %@", competingProject.projectName);
+                        float competingProjectWorkDays = [self getWorkDays:[competingProject.dateFinish timeIntervalSinceNow]/DAYS];
+                        if (competingProjectWorkDays > 0) {
+                            //NSLog(@"Project: %@ Remaining hours %f Available Days %f", competingProject.projectName, competingProjectHours, competingProjectWorkDays);
+                            
+                            // Compute average burn rate for these projects
+                            float averageBurnRate = competingProjectHours/competingProjectWorkDays;
+                            
+                            // Get overlapping days
+                            if ([competingProject.dateFinish timeIntervalSinceDate:project.dateFinish] > 0) {
+                                comparisonDate = [competingProject.dateFinish laterDate:project.dateFinish];
+                            } else {
+                                comparisonDate = [competingProject.dateFinish earlierDate:project.dateFinish];
+                            }
+                            //NSLog(@"Project: %@ Effective End date: %@", competingProject.projectName, [comparisonDate description]);
+                            // Multiply average burn rate by number of overlapping days
+                            float overlappingTime = [self getWorkDays:[comparisonDate timeIntervalSinceDate:[NSDate date]]/DAYS];
+                            //NSLog(@"Overlapping time: %f Average burn rate: %f For Project %@", overlappingTime, averageBurnRate, competingProject.projectName);
+                            float burnTime = averageBurnRate * overlappingTime;
+                            [averageTimes addObject:[NSNumber numberWithFloat:burnTime]];
                         } else {
-                            comparisonDate = [competingProject.dateFinish earlierDate:project.dateFinish];
+                            // If the project is late, don't average the time, just add the hours to what you have to do to finish this project
+                            hourBudget = hourBudget + competingProjectHours;
                         }
-                        //NSLog(@"Project: %@ Effective End date: %@", competingProject.projectName, [comparisonDate description]);
-                        // Multiply average burn rate by number of overlapping days
-                        float overlappingTime = [self getWorkDays:[comparisonDate timeIntervalSinceDate:[NSDate date]]/DAYS];
-                        //NSLog(@"Overlapping time: %f Average burn rate: %f For Project %@", overlappingTime, averageBurnRate, competingProject.projectName);
-                        float burnTime = averageBurnRate * overlappingTime;
-                        [averageTimes addObject:[NSNumber numberWithFloat:burnTime]];
-                    } else {
-                        // If the project is late, don't average the time, just add the hours to what you have to do to finish this project
-                        hourBudget = hourBudget + competingProjectHours;
                     }
                 }
             }
-        }
-        
-        float totalBurn;
-        // Sum up these values and divide by number of remaining days
-        for (NSNumber *numer in averageTimes) {
-            totalBurn = totalBurn + [numer floatValue];
-        }
-        //NSLog(@"Total of average daily burns: %f", totalBurn);
-        totalBurn = totalBurn/availableDays;
-        
-        // Add this to the dailyBurn
-        
-        // This does the analysis
-        float dailyBurn = (hourBudget/availableDays) + totalBurn;
-        //NSLog(@"Daily burn rate to finish main project: %f", dailyBurn);
-        //NSLog(@"Remaining: %f hours", hourBudget);
-        
-        // We decide here based upon the analysis
-        if (dailyBurn >= 24) {
-            retValue = [[NSString alloc]initWithFormat:@"You can't finish the project by: %@. Push out the delivery date.", [dateFormatter stringFromDate:project.dateFinish]];
-        } else if (dailyBurn > [self workDay] && dailyBurn < 24) {
-            retValue = [[NSString alloc]initWithFormat:@"You can finish the project by: %@ only by working long days.\n\rYou need to work: %@ per day every day to finish on time.", [dateFormatter stringFromDate:project.dateFinish], [numberFormatter stringFromNumber:[NSNumber numberWithFloat:round(dailyBurn*100)/100]]];
-        } else {
-            retValue = [[NSString alloc]initWithFormat:@"You can do it by: %@", [dateFormatter stringFromDate:project.dateFinish]];
+            
+            float totalBurn;
+            // Sum up these values and divide by number of remaining days
+            for (NSNumber *numer in averageTimes) {
+                totalBurn = totalBurn + [numer floatValue];
+            }
+            //NSLog(@"Total of average daily burns: %f", totalBurn);
+            totalBurn = totalBurn/availableDays;
+            
+            // Add this to the dailyBurn
+            
+            // This does the analysis
+            float dailyBurn = (hourBudget/availableDays) + totalBurn;
+            //NSLog(@"Daily burn rate to finish main project: %f", dailyBurn);
+            //NSLog(@"Remaining: %f hours", hourBudget);
+            
+            // We decide here based upon the analysis
+            if (dailyBurn >= 24) {
+                retValue = [[NSString alloc]initWithFormat:@"You can't finish the project by: %@. Push out the delivery date.", [dateFormatter stringFromDate:project.dateFinish]];
+            } else if (dailyBurn > [self workDay] && dailyBurn < 24) {
+                retValue = [[NSString alloc]initWithFormat:@"You can finish the project by: %@ only by working long days.\n\rYou need to work: %@ per day every day to finish on time.", [dateFormatter stringFromDate:project.dateFinish], [numberFormatter stringFromNumber:[NSNumber numberWithFloat:round(dailyBurn*100)/100]]];
+            } else {
+                retValue = [[NSString alloc]initWithFormat:@"You can do it by: %@", [dateFormatter stringFromDate:project.dateFinish]];
+            }
         }
     }
-    
     return retValue;
 }
 
-#pragma mark - API
--(CCCanIDoIt *)initWithProject:(Project *)project{
-    CCCanIDoIt * retvalue = [super init];
-    // Do some logic here with the project
-    NSString * projectName = project.projectName;
-    
-    NSString * analysisResult = [self analyzeProject:project];
-    UIAlertView *alert = [[UIAlertView alloc]
-                          initWithTitle:projectName
-                          message:analysisResult
-                          delegate:self
-                          cancelButtonTitle:@"OK" otherButtonTitles:nil];
-    [alert show];
-    return retvalue;
-}
-
 #pragma mark - Lazy Getters
--(NSFetchRequest *)fetchRequest{
-    if (fetchRequest == nil) {
-        fetchRequest = [[NSFetchRequest alloc] init];
+- (NSFetchRequest *)fetchRequest{
+    if (_fetchRequest == nil) {
+        _fetchRequest = [[NSFetchRequest alloc] init];
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-        [fetchRequest setEntity:entity];
+        [_fetchRequest setEntity:entity];
         NSSortDescriptor *nullDescriptor = [[NSSortDescriptor alloc]initWithKey:@"projectName" ascending:YES];
         NSArray *sortDescriptors = [NSArray arrayWithObject:nullDescriptor];
-        [fetchRequest setSortDescriptors:sortDescriptors];
+        [_fetchRequest setSortDescriptors:sortDescriptors];
         NSPredicate *predicate = [NSPredicate predicateWithFormat:@"complete == 0 AND active == 1"];
-        [fetchRequest setPredicate:predicate];
+        [_fetchRequest setPredicate:predicate];
     }
-    return fetchRequest;
+    return _fetchRequest;
 }
 
 -(NSFetchedResultsController *)controller{
-    if (controller == nil) {
-        controller = [[NSFetchedResultsController alloc]
+    if (_controller == nil) {
+        _controller = [[NSFetchedResultsController alloc]
                       initWithFetchRequest:self.fetchRequest managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
     }
-    return controller;
+    return _controller;
 }
+
 @end

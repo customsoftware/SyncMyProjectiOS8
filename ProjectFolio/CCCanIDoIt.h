@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 #import "Project.h"
 #import "WorkTime.h"
-#import "CCAppDelegate.h"
+#import "CoreData.h"
 
 @interface CCCanIDoIt : NSObject
-
++(void)runAnalysisForProject:(Project *)project;
 -(CCCanIDoIt *)initWithProject:(Project *)project;
 
 @end
