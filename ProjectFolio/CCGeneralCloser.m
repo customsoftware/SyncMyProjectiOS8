@@ -236,7 +236,7 @@
                 }
             } else {
                 // Changing Project .. Write the last Day
-                if (![oldProject isEqualToString:@"Who me???"]) {
+                if (![oldDate isEqualToString:@"Who me???"]) {
                     if (self.mode != YESTERDAY_UNBILLED) {
                         newString = [[NSString alloc] initWithFormat:@"\t\t\tDay: %@\tElapse time:\t%@",
                                      oldDate,
