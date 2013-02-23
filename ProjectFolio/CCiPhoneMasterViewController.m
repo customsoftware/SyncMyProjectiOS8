@@ -138,7 +138,9 @@
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString{
-    [self filterContentForSearchText:searchString scope:[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+    [self filterContentForSearchText:searchString scope:[[self.searchDisplayController.searchBar
+                                                          scopeButtonTitles]
+                                                         objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
     return YES;
 }
 
@@ -268,16 +270,16 @@
     if (self.activeProject != nil ){
         [self sendTimerStartNotificationForProject];
     } else {
-        // NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        // NSString *tempProject = [defaults objectForKey:kSelectedProject];
-        CCSettingsControl *settings = [[CCSettingsControl alloc] init];
-        NSString *tempProject = [settings recallStringAtKey:kSelectedProject];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *tempProject = [defaults objectForKey:kSelectedProject];
+        // CCSettingsControl *settings = [[CCSettingsControl alloc] init];
+        // NSString *tempProject = [settings recallStringAtKey:kSelectedProject];
         
         if (tempProject == nil) {
             tempProject = [[NSString alloc]initWithFormat:@"Sample Project"];
         }
         for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
-            if ([project.projectName isEqualToString:tempProject]) {
+            if ([project.projectUUID isEqualToString:tempProject]) {
                 NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
                 [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
                 break;
@@ -294,33 +296,12 @@
     // [alert show];
 }
 
-
-- (void)viewDidUnload
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.projectPopover = nil;
-    // self.projectDateController = nil;
-    self.projectNameView = nil;
-    self.managedObjectContext = nil;
-    self.fetchedProjectsController = nil;
-    // self.detailViewController = nil;
-    self.controllingCell = nil;
-    self.controllingCellIndex = nil;
-    self.tableView = nil;
-    self.projectActionsButton = nil;
-    self.closer = nil;
-    self.mainTaskController = nil;
-    self.activeProject = nil;
-    self.request = nil;
-    self.activePredicate = nil;
-    self.openPredicate = nil;
-    self.filteredProjects = nil;
-    self.searchBar = nil;
-    self.projectTimer = nil;    
-    
+    [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {

@@ -208,7 +208,6 @@
             Project *newProject = [CoreData createProjectWithName:[alertView textFieldAtIndex:0].text];
             newProject.dateStart = newProject.dateCreated;
             newProject.projectNotes = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", newProject.projectName];
-            // newProject = [[CoreData sharedModel:nil] saveLastModified:newProject];
             [[CoreData sharedModel:self] saveContext];
         }
     }
@@ -248,6 +247,12 @@
     self.projectTimer = [[CCProjectTimer alloc] init];
 }
 
+-(void)viewDidAppear:(BOOL)animated{
+    if (self.activeProject != nil) {
+        [self enableControls];
+    }
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     NSString *enableNotification = @"EnableControlsNotification";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:enableNotification object:nil];
@@ -264,48 +269,28 @@
             [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.tableView];
         }
     } else {
-        // NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        // NSString *tempProject = [defaults objectForKey:kSelectedProject];
-        CCSettingsControl *settings = [[CCSettingsControl alloc] init];
-        NSString *tempProject = [settings recallStringAtKey:kSelectedProject];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *tempProject = [defaults objectForKey:kSelectedProject];
+        // CCSettingsControl *settings = [[CCSettingsControl alloc] init];
+        // NSString *tempProject = [settings recallStringAtKey:kSelectedProject];
         
         if (tempProject == nil) {
             tempProject = [[NSString alloc]initWithFormat:@"Sample Project"];
         }
         for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
-            if ([project.projectName isEqualToString:tempProject]) {
+            if ([project.projectUUID isEqualToString:tempProject]) {
                 NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
                 [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
                 [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
-                [self enableControls];
                 break;
             }
         }
     }
 }
 
-
-- (void)viewDidUnload
+- (void)viewWillDisappear:(BOOL)animated
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.projectPopover = nil;
-    self.projectDateController = nil;
-    self.projectNameView = nil;
-    self.detailViewController = nil;
-    self.controllingCell = nil;
-    self.controllingCellIndex = nil;
-    self.tableView = nil;
-    self.projectActionsButton = nil;
-    self.closer = nil;
-    self.mainTaskController = nil;
-    self.activeProject = nil;
-    self.request = nil;
-    self.activePredicate = nil;
-    self.openPredicate = nil;
-    self.filteredProjects = nil;
-    self.searchBar = nil;
-    self.projectTimer = nil;
+    [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -374,6 +359,7 @@
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
     // Need to invoke popover from here
     [self resignFirstResponder];
+    [self enableControls];
     [self showProjectDatePicker:indexPath];
     [self updateDetailControllerForIndexPath:indexPath inTable:tableView];
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];

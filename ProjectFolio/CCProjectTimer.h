@@ -18,5 +18,6 @@
 
 -(void)releaseTimer;
 -(void)startTimingNameForProject:(NSNotification *)notification;
+-(void)startTimingNameForTask:(NSNotification *)notification;
 
 @end

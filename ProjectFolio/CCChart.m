@@ -19,6 +19,7 @@
 
 @property (strong, nonatomic) NSUserDefaults *defaults;
 @property (strong, nonatomic) NSString *projectName;
+@property (strong, nonatomic) NSString *projectUUID;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedProjectsController;
 @property (strong, nonatomic) NSFetchedResultsController *taskFRC;
 
@@ -99,11 +100,11 @@
 
 #pragma  mark - API
 -(void)drawRect:(CGRect)rect{
-    if (self.projectName == nil) {
-        self.projectName = [[NSString alloc] initWithFormat:@"%@",[self.defaults objectForKey:kActiveProject]];
+    if (self.projectUUID == nil) {
+        self.projectUUID = [[NSString alloc] initWithFormat:@"%@",[self.defaults objectForKey:kActiveProject]];
     }
     
-    if (self.projectName == nil) {
+    if (self.projectUUID == nil) {
         // NSLog(@"Bailing: No Project name");
     } else {
         NSError *fetchError;
@@ -270,7 +271,7 @@
         NSSortDescriptor *activeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dateFinish" ascending:YES];
         NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, nil];
         [fetchRequest setSortDescriptors:sortDescriptors];
-        NSPredicate *completedPredicate = [NSPredicate predicateWithFormat:@"projectName = %@", self.projectName];
+        NSPredicate *completedPredicate = [NSPredicate predicateWithFormat:@"projectUUID = %@", self.projectUUID];
         [fetchRequest setPredicate:completedPredicate];
         
         NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
@@ -293,7 +294,7 @@
         NSSortDescriptor *activeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"displayOrder" ascending:YES];
         NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, nil];
         [fetchRequest setSortDescriptors:sortDescriptors];
-        NSPredicate *completedPredicate = [NSPredicate predicateWithFormat:@"taskProject.projectName = %@", self.projectName];
+        NSPredicate *completedPredicate = [NSPredicate predicateWithFormat:@"taskProject.projectUUID = %@", self.projectUUID];
         [fetchRequest setPredicate:completedPredicate];
         
         NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc]
