@@ -14,18 +14,16 @@
 @interface CCTimerDetailsViewController ()
 @property (weak, nonatomic) UITableViewCell *selectedCell;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
+@property (strong, nonatomic) CCProjectSwitchTableViewController *childController;
 @property BOOL startTime;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIDatePicker *changeDate;
+@property (weak, nonatomic) IBOutlet UISwitch *billed;
 
 @end
 
 @implementation CCTimerDetailsViewController
-@synthesize billed = _billed;
-@synthesize tableView = _tableView;
-@synthesize changeDate = _changeDate;
-@synthesize selectedCell = _selectedCell;
 @synthesize dateFormatter = _dateFormatter;
-@synthesize timer = _time;
-@synthesize startTime = _startTime;
 @synthesize childController = _childController;
 
 #pragma makr - IBOutlets and Actions
@@ -52,7 +50,7 @@
     if (section == 0) {
         retValue = 2;
     } else {
-        retValue = 1;
+        retValue = 2;
     }
     
     return retValue;
@@ -75,8 +73,15 @@
             returnCell.detailTextLabel.text = [self.dateFormatter stringFromDate:self.timer.end];
         }
     } else {
-        returnCell = [tableView dequeueReusableCellWithIdentifier:projectCell];
-        returnCell.detailTextLabel.text = self.timer.workProject.projectName;
+        if (indexPath.row == 0) {
+            returnCell = [tableView dequeueReusableCellWithIdentifier:projectCell];
+            returnCell.detailTextLabel.text = self.timer.workProject.projectName;
+        } else {
+            returnCell = [tableView dequeueReusableCellWithIdentifier:projectCell];
+            returnCell.textLabel.text = @"Owning Task";
+            returnCell.accessoryType = UITableViewCellAccessoryNone;
+            returnCell.detailTextLabel.text = ( self.timer.workTask.title != nil ) ? self.timer.workTask.title : @"None selected";
+        }
     }
     
     return returnCell;
@@ -98,6 +103,13 @@
         self.childController.contentSizeForViewInPopover = rect.size;
         self.childController.selectedProject = self.timer.workProject;
         self.childController.currentTimer = self.timer;
+        if (indexPath.row == 0) {
+            // This is a project
+            self.childController.currentTask = nil;
+        } else {
+            // This is a task
+            self.childController.currentTask = self.timer.workTask != nil ? self.timer.workTask : [self.timer.workProject.projectTask allObjects][0];
+        }
         [self.navigationController pushViewController:self.childController animated:YES];
     }
 }
@@ -118,18 +130,6 @@
     // Do any additional setup after loading the view from its nib.
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.billed = nil;
-    self.tableView = nil;
-    self.changeDate = nil;
-    self.selectedCell = nil;
-    self.timer = nil;
-    self.childController = nil;
 }
 
 -(void)viewWillAppear:(BOOL)animated{

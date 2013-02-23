@@ -22,14 +22,10 @@
 -(IBAction)tapHandler:(UITapGestureRecognizer *)sender;
 -(IBAction)email:(UITextField *)sender;
 -(IBAction)openFAQ:(UIButton *)sender;
+-(IBAction)setTimer:(UISwitch *)sender;
 
 -(void)releaseLogger;
 -(void)locationError:(NSError *)error;
 -(void)locationUpdate:(CLLocation *)location;
 
-@property (weak, nonatomic) IBOutlet UIStepper *changeFontSize;
-@property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (weak, nonatomic) IBOutlet UIView *colorPad;
-@property (weak, nonatomic) IBOutlet UILabel *location;
-@property (weak, nonatomic) IBOutlet UITextField *email;
 @end

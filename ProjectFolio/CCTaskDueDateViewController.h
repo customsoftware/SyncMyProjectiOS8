@@ -8,7 +8,6 @@
 
 #import <UIKit/UIKit.h>
 #import "Task.h"
-#import "Project.h"
 
 @interface CCTaskDueDateViewController : UIViewController<UIAlertViewDelegate>
 

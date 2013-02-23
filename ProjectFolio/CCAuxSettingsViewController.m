@@ -27,6 +27,14 @@
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) CCAuxPriorityViewController *priorityController;
 @property (strong, nonatomic) CCAuxCalendarSettingViewController *calendarController;
+
+
+@property (weak, nonatomic) IBOutlet UIStepper *changeFontSize;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UIView *colorPad;
+@property (weak, nonatomic) IBOutlet UILabel *location;
+@property (weak, nonatomic) IBOutlet UITextField *email;
+@property (weak, nonatomic) IBOutlet UISwitch *timerOffOn;
 @end
 
 @implementation CCAuxSettingsViewController
@@ -100,7 +108,8 @@
     NSString *latitude = [[homeLocation componentsSeparatedByString:@"\\"] objectAtIndex:0];
     NSString *longitude = [[homeLocation componentsSeparatedByString:@"\\"] objectAtIndex:1];
     [self getAddressFromLat:latitude andLong:longitude];
-
+#warning Need to set state of setTimer control based upon which device is the designated timer
+/*Alternative is to have timer run locally on each device, but better is to have one device time and the others watch*/
 }
 
 - (void)viewDidUnload
@@ -123,6 +132,11 @@
 
 
 #pragma mark - IBActions
+-(IBAction)setTimer:(UISwitch *)sender{
+#warning Need to push timer status to the cloud from this setting
+}
+
+
 -(IBAction)email:(UITextField *)sender{
     [self.defaults setObject:sender.text forKey:kDefaultEmail];
 }

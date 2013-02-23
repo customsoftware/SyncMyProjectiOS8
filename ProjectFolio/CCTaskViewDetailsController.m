@@ -21,6 +21,9 @@
 @property (strong, nonatomic) CCExpenseNotesViewController *notesController;
 @property (strong, nonatomic) CCCategoryTaskViewController *categoryController;
 @property CGRect rect;
+@property (weak, nonatomic) IBOutlet UITableView *taskParameters;
+@property (weak, nonatomic) IBOutlet UITextField *taskTitle;
+@property (weak, nonatomic) IBOutlet UISwitch *status;
 
 @end
 
@@ -289,6 +292,7 @@
     }
     self.taskTitle.text = self.activeTask.title;
     self.notes = self.activeTask.notes;
+    self.activeTask.taskUUID = (self.activeTask.taskUUID != nil) ? self.activeTask.taskUUID : [[CoreData sharedModel:nil] getUUID];
     BOOL activeVal = (self.activeTask.completed == SWITCH_ON) ? YES:NO;
     [self.status setOn:activeVal];
     if ([self.taskDelegate shouldShowCancelButton]) {
@@ -319,25 +323,6 @@
     self.taskParameters.dataSource = self;
     // self.notes.layer.borderWidth = 1.50f;
     // self.notes.layer.borderColor = [[UIColor darkGrayColor] CGColor];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.activeTask = nil;
-    self.taskTitle = nil;
-    self.notes = nil;
-    self.status = nil;
-    self.selectedCell = nil;
-    self.selectedIndexPath = nil;
-    self.ownerController = nil;
-    self.dueDateController = nil;
-    self.taskDelegate = nil;
-    self.parentController = nil;
-    self.durationController = nil;
-    self.notesController = nil;
-    self.categoryController = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

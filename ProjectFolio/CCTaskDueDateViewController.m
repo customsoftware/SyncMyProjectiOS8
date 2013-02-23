@@ -7,6 +7,8 @@
 //
 
 #import "CCTaskDueDateViewController.h"
+#import "Project.h"
+#import "CCCalendarControlViewController.h"
 
 #define HOUR_BEFORE   -3600
 #define DAY_BEFORE   -86400
@@ -17,6 +19,8 @@
 #define ONE_WEEK 3
 
 @interface CCTaskDueDateViewController ()
+
+@property (strong, nonatomic) CCCalendarControlViewController *calendarControl;
 
 @end
 
@@ -111,6 +115,9 @@
     // Do any additional setup after loading the view from its nib.
     UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelDueDate)];
     self.navigationItem.rightBarButtonItem = cancelButton;
+    self.calendarControl = [[CCCalendarControlViewController alloc] init];
+    [self.calendarControl.view setFrame:(CGRectMake(0, 300, 320, 300))];
+    [self.calendarControl.view setHidden:FALSE];
 }
 
 -(void)viewWillAppear:(BOOL)animated{

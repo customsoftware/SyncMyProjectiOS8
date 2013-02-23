@@ -25,13 +25,10 @@
 
 @property (strong, nonatomic) Task *activeTask;
 @property (strong, nonatomic) NSIndexPath *selectedIndexPath;
-@property (weak, nonatomic) id<CCPopoverControllerDelegate>taskDelegate;
 @property (strong, nonatomic) MFMailComposeViewController *mailComposer;
-
-@property (strong, nonatomic) IBOutlet UITextField *taskTitle;
-@property (strong, nonatomic) IBOutlet UISwitch *status;
 @property (strong, nonatomic) NSString *notes;
-@property (strong, nonatomic) IBOutlet UITableView *taskParameters;
+
+@property (weak, nonatomic) id<CCPopoverControllerDelegate>taskDelegate;
 
 -(IBAction)completeTask:(UISwitch *)sender;
 -(IBAction)taskName:(UITextField *)sender;

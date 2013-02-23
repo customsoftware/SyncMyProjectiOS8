@@ -13,11 +13,7 @@
 
 @interface CCTimerDetailsViewController : UIViewController <UITableViewDataSource,UITableViewDelegate>
 
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
-@property (strong, nonatomic) IBOutlet UIDatePicker *changeDate;
-@property (strong, nonatomic) IBOutlet UISwitch *billed;
 @property (strong, nonatomic) WorkTime *timer;
-@property (strong, nonatomic) CCProjectSwitchTableViewController *childController;
 
 -(IBAction)billed:(UISwitch *)sender;
 -(IBAction)changeDate:(UIDatePicker *)sender;
