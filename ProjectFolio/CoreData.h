@@ -16,6 +16,7 @@
 #import "Category.h"
 #import "CCErrorLogger.h"
 #import "CCSettingsControl.h"
+#import "CCLocalData.h"
 
 @protocol CoreDataDelegate <NSObject>
 - (void)persistentStoreDidChange;
@@ -25,7 +26,7 @@
 @interface CoreData : NSObject<CCLoggerDelegate> {
     
 }
-
+@property (strong, nonatomic) NSUbiquitousKeyValueStore *iCloudKey;
 @property (nonatomic, strong) NSMutableArray *delegates;
 @property (readonly, strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (readonly, strong, nonatomic) NSManagedObjectModel *managedObjectModel;
@@ -47,10 +48,11 @@
 + (Deliverables *)createExpenseInProject:(Project *)owningProject;
 + (WorkTime *)createNewTimerForProject:(Project *)owningProject;
 + (WorkTime *)createNewTimerForProject:(Project *)owningProject andTask:(Task *)owningTask;
-+ (id)saveLastModified:(id)recordObject;
 
 #pragma mark - Instance methods
+- (id)saveLastModified:(id)recordObject;
 - (id)initWithDelegate:(id<CoreDataDelegate>)newDelegate;
+- (void)fixExistingData;
 
 // Context Operations
 - (void)undo;

@@ -10,8 +10,6 @@
 #import "CCMasterViewController.h"
 
 #define iCloudSynIfAvailable   YES
-#define UBIQUITY_CONTAINER_IDENTIFIER @"4MAEKVPSTZ.com.customsoftware.ProjectFolio"
-#define UBIQUITY_CONTENT_NAME_KEY @"com.customsoftware.ProjectFolio.CoreData"
 
 @interface CCAppDelegate ()
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
@@ -30,21 +28,26 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [self setAppID];
+    // Override point for customization after application launch.
+    [[NSNotificationCenter defaultCenter]
+     addObserver:self
+     selector:@selector(kvStoreDidChange:)
+     name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification
+     object:[NSUbiquitousKeyValueStore defaultStore]];
+    [[NSUbiquitousKeyValueStore defaultStore] synchronize];
+    
     // Override point for customization after application launch.
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         UISplitViewController *splitViewController = (UISplitViewController *)self.window.rootViewController;
         UINavigationController *navigationController = [splitViewController.viewControllers lastObject];
         splitViewController.delegate = (id)navigationController.topViewController;
-    } else {
-        UINavigationController *navigationController = (UINavigationController *)self.window.rootViewController;
-        CCiPhoneMasterViewController *controller = (CCiPhoneMasterViewController *)navigationController.topViewController;
-        controller.managedObjectContext = [[CoreData sharedModel:nil] managedObjectContext];
     }
+    self.sharedStack = [CoreData sharedModel:nil];
     application.applicationIconBadgeNumber = 0;
     CCVisibleFixer *fixer = [[CCVisibleFixer alloc] init];
     [fixer fixAllVisible];
-    [self testPriorityConfig];
-    
+    [self setButtonStateWithShow:NO];
     return YES;
 }
 
@@ -53,40 +56,51 @@
     return sharedModel.iCloudAvailable;
 }
 
--(void)testPriorityConfig{
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Priority" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-    NSSortDescriptor *defaultDescriptor = [[NSSortDescriptor alloc] initWithKey:@"priority" ascending:YES];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects: defaultDescriptor, nil];
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    [fetchRequest setEntity:entity];
-    NSFetchedResultsController * pFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
-                                                          managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
-                                                            sectionNameKeyPath:nil
-                                                                     cacheName:nil];
-    NSError *fetchError;
-    [pFRC performFetch:&fetchError];
-    if ([[pFRC fetchedObjects]count] == 0) {
-        // This will happen only the first time the app starts up, unless the user deletes all of the settings
-        Priority * newPriority = [NSEntityDescription
-                                  insertNewObjectForEntityForName:@"Priority"
-                                  inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-        newPriority.priority = @"Low";
-        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
-        newPriority = [NSEntityDescription
-                       insertNewObjectForEntityForName:@"Priority"
-                       inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-        newPriority.priority = @"Medium";
-        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
-        newPriority = [NSEntityDescription
-                       insertNewObjectForEntityForName:@"Priority"
-                       inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-        newPriority.priority = @"High";
-        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
-        [pFRC performFetch:&fetchError];
-        CCInitializer *initializer = [[CCInitializer alloc] init];
-        [initializer loadTestData];
+-(void)setButtonStateWithShow:(BOOL)show{
+    BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
+    NSString *localDeviceGUID = [[NSUserDefaults standardUserDefaults] objectForKey:kAppString];
+    
+    // Get Cloud status
+    NSString *controllingAppID = nil;
+    NSDictionary *cloudDictionary = [[CoreData sharedModel:nil] cloudDictionary];
+    if (cloudDictionary != nil && [cloudDictionary valueForKey:kAppString]) {
+        controllingAppID = [cloudDictionary valueForKey:kAppString];
     }
+    
+    if ([localDeviceGUID isEqualToString:controllingAppID]){
+        keyStatus = YES;
+    } else {
+        if (keyStatus == YES) {
+            if (show == YES) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Project Timer Status" message:@"Timer is disabled for this device. To enable it, go into settings and enable the timer." delegate:nil cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                [alert show];
+            }
+        }
+        keyStatus = NO;
+    }
+    [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
+}
+
+- (void) setAppID{
+    NSUserDefaults *settings = [NSUserDefaults standardUserDefaults];
+    NSString *deviceGUID = [settings stringForKey:kAppString];
+    
+    if (!deviceGUID) {
+        deviceGUID = [[CoreData sharedModel:nil] getUUID];
+        [settings setValue:deviceGUID forKey:kAppString];
+    }
+}
+
+- (BOOL)checkIsDeviceVersionHigherThanRequiredVersion:(NSString *)requiredVersion
+{
+    NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
+    
+    if ([currSysVer compare:requiredVersion options:NSNumericSearch] != NSOrderedAscending)
+    {
+        return YES;
+    }
+    
+    return NO;
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -120,6 +134,8 @@
     /*
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
+    [[NSUbiquitousKeyValueStore defaultStore] synchronize];
+    [self setButtonStateWithShow:YES];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
@@ -135,6 +151,11 @@
 -(void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification{
     [[[UIAlertView alloc]initWithTitle:@"Local Notification" message:notification.alertBody delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil] show];
     application.applicationIconBadgeNumber = 0;
+}
+
+-(void)kvStoreDidChange:(NSNotification *)notification{
+    CCLocalData *localData = [[CCLocalData alloc] init];
+    [localData kvStoreDidChange:notification];
 }
 
 #pragma mark - Calendar components

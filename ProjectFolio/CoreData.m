@@ -8,10 +8,8 @@
 
 #import "CoreData.h"
 #import <TargetConditionals.h>
-#define ManagedObjectModelFileName @"ProjectFolio"
-//iCloud Parameters
-#define UBIQUITY_CONTAINER_IDENTIFIER @"4MAEKVPSTZ.com.customsoftware.ProjectFolio"
-#define UBIQUITY_CONTENT_NAME_KEY @"com.customsoftware.ProjectFolio.CoreData"
+#import "Priority.h"
+#import "CCInitializer.h"
 
 @interface CoreData()
 
@@ -103,40 +101,52 @@ static CoreData *sharedModel = nil;
 }
 
 + (WorkTime *)createNewTimerForProject:(Project *)owningProject{
-    WorkTime *time = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-    [owningProject addProjectWorkObject:time];
-    time.workProject = owningProject;
-    time.dateCreated = [NSDate date];
-    time.dateModified = time.dateCreated;
-    time.timerUUID = [[CoreData sharedModel:nil] getUUID];
-    
+    WorkTime *time = nil;
+    BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
+    if (keyStatus == YES) {
+        time = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+        [owningProject addProjectWorkObject:time];
+        time.workProject = owningProject;
+        time.dateCreated = [NSDate date];
+        time.dateModified = time.dateCreated;
+        time.timerUUID = [[CoreData sharedModel:nil] getUUID];
+    }
     return time;
 }
 
 + (WorkTime *)createNewTimerForProject:(Project *)owningProject andTask:(Task *)owningTask{
-    WorkTime *newTimer = [CoreData createNewTimerForProject:owningProject];
-    newTimer.workTask = owningTask;
-    [owningTask addTaskTimerObject:newTimer];
+    WorkTime *newTimer = nil;
+    BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
+    if (keyStatus == YES) {
+        newTimer = [CoreData createNewTimerForProject:owningProject];
+        newTimer.workTask = owningTask;
+        [owningTask addTaskTimerObject:newTimer];
+    }
     return newTimer;
 }
 
-+ (id)saveLastModified:(id)recordObject{
+#pragma mark - Instance methods
+- (id)saveLastModified:(id)recordObject{
     // Not many times I think it's appropriate to use an embedded return, but this is one of them
     if ([recordObject isKindOfClass:[Project class]] == YES) {
         Project * retValue = (Project *)recordObject;
         retValue.dateModified = [NSDate date];
+        retValue.projectUUID = (retValue.projectUUID != nil) ? retValue.projectUUID : [self getUUID];
         return retValue;
     } else if ([recordObject isKindOfClass:[Task class]] == YES) {
         Task * retValue = (Task *)recordObject;
         retValue.dateModified = [NSDate date];
+        retValue.taskUUID = (retValue.taskUUID != nil) ? retValue.taskUUID : [self getUUID];
         return retValue;
     } else if ([recordObject isKindOfClass:[WorkTime class]] == YES) {
         WorkTime * retValue = (WorkTime *)recordObject;
         retValue.dateModified = [NSDate date];
+        retValue.timerUUID = (retValue.timerUUID != nil) ? retValue.timerUUID : [self getUUID];
         return retValue;
     } else if ([recordObject isKindOfClass:[Deliverables class]] == YES) {
         Deliverables * retValue = (Deliverables *)recordObject;
         retValue.dateModified = [NSDate date];
+        retValue.expenseUUID = (retValue.expenseUUID != nil) ? retValue.expenseUUID : [self getUUID];
         return retValue;
     }
     
@@ -159,11 +169,15 @@ static CoreData *sharedModel = nil;
 #else
         CCSettingsControl *settings = [[CCSettingsControl alloc] init];
         if([settings isICloudAuthorized]){
+            _iCloudKey = [NSUbiquitousKeyValueStore defaultStore];
             [[NSBundle mainBundle] bundleIdentifier];
             NSFileManager *fileManager = [NSFileManager defaultManager];
-            NSURL *contentURL = [fileManager URLForUbiquityContainerIdentifier:UBIQUITY_CONTAINER_IDENTIFIER];
-            if(contentURL)
-                self.iCloudAvailable = YES;
+            NSURL *contentURL = [fileManager URLForUbiquityContainerIdentifier:[CCLocalData ubiquityContainerID]];
+            //if((contentURL) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
+            if (contentURL)
+#warning The app crashes due to not being able to validate models across devices.
+#warning Need to have one device be the designated time keeper. Wont work to have both doing the time keeping
+                self.iCloudAvailable = NO;
             else
                 self.iCloudAvailable = NO;
         } else {
@@ -173,6 +187,11 @@ static CoreData *sharedModel = nil;
         __managedObjectContext = [self managedObjectContext];
 	}
 	return self;
+}
+
+- (void)fixExistingData{
+    
+#warning Fix existing data needs to be implemented
 }
 
 - (NSString *)getUUID{
@@ -189,12 +208,11 @@ static CoreData *sharedModel = nil;
                                               inManagedObjectContext:self.managedObjectContext];
     [request setEntity:entity];
     [request setFetchBatchSize:20];
-    
     [request setSortDescriptors:sortDescriptors];
     
     NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
-    aFetchedResultsController.delegate = delegate;
     
+    aFetchedResultsController.delegate = delegate;
     return aFetchedResultsController;
 }
 
@@ -287,7 +305,7 @@ static CoreData *sharedModel = nil;
         return __managedObjectModel;
     }
     
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:ManagedObjectModelFileName withExtension:@"momd"];
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:[CCLocalData appID] withExtension:@"momd"];
     __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return __managedObjectModel;
 }
@@ -304,7 +322,7 @@ static CoreData *sharedModel = nil;
     // Set up persistent Store Coordinator
     __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
     
-    //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
     
         // Set up SQLite db and options dictionary
         NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite",@"ProjectFolio"]];
@@ -368,11 +386,47 @@ static CoreData *sharedModel = nil;
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [[NSNotificationCenter defaultCenter] postNotificationName:@"SomethingChanged" object:self userInfo:nil];
+            [self testPriorityConfig];
         });
-   // });
-
+   });
     
     return __persistentStoreCoordinator;
+}
+
+-(void)testPriorityConfig{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Priority" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+    NSSortDescriptor *defaultDescriptor = [[NSSortDescriptor alloc] initWithKey:@"priority" ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects: defaultDescriptor, nil];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    [fetchRequest setEntity:entity];
+    NSFetchedResultsController * pFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                            managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
+                                                                              sectionNameKeyPath:nil
+                                                                                       cacheName:nil];
+    NSError *fetchError;
+    [pFRC performFetch:&fetchError];
+    if ([[pFRC fetchedObjects]count] == 0) {
+        // This will happen only the first time the app starts up, unless the user deletes all of the settings
+        Priority * newPriority = [NSEntityDescription
+                                  insertNewObjectForEntityForName:@"Priority"
+                                  inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+        newPriority.priority = @"Low";
+        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
+        newPriority = [NSEntityDescription
+                       insertNewObjectForEntityForName:@"Priority"
+                       inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+        newPriority.priority = @"Medium";
+        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
+        newPriority = [NSEntityDescription
+                       insertNewObjectForEntityForName:@"Priority"
+                       inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+        newPriority.priority = @"High";
+        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
+        [pFRC performFetch:&fetchError];
+        CCInitializer *initializer = [[CCInitializer alloc] init];
+        [initializer loadTestData];
+    }
 }
 
 #pragma mark - Application's Documents directory
@@ -397,6 +451,18 @@ static CoreData *sharedModel = nil;
     {
         if ([managedObjectContext hasChanges])
         {
+            NSArray *updateSet = [[self.managedObjectContext updatedObjects] allObjects];
+            for (int x = 0; x < updateSet.count; x++) {
+                id record = updateSet[x];
+                record = [self saveLastModified:record];
+            }
+            
+            NSArray *insertSet = [[self.managedObjectContext updatedObjects] allObjects];
+            for (int x = 0; x < [[self.managedObjectContext insertedObjects] count]; x++) {
+                id record = insertSet[x];
+                record = [self saveLastModified:record];
+            }
+            
             @try {
                 if (![managedObjectContext save:&error]){
                     self.errorLogger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
@@ -409,6 +475,8 @@ static CoreData *sharedModel = nil;
                 [self.errorLogger releaseLogger];
                 retValue = NO;
             }
+        } else {
+            retValue = YES;
         }
     } else {
         retValue = NO;
@@ -431,6 +499,11 @@ static CoreData *sharedModel = nil;
                 [delegate persistentStoreDidChange];
         }
     }];
+}
+
+-(NSDictionary *)cloudDictionary{
+    [self.iCloudKey synchronize];
+    return self.iCloudKey.dictionaryRepresentation;
 }
 
 @end

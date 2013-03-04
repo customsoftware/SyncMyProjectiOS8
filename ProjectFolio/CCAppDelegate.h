@@ -16,15 +16,19 @@
 #import "CCInitializer.h"
 #import "CCSettingsControl.h"
 #import "CoreData.h"
+#import "CCLocalData.h"
 
 @interface CCAppDelegate : UIResponder <UIApplicationDelegate,UIAlertViewDelegate,CCLoggerDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) EKEventStore *eventStore;
 @property (strong, nonatomic) CCErrorLogger *errorLogger;
+@property (strong, nonatomic) CoreData *sharedStack;
 
 // - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 - (void)releaseLogger;
 - (BOOL)iCloudIsAvailableNow;
+- (BOOL)checkIsDeviceVersionHigherThanRequiredVersion:(NSString *)requiredVersion;
+
 @end
