@@ -8,24 +8,19 @@
 
 #import <UIKit/UIKit.h>
 #import "Project.h"
+#import "CCProjectTimer.h"
 #import "CCPopoverControllerDelegate.h"
 #import "CCTimerSummaryViewController.h"
-#import "CCTaskSummaryViewController.h"
 #import "CCCalendarViewController.h"
 #import "CCDeliverableViewController.h"
-#import "CCProjectTimer.h"
 #import "CCProjectChartViewController.h"
 #import "CCModalViewDelegate.h"
-#import "CCAuxSettingsViewController.h"
 #import "CCEmailer.h"
-#import "CCErrorLogger.h"
-#import "CCProjectTaskDelegate.h"
 
 @interface CCDetailViewController : UIViewController <CCProjectTaskDelegate,UIPopoverControllerDelegate, UISplitViewControllerDelegate,CCModalViewDelegate,UIActionSheetDelegate,CCEmailDelegate,CCLoggerDelegate,CCTaskSummaryDelegate,UIGestureRecognizerDelegate>
 
 @property (strong, nonatomic) id detailItem;
 @property (strong, nonatomic) IBOutlet UITextView *projectNotes;
-@property (strong, nonatomic) NSFetchedResultsController *fetchedProjectsController;
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;
 @property (strong, nonatomic) UIPopoverController *popover;
 @property (strong, nonatomic) Project *project;

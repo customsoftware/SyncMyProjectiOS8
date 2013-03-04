@@ -7,6 +7,11 @@
 //
 
 #import "CCDetailViewController.h"
+#import "CCErrorLogger.h"
+#import "CCProjectTaskDelegate.h"
+#import "CCTaskSummaryViewController.h"
+#import "CCAuxSettingsViewController.h"
+
 #define kShowProjects @"neverShowProjects"
 #define kFontNameKey @"font"
 #define kFontSize @"fontSize"
@@ -33,9 +38,7 @@
 @synthesize detailItem = _detailItem;
 @synthesize projectNotes = _projectNotes;
 @synthesize masterPopoverController = _masterPopoverController;
-@synthesize fetchedProjectsController = _fetchedProjectsController;
 @synthesize controllingCellIndex = _controllingCellIndex;
-// @synthesize managedObjectContext = _managedObjectContext;
 @synthesize popover = _popover;
 @synthesize project = _project;
 @synthesize activeTimer = _activeTimer;
@@ -48,18 +51,6 @@
 @synthesize longPressMenu = _longPressMenu;
 
 #pragma mark - Managing the detail item
-- (BOOL)checkIsDeviceVersionHigherThanRequiredVersion:(NSString *)requiredVersion
-{
-    NSString *currSysVer = [[UIDevice currentDevice] systemVersion];
-    
-    if ([currSysVer compare:requiredVersion options:NSNumericSearch] != NSOrderedAscending)
-    {
-        return YES;
-    }
-    
-    return NO;
-}
-
 - (void)setDetailItem:(id)newDetailItem
 {
     if (_detailItem != newDetailItem) {
@@ -105,7 +96,7 @@
 {
     self.projectNotes.text = self.project.projectNotes;
     CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-    if([self checkIsDeviceVersionHigherThanRequiredVersion:@"6.0"]) {
+    if([application checkIsDeviceVersionHigherThanRequiredVersion:@"6.0"]) {
         [application.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
             
             if (granted){
@@ -223,7 +214,7 @@
 }
 
 -(IBAction)sendNotes:(UIBarButtonItem *)sender{
-    UIActionSheet *actionSheet = [[ UIActionSheet alloc] initWithTitle:@"Reporting Center" delegate:self cancelButtonTitle:@"OK" destructiveButtonTitle:nil otherButtonTitles:@"Email Notes", @"Send Error Report", @"Submit Feedback", nil];
+    UIActionSheet *actionSheet = [[ UIActionSheet alloc] initWithTitle:@"Reporting Center" delegate:self cancelButtonTitle:@"OK" destructiveButtonTitle:nil otherButtonTitles:@"Email Notes", @"Send Error Report", @"Submit Feedback", @"Print Notes", nil];
     [actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
 }
 
@@ -356,6 +347,9 @@
         self.emailer.addressee = @"feedback@weatherbytes.net";
         [self.emailer sendEmail];
         [self presentModalViewController:self.emailer.mailComposer animated:YES];
+    } else if (buttonIndex == 3) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Notes" message:@"This is future home of printing notes" delegate:self cancelButtonTitle:@"Not Yet, But Soon" otherButtonTitles:nil];
+        [alert show];
     } else {
     }
 }
@@ -427,9 +421,7 @@
     self.masterPopoverController = nil;
     self.projectNotes = nil;
     self.masterPopoverController = nil;
-    self.fetchedProjectsController = nil;
     self.controllingCellIndex = nil;
-    // self.managedObjectContext = nil;
     self.activeTimer = nil;
     
     self.time = nil;
@@ -442,6 +434,7 @@
     self.showCalendar = nil;
     self.showTimers = nil;
     self.longPressMenu = nil;
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -497,25 +490,6 @@
 }
 
 #pragma mark - Lazy Getters
--(NSFetchedResultsController *)fetchedProjectsController{
-    if (_fetchedProjectsController == nil) {
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-        NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project"
-                                                  inManagedObjectContext:self.managedObjectContext];
-        [fetchRequest setEntity:entity];
-        NSSortDescriptor *activeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"active" ascending:NO];
-        NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"complete" ascending:YES];
-        NSSortDescriptor *endDateDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dateFinish" ascending:YES];
-        NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, completeDescriptor, endDateDescriptor, nil];
-        [fetchRequest setSortDescriptors:sortDescriptors];
-        
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"ProjectList"];
-         
-        _fetchedProjectsController = aFetchedResultsController;
-    }
-    return _fetchedProjectsController;
-}
-
 -(NSManagedObjectContext *)managedObjectContext{
     return [[CoreData sharedModel:nil] managedObjectContext];
 }
