@@ -339,7 +339,6 @@
         self.activeProject = [self.filteredProjects objectAtIndex:indexPath.row];
     }
     self.detailViewController.project = self.activeProject;
-    self.detailViewController.fetchedProjectsController = self.fetchedProjectsController;
     self.detailViewController.controllingCellIndex = indexPath;
     
     [self enableControls];
