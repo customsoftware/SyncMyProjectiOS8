@@ -3367,7 +3367,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <segue destination="pzJ-74-U1L" kind="push" identifier="taskDueDate" id="oTu-Vn-Bbx"/>
                         <segue destination="rI4-oV-Jmk" kind="push" identifier="ownerSelector" id="czq-xq-b41"/>
                         <segue destination="waG-JU-kes" kind="push" identifier="pushTaskDuration" id="gY0-Ur-f3q"/>
-                        <segue destination="lex-D9-Gyz" kind="modal" identifier="taskNotes" modalPresentationStyle="pageSheet" modalTransitionStyle="coverVertical" id="CAW-5q-vHi"/>
+                        <segue destination="lex-D9-Gyz" kind="modal" identifier="taskNotes" modalPresentationStyle="pageSheet" modalTransitionStyle="flipHorizontal" id="CAW-5q-vHi"/>
                         <segue destination="7cv-3h-Ycf" kind="push" identifier="pushCategoryFmTask" id="7JR-my-lrd"/>
                     </connections>
                 </viewController>
@@ -3579,7 +3579,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="gY0-Ur-f3q"/>
+        <segue reference="Xxn-JQ-cDv"/>
         <segue reference="XQ6-5D-tBj"/>
-        <segue reference="sNg-Mf-0gY"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -7,6 +7,7 @@
 //
 
 #import "CCExpenseDetailsViewController.h"
+#import "CCAppDelegate.h"
 
 #define kHomeLocation @"homeLocation"
 #define SWITCH_ON [[NSNumber alloc] initWithInt:1]
@@ -90,7 +91,6 @@
             
         case 2:
             self.imageController.delegate = self;
-            // self.imageController.allowsEditing = YES;
             [self.imageController setModalPresentationStyle:UIModalPresentationFullScreen];
             self.currentSize = self.view.frame;
             [self presentModalViewController:self.imageController animated:YES];

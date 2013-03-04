@@ -44,8 +44,11 @@
         self.parentProject.projectUUID = (self.parentProject.projectUUID != nil) ? self.parentProject.projectUUID : [[CoreData sharedModel:nil] getUUID];
         [self.defaults saveString:self.parentProject.projectUUID atKey:kSelectedProject];
     } else {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Timer Failure" message:[[NSString alloc] initWithFormat:@"Timer for %@ project failed to start", self.parentProject.projectName] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
+        if (keyStatus == YES) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Timer Failure" message:[[NSString alloc] initWithFormat:@"Timer for %@ project failed to start", self.parentProject.projectName] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
     }
 }
 

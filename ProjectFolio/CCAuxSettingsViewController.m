@@ -108,8 +108,29 @@
     NSString *latitude = [[homeLocation componentsSeparatedByString:@"\\"] objectAtIndex:0];
     NSString *longitude = [[homeLocation componentsSeparatedByString:@"\\"] objectAtIndex:1];
     [self getAddressFromLat:latitude andLong:longitude];
-#warning Need to set state of setTimer control based upon which device is the designated timer
+    [self updateTimer];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTimer) name:kAppString object:nil];
 /*Alternative is to have timer run locally on each device, but better is to have one device time and the others watch*/
+}
+
+- (void)updateTimer{
+    BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
+    NSString *localDeviceGUID = [[NSUserDefaults standardUserDefaults] objectForKey:kAppString];
+    
+    // Get Cloud status
+    NSString *controllingAppID = nil;
+    NSDictionary *cloudDictionary = [[CoreData sharedModel:nil] cloudDictionary];
+    if (cloudDictionary != nil && [cloudDictionary valueForKey:kAppString]) {
+        controllingAppID = [cloudDictionary valueForKey:kAppString];
+    }
+    
+    if ([localDeviceGUID isEqualToString:controllingAppID]){
+        keyStatus = YES;
+    } else {
+        keyStatus = NO;
+    }
+    [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
+    [self.timerOffOn setOn:keyStatus];
 }
 
 - (void)viewDidUnload
@@ -133,7 +154,12 @@
 
 #pragma mark - IBActions
 -(IBAction)setTimer:(UISwitch *)sender{
-#warning Need to push timer status to the cloud from this setting
+    BOOL keyStatus = [sender isOn];
+    if (keyStatus == YES) {
+        NSString *deviceGUID = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:kAppString];
+        [[[CoreData sharedModel:nil] iCloudKey] setString:deviceGUID forKey:kAppString];
+    }
+    [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
 }
 
 
