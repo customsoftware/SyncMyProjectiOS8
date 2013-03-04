@@ -24,31 +24,18 @@
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 - (void)configureView;
 @property BOOL canUseCalendar;
-@property (weak, nonatomic) CCAuxSettingsViewController *settings;
+@property (strong, nonatomic) CCAuxSettingsViewController *settings;
 @property (strong, nonatomic) CCTaskSummaryViewController *summaryController;
 @property (strong, nonatomic) CCEmailer *emailer;
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) UIMenuItem *longPressMenu;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property NSInteger lastButton;
+
 @end
 
 @implementation CCDetailViewController
 @synthesize emailer = _emailer;
-@synthesize detailItem = _detailItem;
-@synthesize projectNotes = _projectNotes;
-@synthesize masterPopoverController = _masterPopoverController;
-@synthesize controllingCellIndex = _controllingCellIndex;
-@synthesize popover = _popover;
-@synthesize project = _project;
-@synthesize activeTimer = _activeTimer;
-@synthesize calendar, deliverable, time, projectChart, settings;
-@synthesize logger = _logger;
-@synthesize lastButton = _lastButton;
-@synthesize showDeliverables = _showDeliverables;
-@synthesize showCalendar = _showCalendar;
-@synthesize showTimers = _showTimers;
-@synthesize longPressMenu = _longPressMenu;
 
 #pragma mark - Managing the detail item
 - (void)setDetailItem:(id)newDetailItem
@@ -264,6 +251,7 @@
     return YES;
 }
 
+#pragma mark - Custom Menue
 -(void)handleCustomMenu{
     NSRange range = self.projectNotes.selectedRange;
     if (range.length > 0) {
@@ -412,31 +400,6 @@
     [self configureView];
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    self.detailItem = nil;
-    self.masterPopoverController = nil;
-    self.projectNotes = nil;
-    self.masterPopoverController = nil;
-    self.controllingCellIndex = nil;
-    self.activeTimer = nil;
-    
-    self.time = nil;
-    self.deliverable = nil;
-    self.calendar = nil;
-    self.settings = nil;
-    self.emailer = nil;
-    self.logger = nil;
-    self.showDeliverables = nil;
-    self.showCalendar = nil;
-    self.showTimers = nil;
-    self.longPressMenu = nil;
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -461,11 +424,6 @@
 {
 	[super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
