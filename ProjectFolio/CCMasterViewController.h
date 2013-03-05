@@ -19,11 +19,12 @@
 #import "CCTextEntryPopoverController.h"
 #import "CCSettingsControl.h"
 #import "CoreData.h"
+#import "CCGeneralCloserProtocol.h"
 
 @class CCDetailViewController;
 
 
-@interface CCMasterViewController : UIViewController <UIPopoverControllerDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate, UIAlertViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,CCProjectTaskDelegate,UISearchDisplayDelegate,CCLoggerDelegate,CoreDataDelegate>
+@interface CCMasterViewController : UIViewController <UIPopoverControllerDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate, UIAlertViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,CCProjectTaskDelegate,UISearchDisplayDelegate,CCLoggerDelegate,CoreDataDelegate,UIPrintInteractionControllerDelegate,CCGeneralCloserProtocol>
 
 @property (strong, nonatomic) CCTextEntryPopoverController *projectNameView;
 @property (strong, nonatomic) CCDetailViewController *detailViewController;
@@ -36,12 +37,13 @@
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *projectActionsButton;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 
--(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
--(IBAction)filterActions:(UISegmentedControl *)sender;
--(IBAction)actionButton:(UIBarButtonItem *)sender;
--(void)setFontForDisplay;
--(Project *)getActiveProject;
--(void)releaseLogger;
--(void)persistentStoreDidChange;
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
+- (IBAction)filterActions:(UISegmentedControl *)sender;
+- (IBAction)actionButton:(UIBarButtonItem *)sender;
+- (void)setFontForDisplay;
+- (Project *)getActiveProject;
+- (void)releaseLogger;
+- (void)persistentStoreDidChange;
+- (void)sendOutput;
 
 @end

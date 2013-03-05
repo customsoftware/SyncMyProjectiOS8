@@ -171,28 +171,10 @@
     return  retvalue;
 }
 
-//-(IBAction)sendNotice:(UIBarButtonItem *)sender{
--(void)sendNotice{
-    [self resignFirstResponder];
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    self.mailComposer = [[MFMailComposeViewController alloc] init];
-    self.mailComposer.mailComposeDelegate = self;
-    
-    // Need to get the email of the assigned to person...
-    /*if (self.activeTask.assignedTo == nil) {
-        UIAlertView *alert = [[UIAlertView alloc]
-                              initWithTitle:@"Can't Send Email" message:@"Whoops! You haven't assigned this task yet." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
-    } else {*/
-        NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-        [formatter setTimeStyle:NSDateFormatterShortStyle];
-        [formatter setDateStyle:NSDateFormatterShortStyle];
-    NSArray *recipients = nil;
-    if (self.activeTask.assignedTo != nil) {
-        recipients = [[NSArray alloc] initWithObjects:[self getMailingAddress], nil];
-    } else if ( [defaults stringArrayForKey:kDefaultEmail] != nil ){
-        recipients = [[NSArray alloc] initWithObjects:[defaults stringArrayForKey:kDefaultEmail], nil];
-    }
+- (NSString *)printString{
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    [formatter setDateStyle:NSDateFormatterShortStyle];
     NSString *taskString = nil;
     if (self.activeTask.dueDate == nil) {
         taskString = [[NSString alloc]
@@ -200,11 +182,11 @@
                       self.activeTask.title];
     } else {
         taskString = [[NSString alloc]
-                                initWithFormat:@"You've been assigned the task of: %@. It is due by %@<p>",
-                                self.activeTask.title,
-                                [formatter stringFromDate:self.activeTask.dueDate]];
+                      initWithFormat:@"You've been assigned the task of: %@. It is due by %@<p>",
+                      self.activeTask.title,
+                      [formatter stringFromDate:self.activeTask.dueDate]];
     }
-
+    
     taskString = [[NSString alloc] initWithFormat:@"%@", [self.activeTask getTaskNotesWithString:taskString]];
     
     NSArray *sentences = [taskString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
@@ -213,19 +195,84 @@
     for (NSString *sentence in sentences) {
         [newString appendFormat:@"%@<p>", sentence];
     }
-    //  I'd ultimately like to have well formatted out put so leave this as a reminder
-    // taskString = [taskString stringByReplacingOccurrencesOfString:@"\n\r" withString:@"<p>"];
-    // self.rect = self.view.frame;
-    // CGRect mSize = CGRectMake(self.rect.origin.x, self.rect.origin.y, 480.0f, self.rect.size.height);
+
+    return newString;
+}
+
+-(void)sendNotice{
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Send Email", @"Print Notes", nil];
+    [sheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
+}
+
+-(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    if (buttonIndex == 0) {
+        [self sendEmail];
+    } else if (buttonIndex == 1){
+        [self printNotes];
+    }
+}
+
+- (void)printNotes{
+    UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
+    pic.delegate = self;
+    
+    UIPrintInfo *printInfo = [UIPrintInfo printInfo];
+    printInfo.outputType = UIPrintInfoOutputGrayscale;
+    printInfo.jobName = self.activeTask.title;
+    pic.printInfo = printInfo;
+    
+    UIMarkupTextPrintFormatter *notesFormatter = [[UIMarkupTextPrintFormatter alloc]
+                                        initWithMarkupText:[self printString]];
+    notesFormatter.startPage = 0;
+    notesFormatter.contentInsets = UIEdgeInsetsMake(72.0, 72.0, 72.0, 72.0); // 1 inch margins
+    pic.printFormatter = notesFormatter;
+    pic.showsPageRange = YES;
+    
+    void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
+    ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
+        if (!completed && error) {
+            NSLog(@"Printing could not complete because of error: %@", error);
+        }
+    };
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [pic presentFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES completionHandler:completionHandler];
+    } else {
+        [pic presentAnimated:YES completionHandler:completionHandler];
+    }
+}
+
+/*void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
+^(UIPrintInteractionController *pic, BOOL completed, NSError *error) {
+    if (!completed && error)
+        NSLog(@"FAILED! due to error in domain %@ with error code %u",
+              error.domain, error.code);
+};*/
+
+- (void)sendEmail{
+    [self resignFirstResponder];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.mailComposer = [[MFMailComposeViewController alloc] init];
+    self.mailComposer.mailComposeDelegate = self;
+
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setTimeStyle:NSDateFormatterShortStyle];
+    [formatter setDateStyle:NSDateFormatterShortStyle];
+    NSArray *recipients = nil;
+    if (self.activeTask.assignedTo != nil) {
+        recipients = [[NSArray alloc] initWithObjects:[self getMailingAddress], nil];
+    } else if ( [defaults stringArrayForKey:kDefaultEmail] != nil ){
+        recipients = [[NSArray alloc] initWithObjects:[defaults stringArrayForKey:kDefaultEmail], nil];
+    }
+    
+    NSString *newString = [self printString];
+    
     [self.mailComposer setModalPresentationStyle:UIModalPresentationFormSheet];
     self.mailComposer.mailComposeDelegate = self;
-    // self.mailComposer.topViewController.contentSizeForViewInPopover = mSize.size;
     [self.mailComposer setSubject:[[NSString alloc] initWithFormat:@"Task Assignment for Project: %@", self.activeTask.taskProject.projectName]];
     [self.mailComposer setToRecipients:recipients ];
     [self.mailComposer setMessageBody:newString isHTML:YES];
     self.mailComposer.mailComposeDelegate = self;
     [self presentModalViewController:self.mailComposer animated:YES];
-  //  }
 }
 
 -(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
@@ -295,13 +342,14 @@
     self.activeTask.taskUUID = (self.activeTask.taskUUID != nil) ? self.activeTask.taskUUID : [[CoreData sharedModel:nil] getUUID];
     BOOL activeVal = (self.activeTask.completed == SWITCH_ON) ? YES:NO;
     [self.status setOn:activeVal];
+    UIBarButtonItem *newButton = nil;
     if ([self.taskDelegate shouldShowCancelButton]) {
-        UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAddTask)];
-        self.navigationItem.rightBarButtonItem = cancelButton;
+        newButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelAddTask)];
     } else {
-        UIBarButtonItem *sendButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(sendNotice)];
-        self.navigationItem.rightBarButtonItem = sendButton;
+        newButton = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sendNotice)];
     }
+    self.navigationItem.rightBarButtonItem = newButton;
+    
     NSDateFormatter *formatter = [[NSDateFormatter alloc]init];
     [formatter setDateStyle:NSDateFormatterShortStyle];
     [formatter setTimeStyle:NSDateFormatterShortStyle];

@@ -17,7 +17,7 @@
 #import "CCModalViewDelegate.h"
 #import "CCEmailer.h"
 
-@interface CCDetailViewController : UIViewController <CCProjectTaskDelegate,UIPopoverControllerDelegate, UISplitViewControllerDelegate,CCModalViewDelegate,UIActionSheetDelegate,CCEmailDelegate,CCLoggerDelegate,CCTaskSummaryDelegate,UIGestureRecognizerDelegate>
+@interface CCDetailViewController : UIViewController <CCProjectTaskDelegate,UIPopoverControllerDelegate, UISplitViewControllerDelegate,CCModalViewDelegate,UIActionSheetDelegate,CCEmailDelegate,CCLoggerDelegate,CCTaskSummaryDelegate,UIGestureRecognizerDelegate,UIPrintInteractionControllerDelegate>
 
 @property (strong, nonatomic) id detailItem;
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;

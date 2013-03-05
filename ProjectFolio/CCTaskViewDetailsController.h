@@ -21,7 +21,7 @@
 #import "CCExpenseNotesViewController.h"
 #import "CCCategoryTaskViewController.h"
 
-@interface CCTaskViewDetailsController : UIViewController<UITableViewDataSource,UITableViewDelegate,ABPeoplePickerNavigationControllerDelegate,MFMailComposeViewControllerDelegate,ParentDelegate,CCPopoverControllerDelegate,CCNotesDelegate,CCCategoryTaskDelegate>
+@interface CCTaskViewDetailsController : UIViewController<UITableViewDataSource,UITableViewDelegate,ABPeoplePickerNavigationControllerDelegate,MFMailComposeViewControllerDelegate,ParentDelegate,CCPopoverControllerDelegate,CCNotesDelegate,CCCategoryTaskDelegate,UIActionSheetDelegate,UIPrintInteractionControllerDelegate>
 
 @property (strong, nonatomic) Task *activeTask;
 @property (strong, nonatomic) NSIndexPath *selectedIndexPath;

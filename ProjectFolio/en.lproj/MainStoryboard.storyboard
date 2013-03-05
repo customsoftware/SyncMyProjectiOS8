@@ -77,7 +77,7 @@
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Notes" id="53">
-                        <barButtonItem key="rightBarButtonItem" systemItem="compose" id="Tl4-MD-hSF">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="Tl4-MD-hSF">
                             <connections>
                                 <action selector="sendNotes:" destination="4" id="o2w-1H-ZRo"/>
                             </connections>
@@ -85,6 +85,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="projectNotes" destination="RbV-Le-4mN" id="VAC-pf-QzA"/>
+                        <outlet property="sendingNotes" destination="Tl4-MD-hSF" id="apP-Ix-lFB"/>
                         <outlet property="showCalendar" destination="52k-dI-h2Z" id="9H5-af-UXp"/>
                         <outlet property="showDeliverables" destination="uo4-Zr-Ty1" id="MP5-k6-pFe"/>
                         <outlet property="showTaskChart" destination="g6w-nD-5Wb" id="o0B-e0-nuy"/>
@@ -633,6 +634,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             </textView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="d3h-VV-dZW">
@@ -3350,7 +3352,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <action selector="showNotes:" destination="Upk-cn-M3f" eventType="touchUpInside" id="nJL-Xl-tKI"/>
+                                    <action selector="showNotes:" destination="Upk-cn-M3f" eventType="touchUpInside" id="FGL-AE-Vhy"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -3359,6 +3361,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     </view>
                     <navigationItem key="navigationItem" title="Details" id="5w6-iQ-TmG">
                         <barButtonItem key="backBarButtonItem" title="Details" id="57Z-K5-bOP"/>
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="LiW-Yh-zp7"/>
                     </navigationItem>
                     <connections>
                         <outlet property="status" destination="BIF-O1-pVw" id="f1z-DZ-0PU"/>
@@ -3572,6 +3575,273 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="home.png" width="32" height="32"/>
         <image name="plane.png" width="32" height="32"/>
     </resources>
+    <classes>
+        <class className="CCAuxCalendarSettingViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxCalendarSettingViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancelCalendar:" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="CCAuxDateViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxDateViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="newDate:" candidateClass="UIDatePicker"/>
+                <relationship kind="outlet" name="projectDate" candidateClass="UIDatePicker"/>
+            </relationships>
+        </class>
+        <class className="CCAuxDurationViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxDurationViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancel:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="save:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="countDown" candidateClass="UIPickerView"/>
+            </relationships>
+        </class>
+        <class className="CCAuxFontListViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxFontListViewController.h"/>
+        </class>
+        <class className="CCAuxPriorityEditorViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxPriorityEditorViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="updatePriority:" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="priorityText" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+        <class className="CCAuxPriorityViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxPriorityViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="insertPriority:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+        <class className="CCAuxSettingsViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxSettingsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="changeFontSize:" candidateClass="UIStepper"/>
+                <relationship kind="action" name="email:" candidateClass="UITextField"/>
+                <relationship kind="action" name="openFAQ:" candidateClass="UIButton"/>
+                <relationship kind="action" name="setHomeLocation:" candidateClass="UIButton"/>
+                <relationship kind="action" name="setTimer:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="tapHandler:" candidateClass="UITapGestureRecognizer"/>
+                <relationship kind="outlet" name="changeFontSize" candidateClass="UIStepper"/>
+                <relationship kind="outlet" name="colorPad" candidateClass="UIView"/>
+                <relationship kind="outlet" name="email" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="location" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="timerOffOn" candidateClass="UISwitch"/>
+            </relationships>
+        </class>
+        <class className="CCAuxTaskCloneDrillController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxTaskCloneDrillController.h"/>
+        </class>
+        <class className="CCAuxTaskCloneViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxTaskCloneViewController.h"/>
+        </class>
+        <class className="CCCalendarControlViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCCalendarControlViewController.h"/>
+        </class>
+        <class className="CCCalendarViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCCalendarViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="insertEvent"/>
+            </relationships>
+        </class>
+        <class className="CCCategoryTaskViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCCategoryTaskViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancelCategory:"/>
+            </relationships>
+        </class>
+        <class className="CCChart" superclassName="UIView">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCChart.h"/>
+        </class>
+        <class className="CCDateSetterViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCDateSetterViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="billableProject:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="completeProject:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="hourlyRate:" candidateClass="UITextField"/>
+                <relationship kind="action" name="name:" candidateClass="UITextField"/>
+                <relationship kind="action" name="projectActive:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="projectCostBudget:" candidateClass="UITextField"/>
+                <relationship kind="action" name="utilities:" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="activeSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="billableSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="completeSwitch" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="hourlyRateField" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="projectCostBudget" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="projectName" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="settingsController" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+        <class className="CCDeliverableViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCDeliverableViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancelPopover"/>
+                <relationship kind="action" name="clickSummaryButton:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="clickTableDisplayOptions:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="insertDeliverable"/>
+                <relationship kind="action" name="savePopoverData"/>
+                <relationship kind="outlet" name="displayOptions" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+        <class className="CCDetailViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCDetailViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="sendNotes:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="showCalendarPopover:"/>
+                <relationship kind="action" name="showChart:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="showDeliverablePopover:"/>
+                <relationship kind="action" name="showSettings:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="showTaskChart:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="showTimePopover:"/>
+                <relationship kind="outlet" name="projectNotes" candidateClass="UITextView"/>
+                <relationship kind="outlet" name="sendingNotes" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="showCalendar" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="showDeliverables" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="showTaskChart" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="showTimers" candidateClass="UIBarButtonItem"/>
+            </relationships>
+        </class>
+        <class className="CCExpenseDetailsViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCExpenseDetailsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="amountPaid:" candidateClass="UITextField"/>
+                <relationship kind="action" name="billed:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="itemPurchased:" candidateClass="UITextField"/>
+                <relationship kind="action" name="milage:" candidateClass="UITextField"/>
+                <relationship kind="action" name="paidTo:" candidateClass="UITextField"/>
+                <relationship kind="action" name="removePicture:" candidateClass="UIButton"/>
+                <relationship kind="action" name="utilities:" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="amountPaid" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="billed" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="itemPurchased" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="milage" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="notes" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="paidTo" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="receipt" candidateClass="UIImageView"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="utilityControll" candidateClass="UISegmentedControl"/>
+            </relationships>
+        </class>
+        <class className="CCExpenseNotesViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCExpenseNotesViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="closeNotes:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="notes" candidateClass="UITextView"/>
+            </relationships>
+        </class>
+        <class className="CCHotListViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCHotListViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancelPopover"/>
+                <relationship kind="action" name="filterOptions:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="savePopoverData"/>
+                <relationship kind="action" name="sendHotList:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+        <class className="CCMainTaskViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCMainTaskViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="cancelPopover"/>
+                <relationship kind="action" name="displayOptions:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="navButton:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="savePopoverData"/>
+                <relationship kind="outlet" name="displayOptions" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="navButton" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+        <class className="CCMasterViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCMasterViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="actionButton:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="action" name="filterActions:" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="projectActionsButton" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+        <class className="CCParentTaskViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCParentTaskViewController.h"/>
+        </class>
+        <class className="CCProjectSwitchTableViewController" superclassName="UITableViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCProjectSwitchTableViewController.h"/>
+        </class>
+        <class className="CCTaskDueDateViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTaskDueDateViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="changeDueDate:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="pushIntoReminder:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="setTaskDueDate:" candidateClass="UIDatePicker"/>
+                <relationship kind="outlet" name="dueDate" candidateClass="UIDatePicker"/>
+            </relationships>
+        </class>
+        <class className="CCTaskSummaryViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTaskSummaryViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="doneButton:" candidateClass="UIBarButtonItem"/>
+                <relationship kind="outlet" name="navBar" candidateClass="UINavigationBar"/>
+            </relationships>
+        </class>
+        <class className="CCTaskViewDetailsController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTaskViewDetailsController.h"/>
+            <relationships>
+                <relationship kind="action" name="completeTask:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="resetParams:" candidateClass="UIButton"/>
+                <relationship kind="action" name="showNotes:" candidateClass="UIButton"/>
+                <relationship kind="action" name="taskName:" candidateClass="UITextField"/>
+                <relationship kind="outlet" name="status" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="taskParameters" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="taskTitle" candidateClass="UITextField"/>
+            </relationships>
+        </class>
+        <class className="CCTimeViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTimeViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="timeTypeSelected:" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+                <relationship kind="outlet" name="timeSelector" candidateClass="UISegmentedControl"/>
+            </relationships>
+        </class>
+        <class className="CCTimerDetailsViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTimerDetailsViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="billed:" candidateClass="UISwitch"/>
+                <relationship kind="action" name="changeDate:" candidateClass="UIDatePicker"/>
+                <relationship kind="outlet" name="billed" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="changeDate" candidateClass="UIDatePicker"/>
+                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
+            </relationships>
+        </class>
+        <class className="CCTimerSummaryViewController" superclassName="UIViewController">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTimerSummaryViewController.h"/>
+            <relationships>
+                <relationship kind="action" name="setFilterRange:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="showDetails:" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="billRate" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="billedTime" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="billingAmount" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="markBilled" candidateClass="UISwitch"/>
+                <relationship kind="outlet" name="outPut" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="remainingBudget" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="remainingTime" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="reportableTime" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="totalProjectTime" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="unbilledTime" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+        <class className="ExpenseCell" superclassName="UITableViewCell">
+            <source key="sourceIdentifier" type="project" relativePath="./Classes/ExpenseCell.h"/>
+            <relationships>
+                <relationship kind="outlet" name="amountPaid" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="description" candidateClass="UILabel"/>
+                <relationship kind="outlet" name="paidTo" candidateClass="UILabel"/>
+            </relationships>
+        </class>
+    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackTranslucent"/>
         <simulatedOrientationMetrics key="orientation"/>
@@ -3579,7 +3849,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="gY0-Ur-f3q"/>
+        <segue reference="CAW-5q-vHi"/>
         <segue reference="Xxn-JQ-cDv"/>
-        <segue reference="XQ6-5D-tBj"/>
     </inferredMetricsTieBreakers>
 </document>

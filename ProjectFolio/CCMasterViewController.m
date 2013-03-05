@@ -106,7 +106,8 @@
 
 -(IBAction)actionButton:(UIBarButtonItem *)sender{
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Close Projects" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"This Week", @"Yesterday", @"All Active", nil];
-    [actionSheet showInView:self.detailViewController.view];
+    actionSheet.tag = 1;
+    [actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES];
 }
 
 #pragma mark - Popover Controls
@@ -165,30 +166,80 @@
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
-    self.closer = nil;
-    switch (buttonIndex) {
-        case 2:
-            self.closer = [[CCGeneralCloser alloc] initForAll];
-            [self.closer setMessage];
-            [self.navigationController presentModalViewController:self.closer.mailComposer animated:YES];
-            break;
-            
-        case 0:
-            self.closer = [[CCGeneralCloser alloc] initWithLastWeek];
-            [self.closer setMessage];
-            [self.navigationController presentModalViewController:self.closer.mailComposer animated:YES];
-            break;
-            
-        case 1:
-            self.closer = [[CCGeneralCloser alloc] initForYesterday];
-            [self.closer setMessage];
-            [self.navigationController presentModalViewController:self.closer.mailComposer animated:YES];
-            break;
-            
-        default:
-            // NSLog(@"Cancelling this");
-            break;
+    if (actionSheet.tag == 1) {
+        self.closer = nil;
+        switch (buttonIndex) {
+            case 2:
+                self.closer = [[CCGeneralCloser alloc] initForAll];
+                self.closer.printDelegate = self;
+                [self.closer setMessage];
+                break;
+                
+            case 0:
+                self.closer = [[CCGeneralCloser alloc] initWithLastWeek];
+                self.closer.printDelegate = self;
+                [self.closer setMessage];
+                break;
+                
+            case 1:
+                self.closer = [[CCGeneralCloser alloc] initForYesterday];
+                self.closer.printDelegate = self;
+                [self.closer setMessage];
+                break;
+                
+            default:
+                break;
+        }
+    } else if ( actionSheet.tag == 2 ) {
+        switch (buttonIndex) {
+            case 0:
+                [self.closer emailMessage];
+                [self.navigationController presentModalViewController:self.closer.mailComposer animated:YES];
+                break;
+                
+            case 1:
+                [self printReport];
+                break;
+                
+            default:
+                break;
+        }
     }
+}
+
+- (void)printReport{
+    UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
+    pic.delegate = self;
+    
+    UIPrintInfo *printInfo = [UIPrintInfo printInfo];
+    printInfo.outputType = UIPrintInfoOutputGrayscale;
+    printInfo.jobName = self.activeProject.projectName;
+    pic.printInfo = printInfo;
+    
+    UIMarkupTextPrintFormatter *notesFormatter = [[UIMarkupTextPrintFormatter alloc]
+                                                  initWithMarkupText:self.closer.messageString];
+    notesFormatter.startPage = 0;
+    notesFormatter.contentInsets = UIEdgeInsetsMake(72.0, 72.0, 72.0, 72.0); // 1 inch margins
+    pic.printFormatter = notesFormatter;
+    pic.showsPageRange = YES;
+    
+    void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
+    ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
+        if (!completed && error) {
+            NSLog(@"Printing could not complete because of error: %@", error);
+        }
+    };
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [pic presentFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES completionHandler:completionHandler];
+    } else {
+        [pic presentAnimated:YES completionHandler:completionHandler];
+    }
+}
+
+- (void)sendOutput{
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Send Email" otherButtonTitles:@"Print Report", nil];
+    sheet.tag = 2;
+    [sheet showFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES];
 }
 
 #pragma mark - Alert Functionality

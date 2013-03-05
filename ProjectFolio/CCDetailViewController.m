@@ -11,6 +11,7 @@
 #import "CCProjectTaskDelegate.h"
 #import "CCTaskSummaryViewController.h"
 #import "CCAuxSettingsViewController.h"
+#import "CCPrintNotesRender.h"
 
 #define kShowProjects @"neverShowProjects"
 #define kFontNameKey @"font"
@@ -30,6 +31,7 @@
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) UIMenuItem *longPressMenu;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sendingNotes;
 @property NSInteger lastButton;
 
 @end
@@ -201,7 +203,7 @@
 }
 
 -(IBAction)sendNotes:(UIBarButtonItem *)sender{
-    UIActionSheet *actionSheet = [[ UIActionSheet alloc] initWithTitle:@"Reporting Center" delegate:self cancelButtonTitle:@"OK" destructiveButtonTitle:nil otherButtonTitles:@"Email Notes", @"Send Error Report", @"Submit Feedback", @"Print Notes", nil];
+    UIActionSheet *actionSheet = [[ UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"OK" destructiveButtonTitle:nil otherButtonTitles:@"Email Notes", @"Send Error Report", @"Submit Feedback", @"Print Notes", nil];
     [actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
 }
 
@@ -336,11 +338,41 @@
         [self.emailer sendEmail];
         [self presentModalViewController:self.emailer.mailComposer animated:YES];
     } else if (buttonIndex == 3) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Notes" message:@"This is future home of printing notes" delegate:self cancelButtonTitle:@"Not Yet, But Soon" otherButtonTitles:nil];
-        [alert show];
+        UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
+        pic.delegate = self;
+        
+        UIPrintInfo *printInfo = [UIPrintInfo printInfo];
+        printInfo.outputType = UIPrintInfoOutputGrayscale;
+        printInfo.jobName = self.project.projectName;
+        pic.printInfo = printInfo;
+        
+        UIPrintFormatter *notesFormatter = [self.projectNotes viewPrintFormatter];
+        notesFormatter.startPage = 0;
+        notesFormatter.contentInsets = UIEdgeInsetsMake(72.0, 72.0, 72.0, 72.0); // 1 inch margins
+        pic.printFormatter = notesFormatter;
+        pic.showsPageRange = YES;
+        
+        void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
+        ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
+            if (!completed && error) {
+                NSLog(@"Printing could not complete because of error: %@", error);
+            }
+        };
+        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+            [pic presentFromBarButtonItem:self.sendingNotes animated:YES completionHandler:completionHandler];
+        } else {
+            [pic presentAnimated:YES completionHandler:completionHandler];
+        }
     } else {
     }
 }
+
+void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
+^(UIPrintInteractionController *pic, BOOL completed, NSError *error) {
+    if (!completed && error)
+        NSLog(@"FAILED! due to error in domain %@ with error code %u",
+              error.domain, error.code);
+};
 
 -(void)releaseLogger{
     self.logger = nil;

@@ -7,6 +7,7 @@
 //
 
 #import "CCGeneralCloser.h"
+#define kFontNameKey @"font"
 #define ALL_UNBILLED  0
 #define YESTERDAY_UNBILLED 1
 #define LAST_WEEK_UNBILLED 3
@@ -67,7 +68,7 @@
 -(CCGeneralCloser *)initWithLastWeek{
     CCGeneralCloser *newCloser = [super init];
     self.mode = THIS_WEEK_UNBILLED;
-    self.subjectLine = @"Close last week's projects";
+    self.subjectLine = @"Close this week's projects";
     return newCloser;
 }
 
@@ -178,22 +179,24 @@
 }
 
 -(void)setMessage{
-    [self.mailComposer setModalPresentationStyle:UIModalPresentationFormSheet];
     if (self.subjectLine == nil) {
         self.subjectLine = @"Whoops";
     }
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *fontFamily = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
     NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc]init];
     [numberFormatter setMaximumFractionDigits:2];
     [numberFormatter setMinimumFractionDigits:2];
     [numberFormatter setMinimumIntegerDigits:1];
     [numberFormatter setRoundingMode:NSNumberFormatterRoundUp];
     NSMutableString *messageString = [[NSMutableString alloc] init];
+    [messageString appendString:[NSString stringWithFormat:@"<font face=&quot;%@&quot;>",fontFamily]];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateStyle:NSDateFormatterShortStyle];
     [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
-    NSString *newProject = nil; //[[NSString alloc] initWithFormat:@"Who me???"];
-    NSString *oldProject = nil; //[[NSString alloc] initWithFormat:@"Who me???"];
-    NSString *newDate = nil; //[[NSString alloc] initWithFormat:@"Who me???"];
+    NSString *newProject = nil;
+    NSString *oldProject = nil;
+    NSString *newDate = nil;
     NSString *oldDate = [[NSString alloc] initWithFormat:@"Who me???"];
     float currentInterval = 0;
     float projectInterval = 0;
@@ -209,108 +212,119 @@
         newDate = [dateFormatter stringFromDate:event.start];
         
         // Temmporary: use to see how we're doing
-        
         if ( elapseTime > 0 && ![newProject isEqualToString:@"Who me???"]) {
-            //NSString *newString = [[NSString alloc]
-            //                       initWithFormat:@"Project: %@\tDay: %@\tElapse time:\t%@", newProject, newDate, [numberFormatter stringFromNumber:[NSNumber numberWithFloat:elapseTime]]];
-            //[messageString appendString:newString];
-            //[messageString appendString:@"\n\r"];
-   
             if ([newProject isEqualToString:oldProject]) {
                 if ([newDate isEqualToString:oldDate]) {
                     // Update the daily and project counters
                     currentInterval = currentInterval + elapseTime;
-                    projectInterval = projectInterval + elapseTime;
                 } else {
                     // Write the daily record
-                    newString = [[NSString alloc] initWithFormat:@"\t\t\tDay: %@\tElapse time:\t%@",
+                    currentInterval = roundf(currentInterval * 100)/100;
+                    newString = [[NSString alloc] initWithFormat:@"<TR><TD>Day: %@</TD><TD></TD><TD>Elapse time: %@</TD></TR>",
                                  oldDate,
                                  [numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
                     [messageString appendString:newString];
-                    [messageString appendString:@"\n\r"];
                     
-                    // Reset the daily counter
-                    currentInterval = elapseTime;
                     // Update the project counter
-                    projectInterval = projectInterval + elapseTime;
+                    projectInterval = projectInterval + currentInterval;
+                    // This elapse time represents a new day, so increment it now
+                    currentInterval = elapseTime;
                 }
-            } else {
+            }
+            else {
                 // Changing Project .. Write the last Day
                 if (![oldDate isEqualToString:@"Who me???"]) {
                     if (self.mode != YESTERDAY_UNBILLED) {
-                        newString = [[NSString alloc] initWithFormat:@"\t\t\tDay: %@\tElapse time:\t%@",
+                        currentInterval = roundf(currentInterval * 100)/100;
+                        newString = [[NSString alloc] initWithFormat:@"<TR><TD>Day: %@</TD><TD></TD><TD>Elapse time: %@</TD></TR></TABLE>",
                                      oldDate,
                                      [numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
                         [messageString appendString:newString];
-                        [messageString appendString:@"\n\r"];
                         
-                        newString = [[NSString alloc] initWithFormat:@"----------------------------------------\n\r"];
-                        [messageString appendString:newString];
+                        [messageString appendString:[[NSString alloc] initWithFormat:@"_____________________________________<br>"]];
                         
-                        newString = [[NSString alloc] initWithFormat:@"\tSub-total Elapse time:\t%@",
+                        // Update the project counter
+                        projectInterval = projectInterval + currentInterval;
+                        projectInterval = roundf(projectInterval * 100)/100;
+                        
+                        newString = [[NSString alloc] initWithFormat:@"<i>%@ Elapse time:</i> %@<p>",
+                                     oldProject,
                                      [numberFormatter stringFromNumber:[NSNumber numberWithFloat:projectInterval]]];
                         [messageString appendString:newString];
-                        [messageString appendString:@"\n\r\n\r"];
- 
-                        newString = [[NSString alloc] initWithFormat:@"Project: %@", newProject];
+               
+                        newString = [[NSString alloc] initWithFormat:@"<p><b>Project: %@</b><TABLE>", newProject];
                         [messageString appendString:newString];
-                        [messageString appendString:@"\n\r"];
+                        totalInterval = totalInterval + projectInterval;
+                        
                     } else {
-                        newString = [[NSString alloc] initWithFormat:@"Project: %@\t\tDay: %@\tElapse time:\t%@",
-                                     oldProject,
+                        currentInterval = roundf(currentInterval * 100)/100;
+                        newString = [[NSString alloc] initWithFormat:@"<TR><TD>Project:</TD><TD>%@</TD><TD>Day:</TD><TD>%@</TD><TD>Elapse time:</TD><TD>%@</TD></TR>",
+                                                  oldProject,
                                      oldDate,
                                      [numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
                         [messageString appendString:newString];
-                        [messageString appendString:@"\n\r"];
                     }
                     
-                } else if ( ![newProject isEqualToString:@"Who me???"]  && self.mode != YESTERDAY_UNBILLED){
+                }
+                else if ( ![newProject isEqualToString:@"Who me???"]  && self.mode != YESTERDAY_UNBILLED){
                     
-                    newString = [[NSString alloc] initWithFormat:@"Project: %@", newProject];
+                    newString = [[NSString alloc] initWithFormat:@"<p><b>Project: %@</b><TABLE>", newProject];
                     [messageString appendString:newString];
-                    [messageString appendString:@"\n\r"];
+                    //[messageString appendString:@"<p>"];
                 }
                 // Reset the daily and project summaries
                 currentInterval = elapseTime;
-                projectInterval = elapseTime;
+                projectInterval = 0;
             }
             // Get ready for the next Loop
-            totalInterval = totalInterval + elapseTime;
             oldDate = newDate;
             oldProject = newProject;
         }
-        
-
-        //event.billed = [NSNumber numberWithInt:1];
     }
+    
     if (currentInterval != 0) {
         if (![oldProject isEqualToString:@"Who me???"]) {            
             if (self.mode != YESTERDAY_UNBILLED) {
-                NSString *newString = [[NSString alloc] initWithFormat:@"\t\tDay: %@\tElapse time:\t%@", oldDate,[numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
-                [messageString appendString:newString];
-                [messageString appendString:@"\n\r"];
-                
-                newString = [[NSString alloc] initWithFormat:@"----------------------------------------\n\r"];
+                currentInterval = roundf(currentInterval * 100)/100;
+                NSString *newString = [[NSString alloc] initWithFormat:@"<TR><TD>Day: %@</TD><TD></TD><TD>Elapse time: %@</TD></TR></TABLE>", oldDate,[numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
                 [messageString appendString:newString];
                 
-                newString = [[NSString alloc] initWithFormat:@"\tSub-total Elapse time:\t%@",
+                [messageString appendString:[[NSString alloc] initWithFormat:@"_____________________________________<br>"]];
+                
+                // Update the project counter
+                projectInterval = projectInterval + currentInterval;
+                projectInterval = roundf(projectInterval * 100)/100;
+                newString = [[NSString alloc] initWithFormat:@"<i>%@ Elapse time:</i> %@<p>",
+                             oldProject,
                              [numberFormatter stringFromNumber:[NSNumber numberWithFloat:projectInterval]]];
                 [messageString appendString:newString];
-                [messageString appendString:@"\n\r\n\r"];
+                totalInterval = totalInterval + projectInterval;
+                
             } else {
-                NSString *newString = [[NSString alloc] initWithFormat:@"Project: %@\tDay: %@\tElapse time:\t%@", oldProject, oldDate,[numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
+                currentInterval = roundf(currentInterval * 100)/100;
+                NSString *newString = [[NSString alloc] initWithFormat:@"<TR><TD><b>%@</b>   </TD><TD>Elapse time: %@</TD></TR>", oldProject, [numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
                 [messageString appendString:newString];
-                [messageString appendString:@"\n\r"];
+                totalInterval = totalInterval + currentInterval;
             }
 
         }
     }
     
-    NSString *newString = [[NSString alloc] initWithFormat:@"Total Elapse time: %@", [numberFormatter stringFromNumber:[NSNumber numberWithFloat:totalInterval]]];
-    [messageString appendString:newString];
+    [messageString appendString:@"</TABLE><br>"];
+    [messageString appendString:[[NSString alloc] initWithFormat:@"_____________________________________<br>"]];
+    [messageString appendString:[[NSString alloc] initWithFormat:@"_____________________________________"]];
     
+    NSString *newString = [[NSString alloc] initWithFormat:@"<p><b>Total Elapse time: %@</b><p>", [numberFormatter stringFromNumber:[NSNumber numberWithFloat:totalInterval]]];
+    [messageString appendString:newString];
+    [messageString appendString:@"</font>"];
+    self.messageString = messageString;
+    [self.printDelegate sendOutput];
+}
+
+- (void)emailMessage{
+    [self.mailComposer setModalPresentationStyle:UIModalPresentationFormSheet];
     [self.mailComposer setSubject:self.subjectLine];
-    [self.mailComposer setMessageBody:messageString isHTML:NO];
+    [self.mailComposer setMessageBody:self.messageString isHTML:YES];
 }
 
 #pragma mark - Lazy Getter
