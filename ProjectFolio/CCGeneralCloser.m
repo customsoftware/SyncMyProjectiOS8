@@ -271,6 +271,9 @@
                     newString = [[NSString alloc] initWithFormat:@"<p><b>Project: %@</b><TABLE>", newProject];
                     [messageString appendString:newString];
                     //[messageString appendString:@"<p>"];
+                } else if ( ![newProject isEqualToString:@"Who me???"]  && self.mode == YESTERDAY_UNBILLED){
+                    newString = [[NSString alloc] initWithFormat:@"<TABLE>"];
+                    [messageString appendString:newString];
                 }
                 // Reset the daily and project summaries
                 currentInterval = elapseTime;
