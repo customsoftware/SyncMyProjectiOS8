@@ -7,8 +7,8 @@
 //
 
 #import "CCExpenseReporterViewController.h"
-#define CR_LF   [[NSString alloc] initWithFormat:@"\n\r"]
-#define SCORE   [[NSString alloc] initWithFormat:@"-----------------------------------------------------------------------\n\r"]
+#define CR_LF   [[NSString alloc] initWithFormat:@"<br>"]
+#define SCORE   [[NSString alloc] initWithFormat:@"_________________________________________________<br>"]
 
 @interface CCExpenseReporterViewController ()
 
@@ -32,7 +32,7 @@
     self.receiptList = nil;
     
     // Header for report
-    NSMutableString *message = [[NSMutableString alloc] initWithFormat:@"Expense Report:\n\r"];
+    NSMutableString *message = [[NSMutableString alloc] initWithFormat:@"Expense Report:<br>"];
     NSString *valueString = [self.currencyFormatter stringFromNumber:project.costBudget];
     // Starting amount for the budget
     NSString *startString = [NSString stringWithFormat:@"Starting Budget..:"];

@@ -44,7 +44,7 @@
     [self.mailComposer setModalPresentationStyle:UIModalPresentationFormSheet];
     [self.mailComposer setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
     [self.mailComposer setSubject:self.subjectLine];
-    [self.mailComposer setMessageBody:self.messageText isHTML:NO];
+    [self.mailComposer setMessageBody:self.messageText isHTML:YES];
     if (self.addressee != nil) {
         [self.mailComposer setToRecipients:[[NSArray alloc] initWithObjects:self.addressee, nil]];
     }

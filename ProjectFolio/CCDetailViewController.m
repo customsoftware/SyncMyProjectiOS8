@@ -348,8 +348,13 @@
         
         UIPrintFormatter *notesFormatter = [self.projectNotes viewPrintFormatter];
         notesFormatter.startPage = 0;
-        notesFormatter.contentInsets = UIEdgeInsetsMake(72.0, 72.0, 72.0, 72.0); // 1 inch margins
-        pic.printFormatter = notesFormatter;
+        CCPrintNotesRender *renderer = [[CCPrintNotesRender alloc] init];
+        renderer.headerString = [NSString stringWithFormat:@"Notes for %@ project", self.project.projectName];
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        renderer.fontName = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
+        renderer.fontSize = [defaults integerForKey:kFontSize];
+        [renderer addPrintFormatter:notesFormatter startingAtPageAtIndex:0];
+        pic.printPageRenderer = renderer;
         pic.showsPageRange = YES;
         
         void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =

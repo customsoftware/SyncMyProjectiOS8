@@ -7,6 +7,10 @@
 //
 
 #import "CCTaskViewDetailsController.h"
+#import "CCPrintNotesRender.h"
+#define kFontNameKey @"font"
+#define kFontSize @"fontSize"
+
 #define SWITCH_ON [[NSNumber alloc] initWithInt:1]
 #define SWITCH_OFF [[NSNumber alloc] initWithInt:0]
 #define kDefaultEmail @"defaultEmail"
@@ -93,7 +97,6 @@
 }
 
 -(void)saveParent{
-    // NSLog(@"Task: %@'s parent task has display order of %d", self.activeTask.title, [self.activeTask.parent.displayOrder integerValue]);
     [self.taskDelegate savePopoverData];
 }
 
@@ -124,7 +127,6 @@
 
 -(IBAction)completeTask:(UISwitch *)sender{
     self.activeTask.completed = ([sender isOn]) ? SWITCH_ON:SWITCH_OFF;
-    // [self.activeTask updateSubTaskCompletion:self.activeTask.completed];
     [self.taskParameters reloadData];
     [self.view endEditing:YES];
 }
@@ -192,9 +194,15 @@
     NSArray *sentences = [taskString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
     
     NSMutableString *newString = [[NSMutableString alloc] init];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *fontFamily = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
+    [newString appendString:[NSString stringWithFormat:@"<font face=&quot;%@&quot;>",fontFamily]];
+    
     for (NSString *sentence in sentences) {
         [newString appendFormat:@"%@<p>", sentence];
     }
+    [newString appendString: @"</font>"];
+    
 
     return newString;
 }
@@ -224,8 +232,13 @@
     UIMarkupTextPrintFormatter *notesFormatter = [[UIMarkupTextPrintFormatter alloc]
                                         initWithMarkupText:[self printString]];
     notesFormatter.startPage = 0;
-    notesFormatter.contentInsets = UIEdgeInsetsMake(72.0, 72.0, 72.0, 72.0); // 1 inch margins
-    pic.printFormatter = notesFormatter;
+    CCPrintNotesRender *renderer = [[CCPrintNotesRender alloc] init];
+    renderer.headerString = [NSString stringWithFormat:@"Task Notes for %@ task", self.activeTask.title];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    renderer.fontName = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
+    renderer.fontSize = [defaults integerForKey:kFontSize];
+    [renderer addPrintFormatter:notesFormatter startingAtPageAtIndex:0];
+    pic.printPageRenderer = renderer;
     pic.showsPageRange = YES;
     
     void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =

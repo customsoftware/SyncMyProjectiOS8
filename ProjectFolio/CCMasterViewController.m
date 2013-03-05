@@ -23,6 +23,7 @@
 #import "CCDetailViewController.h"
 #import "CCPopoverControllerDelegate.h"
 #import "CCHotListViewController.h"
+#import "CCPrintNotesRender.h"
 
 @interface CCMasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
@@ -219,8 +220,13 @@
     UIMarkupTextPrintFormatter *notesFormatter = [[UIMarkupTextPrintFormatter alloc]
                                                   initWithMarkupText:self.closer.messageString];
     notesFormatter.startPage = 0;
-    notesFormatter.contentInsets = UIEdgeInsetsMake(72.0, 72.0, 72.0, 72.0); // 1 inch margins
-    pic.printFormatter = notesFormatter;
+    CCPrintNotesRender *renderer = [[CCPrintNotesRender alloc] init];
+    renderer.headerString = @"Billable Hour Summary";
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    renderer.fontName = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
+    renderer.fontSize = [defaults integerForKey:kFontSize];
+    [renderer addPrintFormatter:notesFormatter startingAtPageAtIndex:0];
+    pic.printPageRenderer = renderer;
     pic.showsPageRange = YES;
     
     void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
