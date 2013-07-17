@@ -7,6 +7,7 @@
 //
 
 #import "CCAuxPriorityViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface CCAuxPriorityViewController ()
 
@@ -21,15 +22,6 @@
 
 @implementation CCAuxPriorityViewController
 
-@synthesize tableView = _tableView;
-@synthesize priorityFRC = _priorityFRC;
-@synthesize fetchRequest = _fetchRequest;
-@synthesize editor = _editor;
-@synthesize selectedPath = _selectedPath;
-@synthesize theNewPriority = _theNewPriority;
-@synthesize logger = _logger;
-@synthesize priorityList = _priorityList;
-
 -(IBAction)insertPriority:(UIBarButtonItem *)sender{
     Priority * newPriority = [NSEntityDescription
                               insertNewObjectForEntityForName:@"Priority"
@@ -40,6 +32,7 @@
     [self.navigationController pushViewController:self.editor animated:YES];
 }
 
+#pragma mark - <CCPriorityDetailDelegate>
 -(void)saveUpdatedDetail:(NSString *)newValue{
     if (self.selectedPath == nil) {
         self.theNewPriority.priority = newValue;
@@ -50,10 +43,21 @@
     }
 }
 
-
 -(NSString *)getDetailValue{
     Priority *priority = [self.priorityFRC objectAtIndexPath:self.selectedPath];
     return priority.priority;
+}
+
+- (NSString *)getPriorityColor
+{
+Priority *priority = [self.priorityFRC objectAtIndexPath:self.selectedPath];
+   return priority.color;
+}
+
+- (void)saveUpdatedColor:(NSString *)newValue
+{
+    Priority *priority = [self.priorityFRC objectAtIndexPath:self.selectedPath];
+    priority.color = newValue;
 }
 
 #pragma mark - Life Cycle
@@ -88,18 +92,6 @@
     [self.priorityFRC performFetch:&fetchError];
     self.priorityList = [self.priorityFRC fetchedObjects];
     [self.tableView reloadData];
-}
-
--(void)viewDidUnload{
-    self.tableView = nil;
-    self.fetchRequest = nil;
-    self.priorityFRC = nil;
-    self.editor = nil;
-    self.selectedPath = nil;
-    self.theNewPriority = nil;
-    self.logger = nil;
-    self.priorityList = nil;
-    [super viewDidUnload];
 }
 
 - (void)didReceiveMemoryWarning
@@ -170,6 +162,12 @@
     if (cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:priorityCellID];
     }
+    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(250, 5, 44, 34)];
+    catColor.backgroundColor = [priority getCategoryColor];
+    catColor.layer.cornerRadius = 3;
+    catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    catColor.layer.borderWidth = 1;
+    [cell addSubview:catColor];
     cell.textLabel.text = priority.priority;
     return cell;
 }

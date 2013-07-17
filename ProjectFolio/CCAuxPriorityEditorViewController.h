@@ -7,17 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 
 @protocol CCPriorityDetailDelegate <NSObject>
 
 -(void)saveUpdatedDetail:(NSString *)newValue;
+-(void)saveUpdatedColor:(NSString *)newValue;
 -(NSString *)getDetailValue;
+-(NSString *)getPriorityColor;
 
 @end
 
 @interface CCAuxPriorityEditorViewController : UIViewController
-
--(IBAction)updatePriority:(UITextField * )sender;
 
 @property (strong, nonatomic) IBOutlet UITextField *priorityText;
 @property (weak, nonatomic) id<CCPriorityDetailDelegate>priorityDelegate;

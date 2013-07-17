@@ -93,9 +93,11 @@
 	// Do any additional setup after loading the view.
     
     self.colorPad.layer.borderWidth = 1.25f;
+    self.colorPad.layer.cornerRadius = 5;
     self.colorPad.layer.borderColor = [[UIColor darkGrayColor] CGColor];
     for (UIView *view in self.colorPad.subviews) {
         view.layer.borderWidth = 1.25f;
+        view.layer.cornerRadius = 3;
         view.layer.borderColor = [[UIColor darkGrayColor]CGColor];
     }
 }
@@ -131,19 +133,6 @@
     }
     [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
     [self.timerOffOn setOn:keyStatus];
-}
-
-- (void)viewDidUnload
-{
-    self.changeFontSize = nil;
-    self.tableView = nil;
-    self.defaults = nil;
-    self.location = nil;
-    self.email = nil;
-    self.logger = nil;
-    self.priorityController = nil;
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

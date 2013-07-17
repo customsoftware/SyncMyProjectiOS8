@@ -291,6 +291,7 @@
         self.emailer.subjectLine = subject;
         self.emailer.messageText = self.projectNotes.text;
         self.emailer.emailDelegate = self;
+        self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
         [self presentModalViewController:self.emailer.mailComposer animated:YES];
     } else if (buttonIndex == 1){
@@ -298,6 +299,7 @@
         self.emailer.messageText = @"Please enter any additional comments here.";
         self.emailer.emailDelegate = self;
         self.emailer.addressee = @"support@weatherbytes.net";
+        self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
         self.logger = [[CCErrorLogger alloc] initWithDelegate:self];
         NSArray *attachments = [[NSArray alloc] initWithObjects:[self.logger getErrorFile], nil];
@@ -309,6 +311,7 @@
         self.emailer.messageText = @"Enter your comments here.";
         self.emailer.emailDelegate = self;
         self.emailer.addressee = @"feedback@weatherbytes.net";
+        self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
         [self presentModalViewController:self.emailer.mailComposer animated:YES];
     } else {

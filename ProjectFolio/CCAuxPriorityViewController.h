@@ -15,8 +15,6 @@
 @interface CCAuxPriorityViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,CCPriorityDetailDelegate>
 
 -(IBAction)insertPriority:(UIBarButtonItem * )sender;
--(void)saveUpdatedDetail:(NSString *)newValue;
--(NSString *)getDetailValue;
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 

@@ -23,6 +23,14 @@
 #import "CCPopoverControllerDelegate.h"
 #import "CCHotListViewController.h"
 
+typedef enum kfilterModes{
+    allProjectsMode,
+    activeProjectsMode,
+    openProjectsMode,
+    categoryMode,
+    hotListMode
+} kFilterModes;
+
 @interface CCiPhoneMasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
 @property (strong, nonatomic) CCGeneralCloser *closer;
@@ -39,26 +47,6 @@
 @end
 
 @implementation CCiPhoneMasterViewController
-@synthesize fetchedProjectsController = __fetchedProjectsController;
-@synthesize managedObjectContext = __managedObjectContext;
-// @synthesize projectDateController = _projectDateController;
-@synthesize projectPopover = _projectPopover;
-@synthesize projectNameView = _projectNameView;
-@synthesize controllingCell = _controllingCell;
-@synthesize controllingCellIndex = _controllingCellIndex;
-@synthesize tableView = _tableView;
-@synthesize projectActionsButton = _projectActionsButton;
-@synthesize closer = _closer;
-@synthesize mainTaskController = _mainTaskController;
-@synthesize activeProject = _activeProject;
-@synthesize request = _request;
-@synthesize activePredicate = _activePredicate;
-@synthesize openPredicate = _openPredicate;
-@synthesize hotListController = _hotListController;
-@synthesize filteredProjects = _filteredProjects;
-@synthesize searchBar = _searchBar;
-@synthesize logger = _logger;
-@synthesize projectTimer = _projectTimer;
 
 -(void)sendTimerStartNotificationForProject{
     NSDictionary *projectDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:self.activeProject, @"Project", nil];
@@ -74,18 +62,18 @@
 
 #pragma mark - IBActions
 -(IBAction)filterActions:(UISegmentedControl *)sender{
-    if (sender.selectedSegmentIndex == 4){
+    if (sender.selectedSegmentIndex == hotListMode){
         // self.hotListController.projectDetailController = self.detailViewController;
         [self.navigationController pushViewController:self.hotListController animated:YES];
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];
     } else {
         self.lastSelected = sender.selectedSegmentIndex;
-        if (sender.selectedSegmentIndex == 0) {
+        if (sender.selectedSegmentIndex == allProjectsMode) {
             [self.request setPredicate:nil];
-        } else if ( sender.selectedSegmentIndex == 1 ) {
+        } else if ( sender.selectedSegmentIndex == activeProjectsMode ) {
             [self.request setPredicate:self.activePredicate];
-        } else if ( sender.selectedSegmentIndex == 2 ) {
+        } else if ( sender.selectedSegmentIndex == openProjectsMode ) {
             [self.request setPredicate:self.openPredicate];
         }
         NSError *fetchError = [[NSError alloc] init];
@@ -478,8 +466,8 @@
 
 -(NSFetchedResultsController *)fetchedProjectsController{
     NSFetchedResultsController *retvalue;
-    if (__fetchedProjectsController != nil) {
-        retvalue = __fetchedProjectsController;
+    if (_fetchedProjectsController != nil) {
+        retvalue = _fetchedProjectsController;
     } else {
         
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project"
@@ -510,7 +498,7 @@
             [self.logger releaseLogger];
         }
         
-        retvalue = __fetchedProjectsController;
+        retvalue = _fetchedProjectsController;
     }
     return retvalue;
 }
@@ -616,6 +604,17 @@
         cell.imageView.image = nil;
     }
     
+    if (self.lastSelected == categoryMode) {
+        UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(230, 5, 44, 34)];
+        catColor.backgroundColor = [newProject.projectPriority getCategoryColor];
+        catColor.layer.cornerRadius = 3;
+        catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+        catColor.layer.borderWidth = 1;
+        cell.accessoryView = catColor;
+    } else {
+        cell.accessoryView = nil;
+    }
+    
     cell.detailTextLabel.text = caption;
 }
 
@@ -634,12 +633,12 @@
 
 #pragma mark - Lazy getters
 -(NSManagedObjectContext *)managedObjectContext{
-    if (__managedObjectContext == nil) {
+    if (_managedObjectContext == nil) {
         CoreData *sharedModel = [CoreData sharedModel:self];
-        __managedObjectContext = sharedModel.managedObjectContext;
+        _managedObjectContext = sharedModel.managedObjectContext;
         
     }
-    return __managedObjectContext;
+    return _managedObjectContext;
 }
 
 -(CCiPhoneTaskViewController *)mainTaskController{
