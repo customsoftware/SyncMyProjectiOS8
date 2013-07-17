@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12C60" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="EDM-8f-gvH">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="2.0" toolsVersion="3084" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="EDM-8f-gvH">
     <dependencies>
         <deployment version="1296" identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="2083"/>
@@ -453,8 +453,8 @@
                                 <rect key="frame" x="238" y="7" width="77" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
-                                    <segment title="Edit"/>
-                                    <segment title="Add"/>
+                                    <segment title="" image="187-pencil.png"/>
+                                    <segment title="" image="Small Plus.png"/>
                                 </segments>
                                 <connections>
                                     <action selector="navButton:" destination="cDW-BX-JNo" eventType="valueChanged" id="jNd-Gz-0kd"/>
@@ -1567,7 +1567,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     </view>
                     <toolbarItems/>
                     <navigationItem key="navigationItem" title="Notes" id="hEX-w9-vhx">
-                        <barButtonItem key="rightBarButtonItem" systemItem="compose" id="lNn-ra-c2E">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="lNn-ra-c2E">
                             <connections>
                                 <action selector="sendNotes:" destination="y5i-CR-a13" id="0RJ-yA-Zcn"/>
                             </connections>
@@ -2101,7 +2101,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <objects>
                 <viewController storyboardIdentifier="settingsMain" useStoryboardIdentifierAsRestorationIdentifier="YES" id="ruy-76-Jad" customClass="CCAuxSettingsViewController" sceneMemberID="viewController">
                     <scrollView key="view" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" indicatorStyle="white" id="Agj-Tg-g7a">
-                        <rect key="frame" x="0.0" y="64" width="320" height="700"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="656"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Yqo-Jv-N7N">
@@ -2165,7 +2165,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="10" id="3mb-jk-DVg">
-                                <rect key="frame" x="0.0" y="455" width="320" height="196"/>
+                                <rect key="frame" x="0.0" y="460" width="320" height="196"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" red="0.89588994570000002" green="0.89588994570000002" blue="0.89588994570000002" alpha="1" colorSpace="calibratedRGB"/>
                                 <prototypes>
@@ -2358,7 +2358,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <color key="backgroundColor" red="0.89588994570000002" green="0.89588994570000002" blue="0.89588994570000002" alpha="1" colorSpace="calibratedRGB"/>
                         <userDefinedRuntimeAttributes>
                             <userDefinedRuntimeAttribute type="size" keyPath="contentSize">
-                                <size key="value" width="320" height="700"/>
+                                <size key="value" width="320" height="656"/>
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </scrollView>
@@ -2393,7 +2393,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <objects>
                 <tableViewController storyboardIdentifier="calendarSettings" useStoryboardIdentifierAsRestorationIdentifier="YES" id="Hue-YP-Fob" customClass="CCAuxCalendarSettingViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="pD4-rN-LoT">
-                        <rect key="frame" x="0.0" y="64" width="320" height="636"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="592"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -2439,7 +2439,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <objects>
                 <tableViewController storyboardIdentifier="fontList" title="Fonts" id="Fk6-SP-xDI" customClass="CCAuxFontListViewController" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="aGH-yB-bkH">
-                        <rect key="frame" x="0.0" y="64" width="320" height="636"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="592"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
@@ -2549,7 +2549,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                         </segmentedControl>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="fkj-42-TyV"/>
-                                    <barButtonItem systemItem="compose" id="blL-or-sJ3">
+                                    <barButtonItem systemItem="action" id="blL-or-sJ3">
                                         <connections>
                                             <action selector="clickSummaryButton:" destination="b6W-x5-cuE" id="ZHr-a9-x1u"/>
                                         </connections>
@@ -2781,22 +2781,22 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <objects>
                 <viewController storyboardIdentifier="priorityEditor" id="ZXB-nn-YMZ" customClass="CCAuxPriorityViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2zv-9L-n5V">
-                        <rect key="frame" x="0.0" y="64" width="320" height="636"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="592"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="BBY-xb-BuJ">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="636"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="592"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="priorityCell" textLabel="aMz-oP-uFP" style="IBUITableViewCellStyleDefault" id="6n9-MB-LKi">
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="priorityCell" textLabel="aQa-C1-49H" style="IBUITableViewCellStyleDefault" id="6n9-MB-LKi" customClass="CategoryCell">
                                         <rect key="frame" x="0.0" y="22" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aMz-oP-uFP">
+                                                <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="aQa-C1-49H">
                                                     <rect key="frame" x="10" y="0.0" width="280" height="43"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
@@ -2838,7 +2838,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <objects>
                 <viewController storyboardIdentifier="priorityValueEditor" id="9ry-k4-s6C" customClass="CCAuxPriorityEditorViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="3xK-v5-Tiv">
-                        <rect key="frame" x="0.0" y="64" width="320" height="636"/>
+                        <rect key="frame" x="0.0" y="64" width="320" height="592"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Category:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="yUr-tY-n73">
@@ -2857,16 +2857,93 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <action selector="updatePriority:" destination="9ry-k4-s6C" eventType="editingDidEnd" id="WTe-cm-8AQ"/>
                                 </connections>
                             </textField>
+                            <view opaque="NO" contentMode="scaleToFill" id="9A5-BF-OsU">
+                                <rect key="frame" x="8" y="102" width="304" height="236"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" id="wsL-Wa-Zw6">
+                                        <rect key="frame" x="14" y="20" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.038661354776435508" green="1" blue="0.98599971693698341" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="rzq-Nq-YZU">
+                                        <rect key="frame" x="85" y="20" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.91167879372056215" green="0.90239869492638014" blue="0.94023862092391308" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="lMd-so-280">
+                                        <rect key="frame" x="156" y="20" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="1" green="0.88315544610661501" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="Rcb-Ch-laS">
+                                        <rect key="frame" x="227" y="20" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.73677943529600598" green="1" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="vi9-vL-zyV">
+                                        <rect key="frame" x="14" y="88" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.0" green="0.61405789055137783" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="Khn-vV-4gv">
+                                        <rect key="frame" x="85" y="88" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.68077945011010477" green="0.67384970621610885" blue="0.70210597826086962" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="Gkx-LA-gG2">
+                                        <rect key="frame" x="156" y="88" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="1" green="0.40057146932404308" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="MfY-Rk-KNr">
+                                        <rect key="frame" x="227" y="88" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.33684337510145257" green="1" blue="0.013641074298731515" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="hs4-Mz-BYi">
+                                        <rect key="frame" x="14" y="156" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.0" green="0.43286753260356869" blue="0.70492951766304346" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="rad-DS-7i3">
+                                        <rect key="frame" x="85" y="156" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.40070309554436678" green="0.39662428583704562" blue="0.41325577445652173" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="Fxd-mY-4K5">
+                                        <rect key="frame" x="156" y="156" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.75564707880434789" green="0.15109036527903927" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                    <view contentMode="scaleToFill" id="1Lv-g7-Ee0">
+                                        <rect key="frame" x="227" y="156" width="61" height="60"/>
+                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                        <color key="backgroundColor" red="0.26654133662016904" green="0.79129161005434789" blue="0.010794067644714245" alpha="1" colorSpace="calibratedRGB"/>
+                                    </view>
+                                </subviews>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.59999999999999998" colorSpace="calibratedRGB"/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="S0i-pO-us2" appends="YES" id="NhL-1y-M5f"/>
+                                </connections>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.89588994570000002" green="0.89588994570000002" blue="0.89588994570000002" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" id="DFA-XI-T73"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <connections>
+                        <outlet property="colorPad" destination="9A5-BF-OsU" id="Rhh-eQ-hox"/>
                         <outlet property="priorityText" destination="9UJ-rd-40k" id="DEy-i3-sNh"/>
+                        <outlet property="textField" destination="9UJ-rd-40k" id="uNX-Kx-W7P"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NjO-a8-6hL" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="S0i-pO-us2">
+                    <connections>
+                        <action selector="tapHandler:" destination="9ry-k4-s6C" id="Rlh-0c-pRw"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="5954" y="-78"/>
         </scene>
@@ -2911,6 +2988,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="122-stats.png" width="27" height="19"/>
         <image name="172-pricetag.png" width="28" height="23"/>
         <image name="179-notepad.png" width="22" height="28"/>
+        <image name="187-pencil.png" width="23" height="23"/>
         <image name="19-gear.png" width="26" height="26"/>
         <image name="196-radiation.png" width="24" height="22"/>
         <image name="64-zap.png" width="12" height="24"/>
@@ -2918,273 +2996,12 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="83-calendar.png" width="23" height="25"/>
         <image name="86-camera.png" width="24" height="18"/>
         <image name="Collapsed.png" width="25" height="29"/>
+        <image name="Small Plus.png" width="30" height="30"/>
         <image name="configuration.png" width="32" height="32"/>
         <image name="delete-item.png" width="32" height="32"/>
         <image name="home.png" width="32" height="32"/>
         <image name="plane.png" width="32" height="32"/>
     </resources>
-    <classes>
-        <class className="CCAuxCalendarSettingViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxCalendarSettingViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancelCalendar:" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="CCAuxDateViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxDateViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="newDate:" candidateClass="UIDatePicker"/>
-                <relationship kind="outlet" name="projectDate" candidateClass="UIDatePicker"/>
-            </relationships>
-        </class>
-        <class className="CCAuxDurationViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxDurationViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancel:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="save:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="countDown" candidateClass="UIPickerView"/>
-            </relationships>
-        </class>
-        <class className="CCAuxFontListViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxFontListViewController.h"/>
-        </class>
-        <class className="CCAuxPriorityEditorViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxPriorityEditorViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="updatePriority:" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="priorityText" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="CCAuxPriorityViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxPriorityViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="insertPriority:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="CCAuxSettingsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxSettingsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="changeFontSize:" candidateClass="UIStepper"/>
-                <relationship kind="action" name="email:" candidateClass="UITextField"/>
-                <relationship kind="action" name="openFAQ:" candidateClass="UIButton"/>
-                <relationship kind="action" name="setHomeLocation:" candidateClass="UIButton"/>
-                <relationship kind="action" name="setTimer:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="tapHandler:" candidateClass="UITapGestureRecognizer"/>
-                <relationship kind="outlet" name="changeFontSize" candidateClass="UIStepper"/>
-                <relationship kind="outlet" name="colorPad" candidateClass="UIView"/>
-                <relationship kind="outlet" name="email" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="location" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-                <relationship kind="outlet" name="timerOffOn" candidateClass="UISwitch"/>
-            </relationships>
-        </class>
-        <class className="CCAuxTaskCloneDrillController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxTaskCloneDrillController.h"/>
-        </class>
-        <class className="CCAuxTaskCloneViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCAuxTaskCloneViewController.h"/>
-        </class>
-        <class className="CCCalendarViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCCalendarViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="insertEvent"/>
-            </relationships>
-        </class>
-        <class className="CCCategoryTaskViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCCategoryTaskViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancelCategory:"/>
-            </relationships>
-        </class>
-        <class className="CCChart" superclassName="UIView">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCChart.h"/>
-        </class>
-        <class className="CCDateSetterViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCDateSetterViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="billableProject:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="completeProject:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="hourlyRate:" candidateClass="UITextField"/>
-                <relationship kind="action" name="name:" candidateClass="UITextField"/>
-                <relationship kind="action" name="projectActive:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="projectCostBudget:" candidateClass="UITextField"/>
-                <relationship kind="action" name="utilities:" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="activeSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="billableSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="completeSwitch" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="hourlyRateField" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="projectCostBudget" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="projectName" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="settingsController" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="CCDeliverableViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCDeliverableViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancelPopover"/>
-                <relationship kind="action" name="clickSummaryButton:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="clickTableDisplayOptions:" candidateClass="UISegmentedControl"/>
-                <relationship kind="action" name="insertDeliverable"/>
-                <relationship kind="action" name="savePopoverData"/>
-                <relationship kind="outlet" name="displayOptions" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="CCExpenseDetailsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCExpenseDetailsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="amountPaid:" candidateClass="UITextField"/>
-                <relationship kind="action" name="billed:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="itemPurchased:" candidateClass="UITextField"/>
-                <relationship kind="action" name="milage:" candidateClass="UITextField"/>
-                <relationship kind="action" name="paidTo:" candidateClass="UITextField"/>
-                <relationship kind="action" name="removePicture:" candidateClass="UIButton"/>
-                <relationship kind="action" name="utilities:" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="amountPaid" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="billed" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="itemPurchased" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="milage" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="notes" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="paidTo" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="receipt" candidateClass="UIImageView"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-                <relationship kind="outlet" name="utilityControll" candidateClass="UISegmentedControl"/>
-            </relationships>
-        </class>
-        <class className="CCExpenseNotesViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCExpenseNotesViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="closeNotes:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="notes" candidateClass="UITextView"/>
-            </relationships>
-        </class>
-        <class className="CCHotListViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCHotListViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancelPopover"/>
-                <relationship kind="action" name="filterOptions:" candidateClass="UISegmentedControl"/>
-                <relationship kind="action" name="savePopoverData"/>
-                <relationship kind="action" name="sendHotList:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="CCParentTaskViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCParentTaskViewController.h"/>
-        </class>
-        <class className="CCProjectSwitchTableViewController" superclassName="UITableViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCProjectSwitchTableViewController.h"/>
-        </class>
-        <class className="CCTaskDueDateViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTaskDueDateViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="changeDueDate:" candidateClass="UISegmentedControl"/>
-                <relationship kind="action" name="pushIntoReminder:" candidateClass="UISegmentedControl"/>
-                <relationship kind="action" name="setTaskDueDate:" candidateClass="UIDatePicker"/>
-                <relationship kind="outlet" name="dueDate" candidateClass="UIDatePicker"/>
-            </relationships>
-        </class>
-        <class className="CCTaskSummaryViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTaskSummaryViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="doneButton:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="navBar" candidateClass="UINavigationBar"/>
-            </relationships>
-        </class>
-        <class className="CCTaskViewDetailsController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTaskViewDetailsController.h"/>
-            <relationships>
-                <relationship kind="action" name="completeTask:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="resetParams:" candidateClass="UIButton"/>
-                <relationship kind="action" name="showNotes:" candidateClass="UIButton"/>
-                <relationship kind="action" name="taskName:" candidateClass="UITextField"/>
-                <relationship kind="outlet" name="status" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="taskParameters" candidateClass="UITableView"/>
-                <relationship kind="outlet" name="taskTitle" candidateClass="UITextField"/>
-            </relationships>
-        </class>
-        <class className="CCTimeViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTimeViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="timeTypeSelected:" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-                <relationship kind="outlet" name="timeSelector" candidateClass="UISegmentedControl"/>
-            </relationships>
-        </class>
-        <class className="CCTimerDetailsViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTimerDetailsViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="billed:" candidateClass="UISwitch"/>
-                <relationship kind="action" name="changeDate:" candidateClass="UIDatePicker"/>
-                <relationship kind="outlet" name="billed" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="changeDate" candidateClass="UIDatePicker"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="CCTimerSummaryViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCTimerSummaryViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="setFilterRange:" candidateClass="UISegmentedControl"/>
-                <relationship kind="action" name="showDetails:" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="billRate" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="billedTime" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="billingAmount" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="markBilled" candidateClass="UISwitch"/>
-                <relationship kind="outlet" name="outPut" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="remainingBudget" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="remainingTime" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="reportableTime" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="totalProjectTime" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="unbilledTime" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-        <class className="CCiPhoneDetailViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCiPhoneDetailViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="sendNotes:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="showCalendarPopover:"/>
-                <relationship kind="action" name="showDeliverablePopover:"/>
-                <relationship kind="action" name="showSettings:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="showTaskChart:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="showTimePopover:"/>
-                <relationship kind="outlet" name="projectNotes" candidateClass="UITextView"/>
-                <relationship kind="outlet" name="showCalendar" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="showDeliverables" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="showTaskChart" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="showTimers" candidateClass="UIBarButtonItem"/>
-            </relationships>
-        </class>
-        <class className="CCiPhoneMasterViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCiPhoneMasterViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="actionButton:" candidateClass="UIBarButtonItem"/>
-                <relationship kind="action" name="filterActions:" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="projectActionsButton" candidateClass="UIBarButtonItem"/>
-                <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="CCiPhoneTaskViewController" superclassName="UIViewController">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/CCiPhoneTaskViewController.h"/>
-            <relationships>
-                <relationship kind="action" name="cancelPopover"/>
-                <relationship kind="action" name="displayOptions:" candidateClass="UISegmentedControl"/>
-                <relationship kind="action" name="navButton:" candidateClass="UISegmentedControl"/>
-                <relationship kind="action" name="savePopoverData"/>
-                <relationship kind="outlet" name="displayOptions" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="navButton" candidateClass="UISegmentedControl"/>
-                <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
-            </relationships>
-        </class>
-        <class className="ExpenseCell" superclassName="UITableViewCell">
-            <source key="sourceIdentifier" type="project" relativePath="./Classes/ExpenseCell.h"/>
-            <relationships>
-                <relationship kind="outlet" name="amountPaid" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="description" candidateClass="UILabel"/>
-                <relationship kind="outlet" name="paidTo" candidateClass="UILabel"/>
-            </relationships>
-        </class>
-    </classes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>
         <simulatedOrientationMetrics key="orientation"/>
