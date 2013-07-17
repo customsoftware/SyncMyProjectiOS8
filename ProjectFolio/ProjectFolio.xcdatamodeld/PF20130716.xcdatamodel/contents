@@ -30,6 +30,7 @@
         <relationship name="expenseProject" optional="YES" minCount="1" maxCount="1" deletionRule="Nullify" destinationEntity="Project" inverseName="projectExpense" inverseEntity="Project" syncable="YES"/>
     </entity>
     <entity name="Priority" representedClassName="Priority" syncable="YES">
+        <attribute name="color" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dateCreated" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="dateModified" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="priority" optional="YES" attributeType="String" syncable="YES"/>
@@ -119,7 +120,7 @@
     <elements>
         <element name="Calendar" positionX="-353" positionY="-198" width="128" height="210"/>
         <element name="Expense" positionX="124" positionY="-207" width="128" height="255"/>
-        <element name="Priority" positionX="171" positionY="54" width="128" height="135"/>
+        <element name="Priority" positionX="171" positionY="54" width="128" height="150"/>
         <element name="Project" positionX="-90" positionY="-234" width="128" height="480"/>
         <element name="SharedMeta" positionX="9" positionY="99" width="128" height="105"/>
         <element name="Task" positionX="349" positionY="114" width="128" height="405"/>
