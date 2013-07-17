@@ -10,10 +10,10 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
 	<array>
-		<string>AppIcon 57.png</string>
-		<string>ProFo72.png</string>
-		<string>ProFo144.png</string>
-		<string>ProFo_Icon_114x114.png</string>
+		<string>57 icon.png</string>
+		<string>72 icon.png</string>
+		<string>144 icon.png</string>
+		<string>114 icon.png</string>
 	</array>
 	<key>CFBundleIcons</key>
 	<dict>
@@ -21,11 +21,13 @@
 		<dict>
 			<key>CFBundleIconFiles</key>
 			<array>
-				<string>AppIcon 57.png</string>
-				<string>ProFo72.png</string>
-				<string>ProFo144.png</string>
-				<string>ProFo_Icon_114x114.png</string>
+				<string>57 icon.png</string>
+				<string>72 icon.png</string>
+				<string>144 icon.png</string>
+				<string>114 icon.png</string>
 			</array>
+			<key>UIPrerenderedIcon</key>
+			<true/>
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
@@ -48,6 +50,8 @@
 	<string>iPhone_Storyboard</string>
 	<key>UIMainStoryboardFile~ipad</key>
 	<string>MainStoryboard</string>
+	<key>UIPrerenderedIcon</key>
+	<true/>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>armv7</string>
