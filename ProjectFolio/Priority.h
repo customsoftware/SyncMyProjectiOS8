@@ -2,7 +2,7 @@
 //  Priority.h
 //  ProjectFolio
 //
-//  Created by Kenneth Cluff on 2/5/13.
+//  Created by Kenneth Cluff on 7/17/13.
 //
 //
 
@@ -13,6 +13,7 @@
 
 @interface Priority : NSManagedObject
 
+@property (nonatomic, retain) NSString * color;
 @property (nonatomic, retain) NSDate * dateCreated;
 @property (nonatomic, retain) NSDate * dateModified;
 @property (nonatomic, retain) NSString * priority;

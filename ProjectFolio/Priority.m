@@ -2,7 +2,7 @@
 //  Priority.m
 //  ProjectFolio
 //
-//  Created by Kenneth Cluff on 2/5/13.
+//  Created by Kenneth Cluff on 7/17/13.
 //
 //
 
@@ -13,6 +13,7 @@
 
 @implementation Priority
 
+@dynamic color;
 @dynamic dateCreated;
 @dynamic dateModified;
 @dynamic priority;
