@@ -6,10 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
-
-
 @interface SharedMeta : NSManagedObject
 
 @property (nonatomic, retain) NSNumber * boolValue;

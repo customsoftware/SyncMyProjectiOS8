@@ -6,11 +6,6 @@
 //  Copyright (c) 2013 Kenneth Cluff. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
-#define kAppString @"deviceKey"
-#define kAppStatus @"Status"
-#define kiCloudToken @"Token"
-#define kStartupFinished @"Startup Finished"
 
 @interface CCLocalData : NSObject
 

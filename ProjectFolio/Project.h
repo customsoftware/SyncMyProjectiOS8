@@ -6,9 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
-
 @class Calendar, Deliverables, Priority, Task, WorkTime;
 
 @interface Project : NSManagedObject

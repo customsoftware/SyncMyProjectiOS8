@@ -153,6 +153,11 @@ static CoreData *sharedModel = nil;
     return recordObject;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 #pragma mark - Instance methods
 - (id)initWithDelegate:(id<CoreDataDelegate>)newDelegate{
     self = [super init];
@@ -457,7 +462,7 @@ static CoreData *sharedModel = nil;
                 record = [self saveLastModified:record];
             }
             
-            NSArray *insertSet = [[self.managedObjectContext updatedObjects] allObjects];
+            NSArray *insertSet = [[self.managedObjectContext insertedObjects] allObjects];
             for (int x = 0; x < [[self.managedObjectContext insertedObjects] count]; x++) {
                 id record = insertSet[x];
                 record = [self saveLastModified:record];

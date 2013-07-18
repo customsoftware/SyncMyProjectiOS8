@@ -6,9 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
-
 @class Priority, Project, Task, WorkTime;
 
 @interface Task : NSManagedObject

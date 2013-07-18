@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreData/CoreData.h>
 #import "Project.h"
 #import "Deliverables.h"
 #import "WorkTime.h"
