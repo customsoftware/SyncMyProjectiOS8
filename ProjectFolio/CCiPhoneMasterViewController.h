@@ -14,7 +14,6 @@
 #import "CCProjectTaskDelegate.h"
 #import "CCProjectTimer.h"
 #import "CCErrorLogger.h"
-#import <CoreData/CoreData.h>
 #import "CCDateSetterViewController.h"
 #import "CCTextEntryPopoverController.h"
 #import "CCSettingsControl.h"

@@ -13,15 +13,8 @@
 #import "CCAuxSettingsViewController.h"
 #import "CCPrintNotesRender.h"
 
-#define kShowProjects @"neverShowProjects"
-#define kFontNameKey @"font"
-#define kFontSize @"fontSize"
-#define kBlueNameKey @"bluebalance"
-#define kRedNameKey @"redbalance"
-#define kGreenNameKey @"greenbalance"
-#define kSaturation @"saturation"
+@interface CCDetailViewController () <UITextViewDelegate>
 
-@interface CCDetailViewController ()
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 - (void)configureView;
 @property BOOL canUseCalendar;
@@ -84,6 +77,7 @@
 - (void)configureView
 {
     self.projectNotes.text = self.project.projectNotes;
+    self.projectNotes.delegate = self;
     CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
     if([application checkIsDeviceVersionHigherThanRequiredVersion:@"6.0"]) {
         [application.eventStore requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error) {
@@ -127,6 +121,7 @@
     self.deliverable = nil;
     self.time = nil;
     self.settings = nil;
+    [self.projectNotes resignFirstResponder];
 }
 
 -(IBAction)showTimePopover:(id)sender{
@@ -253,7 +248,7 @@
     return YES;
 }
 
-#pragma mark - Custom Menue
+#pragma mark - Custom Menu
 -(void)handleCustomMenu{
     NSRange range = self.projectNotes.selectedRange;
     if (range.length > 0) {
@@ -324,7 +319,7 @@
         self.emailer.subjectLine = @"Project Folio Crash Report";
         self.emailer.messageText = @"Please enter any additional comments here.";
         self.emailer.emailDelegate = self;
-        self.emailer.addressee = @"support@weatherbytes.net";
+        self.emailer.addressee = @"support@ktcsoftware.com";
         self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
         self.logger = [[CCErrorLogger alloc] initWithDelegate:self];
@@ -336,7 +331,7 @@
         self.emailer.subjectLine = @"Project Folio Feedback";
         self.emailer.messageText = @"Enter your comments here.";
         self.emailer.emailDelegate = self;
-        self.emailer.addressee = @"feedback@weatherbytes.net";
+        self.emailer.addressee = @"feedback@ktcsoftware.com";
         self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
         [self presentModalViewController:self.emailer.mailComposer animated:YES];
@@ -384,6 +379,23 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
 
 -(void)releaseLogger{
     self.logger = nil;
+}
+
+#pragma mark - <UITextViewDelegate>
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    NSString *startingText = self.projectNotes.text;
+    if ([startingText rangeOfString:@"Enter notes for "].length > 0) {
+        self.projectNotes.text = @"";
+    }
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    if (self.projectNotes.text.length == 0) {
+        self.projectNotes.text = [NSString stringWithFormat:@"Enter notes %@ project here", self.project.projectName];
+    }
+    [self.projectNotes resignFirstResponder];
 }
 
 #pragma mark - Handle Keyboard

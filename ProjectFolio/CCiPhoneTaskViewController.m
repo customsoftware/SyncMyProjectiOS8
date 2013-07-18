@@ -33,24 +33,6 @@
 @end
 
 @implementation CCiPhoneTaskViewController
-@synthesize tableView = _tableView;
-@synthesize displayOptions = _displayOptions;
-@synthesize request = _request;
-@synthesize allPredicate = _allPredicate;
-@synthesize incompletePredicate = _incompletePredicate;
-@synthesize assignedPredicate = _assignedPredicate;
-@synthesize sourceProject = _sourceProject;
-@synthesize taskFRC = _taskFRC;
-@synthesize dateFormatter = _dateFormatter;
-@synthesize navButton = _navButton;
-@synthesize userDrivenDataModelChange = _userDrivenDataModelChange;
-@synthesize currentTask = _currentTask;
-@synthesize selectedPath = _selectedPath;
-@synthesize detailViewController = _detailViewController;
-@synthesize subTaskController = _subTaskController;
-@synthesize logger = _logger;
-@synthesize isNew = _isNew;
-@synthesize detailController = _detailController;
 
 #pragma mark - IBActions/Outlets
 -(IBAction)navButton:(UISegmentedControl *)sender{
@@ -58,9 +40,9 @@
         self.tableView.editing = !self.tableView.editing;
         
         if (self.tableView.editing == YES) {
-            [self.navButton setTitle:@"Done" forSegmentAtIndex:0];
+            [self.navButton setImage:[UIImage imageNamed:@"33-cabinet.png"] forSegmentAtIndex:0];
         } else {
-            [self.navButton setTitle:@"Edit" forSegmentAtIndex:0];
+            [self.navButton setImage:[UIImage imageNamed:@"187-white-pencil.png"] forSegmentAtIndex:0];
         }
         
     } else if ( sender.selectedSegmentIndex == 1 ) {
@@ -195,24 +177,10 @@
     self.assignedPredicate = nil;
 }
 
--(void)viewDidUnload{
-    self.tableView = nil;
-    self.displayOptions = nil;
-    self.taskFRC = nil;
-    self.request = nil;
-    self.allPredicate = nil;
-    self.incompletePredicate = nil;
-    self.assignedPredicate = nil;
-    self.dateFormatter = nil;
-    self.currentTask = nil;
-    self.selectedPath = nil;
-    self.navButton = nil;
-    self.currentTask = nil;
-    self.detailViewController = nil;
-    self.logger = nil;
-    self.detailController = nil;
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
 
 - (void)didReceiveMemoryWarning
 {

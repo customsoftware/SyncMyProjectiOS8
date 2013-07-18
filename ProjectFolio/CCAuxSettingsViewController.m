@@ -100,6 +100,7 @@
         view.layer.cornerRadius = 3;
         view.layer.borderColor = [[UIColor darkGrayColor]CGColor];
     }
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTimer) name:kAppString object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -111,8 +112,12 @@
     NSString *longitude = [[homeLocation componentsSeparatedByString:@"\\"] objectAtIndex:1];
     [self getAddressFromLat:latitude andLong:longitude];
     [self updateTimer];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTimer) name:kAppString object:nil];
 /*Alternative is to have timer run locally on each device, but better is to have one device time and the others watch*/
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (void)updateTimer{

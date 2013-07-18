@@ -146,21 +146,18 @@ typedef enum kfilterModes{
     self.closer = nil;
     switch (buttonIndex) {
         case 2:
-            self.closer = [[CCGeneralCloser alloc] initForAll];
+            self.closer = [[CCGeneralCloser alloc] initForAllFor:self];
             [self.closer setMessage];
-            [self.navigationController presentModalViewController:self.closer.mailComposer animated:YES];
             break;
             
         case 0:
-            self.closer = [[CCGeneralCloser alloc] initWithLastWeek];
+            self.closer = [[CCGeneralCloser alloc] initWithLastWeekFor:self];
             [self.closer setMessage];
-            [self.navigationController presentModalViewController:self.closer.mailComposer animated:YES];
             break;
             
         case 1:
-            self.closer = [[CCGeneralCloser alloc] initForYesterday];
+            self.closer = [[CCGeneralCloser alloc] initForYesterdayFor:self];
             [self.closer setMessage];
-            [self.navigationController presentModalViewController:self.closer.mailComposer animated:YES];
             break;
             
         default:
@@ -592,13 +589,13 @@ typedef enum kfilterModes{
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
-        cell.imageView.image = [UIImage imageNamed:@"checkmark-box-small-green.png"];
+        cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
     } else if ( completeVal == NO & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Should start: %@", startDate];
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == YES){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
-        cell.imageView.image = [UIImage imageNamed:@"checkmark-box-small-green.png"];
+        cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
     } else {
         caption = [[NSString alloc] initWithFormat:@"Should finish: %@", endDate];
         cell.imageView.image = nil;

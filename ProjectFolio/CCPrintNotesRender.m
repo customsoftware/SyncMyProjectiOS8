@@ -7,11 +7,6 @@
 //
 
 #import "CCPrintNotesRender.h"
-#define MIN_MARGIN 36
-#define HEADER_FOOTER_MARGIN_PADDING  5
-#define MIN_HEADER_FOOTER_DISTANCE_FROM_CONTENT 10
-#define kFontSize 18
-
 
 @implementation CCPrintNotesRender
 static inline CGFloat EdgeInset(CGFloat imageableAreaMargin)
@@ -40,7 +35,7 @@ static CGFloat HeaderFooterHeight(CGFloat imageableAreaMargin, CGFloat textHeigh
 }
 
 - (void)drawHeaderForPageAtIndex:(NSInteger)pageIndex inRect:(CGRect)headerRect{
-    UIFont *printFont = [UIFont fontWithName:self.fontName size:kFontSize];
+    UIFont *printFont = [UIFont fontWithName:self.fontName size:kFontPointSize];
     CGSize titleSize = [self.headerString sizeWithFont:printFont];
     CGFloat drawX = CGRectGetMaxX(headerRect)/2 - titleSize.width/2;
     CGFloat drawY = CGRectGetMaxY(headerRect) - titleSize.height;
@@ -49,7 +44,7 @@ static CGFloat HeaderFooterHeight(CGFloat imageableAreaMargin, CGFloat textHeigh
 }
 
 - (void)drawFooterForPageAtIndex:(NSInteger)pageIndex inRect:(CGRect)footerRect{
-    UIFont *printFont = [UIFont fontWithName:self.fontName size:kFontSize];
+    UIFont *printFont = [UIFont fontWithName:self.fontName size:kFontPointSize];
     NSString *pageNumber = [NSString stringWithFormat:@"Page: %d", pageIndex + 1];
     CGSize pageNumSize = [pageNumber sizeWithFont:printFont];
     CGFloat drawX = CGRectGetMaxX(footerRect)/2 - pageNumSize.width - 1.0;
@@ -64,7 +59,7 @@ static CGFloat HeaderFooterHeight(CGFloat imageableAreaMargin, CGFloat textHeigh
     CGFloat rightInset = EdgeInset(self.paperRect.size.width - CGRectGetMaxX(self.printableRect));
     formatter.contentInsets = UIEdgeInsetsMake(0, leftInset, 0, rightInset);
     
-    UIFont *printFont = [UIFont fontWithName:self.fontName size:kFontSize];
+    UIFont *printFont = [UIFont fontWithName:self.fontName size:kFontPointSize];
     CGFloat titleHeight = [self.headerString sizeWithFont:printFont].height;
     
     self.headerHeight = HeaderFooterHeight(CGRectGetMinY(self.printableRect), titleHeight);

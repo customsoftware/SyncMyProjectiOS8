@@ -15,7 +15,7 @@
 #define kGreenNameKey @"greenbalance"
 #define kSaturation @"saturation"
 
-@interface CCiPhoneDetailViewController ()
+@interface CCiPhoneDetailViewController () <UITextViewDelegate>
 - (void)configureView;
 @property BOOL canUseCalendar;
 @property (weak, nonatomic) CCAuxSettingsViewController *settings;
@@ -28,20 +28,6 @@
 @end
 
 @implementation CCiPhoneDetailViewController
-@synthesize emailer = _emailer;
-@synthesize detailItem = _detailItem;
-@synthesize projectNotes = _projectNotes;
-@synthesize fetchedProjectsController = _fetchedProjectsController;
-@synthesize controllingCellIndex = _controllingCellIndex;
-@synthesize project = _project;
-@synthesize activeTimer = _activeTimer;
-@synthesize calendar, deliverable, time, settings;
-@synthesize logger = _logger;
-@synthesize lastButton = _lastButton;
-@synthesize showDeliverables = _showDeliverables;
-@synthesize showCalendar = _showCalendar;
-@synthesize showTimers = _showTimers;
-@synthesize longPressMenu = _longPressMenu;
 
 #pragma mark - Managing the detail item
 - (BOOL)checkIsDeviceVersionHigherThanRequiredVersion:(NSString *)requiredVersion
@@ -95,6 +81,7 @@
 
 - (void)configureView
 {
+    self.projectNotes.delegate = self;
     self.projectNotes.text = self.project.projectNotes;
     CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
     if([self checkIsDeviceVersionHigherThanRequiredVersion:@"6.0"]) {
@@ -298,7 +285,7 @@
         self.emailer.subjectLine = @"Project Folio Crash Report";
         self.emailer.messageText = @"Please enter any additional comments here.";
         self.emailer.emailDelegate = self;
-        self.emailer.addressee = @"support@weatherbytes.net";
+        self.emailer.addressee = @"support@ktcsoftware.com";
         self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
         self.logger = [[CCErrorLogger alloc] initWithDelegate:self];
@@ -310,7 +297,7 @@
         self.emailer.subjectLine = @"Project Folio Feedback";
         self.emailer.messageText = @"Enter your comments here.";
         self.emailer.emailDelegate = self;
-        self.emailer.addressee = @"feedback@weatherbytes.net";
+        self.emailer.addressee = @"feedback@ktcsoftware.com";
         self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
         [self presentModalViewController:self.emailer.mailComposer animated:YES];
@@ -320,6 +307,23 @@
 
 -(void)releaseLogger{
     self.logger = nil;
+}
+
+#pragma mark - <UITextViewDelegate>
+- (void)textViewDidBeginEditing:(UITextView *)textView
+{
+    NSString *startingText = self.projectNotes.text;
+    if ([startingText rangeOfString:@"Enter notes for "].length > 0) {
+        self.projectNotes.text = @"";
+    }
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView
+{
+    if (self.projectNotes.text.length == 0) {
+        self.projectNotes.text = [NSString stringWithFormat:@"Enter notes for %@ project here", self.project.projectName];
+    }
+    [self.projectNotes resignFirstResponder];
 }
 
 #pragma mark - Handle Keyboard
@@ -389,27 +393,9 @@
      name:UIKeyboardWillHideNotification object:nil];    
 }
 
-- (void)viewDidUnload
+- (void)dealloc
 {
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    self.detailItem = nil;
-    self.projectNotes = nil;
-    self.fetchedProjectsController = nil;
-    self.controllingCellIndex = nil;
-    self.activeTimer = nil;
-    
-    self.time = nil;
-    self.deliverable = nil;
-    self.calendar = nil;
-    self.settings = nil;
-    self.emailer = nil;
-    self.logger = nil;
-    self.showDeliverables = nil;
-    self.showCalendar = nil;
-    self.showTimers = nil;
-    self.longPressMenu = nil;
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -14,17 +14,17 @@
 #import "CCProjectTaskDelegate.h"
 #import "CCProjectTimer.h"
 #import "CCErrorLogger.h"
-#import <CoreData/CoreData.h>
 #import "CCDateSetterViewController.h"
 #import "CCTextEntryPopoverController.h"
 #import "CCSettingsControl.h"
 #import "CoreData.h"
 #import "CCGeneralCloserProtocol.h"
+#import "CCPopoverControllerDelegate.h"
 
 @class CCDetailViewController;
 
 
-@interface CCMasterViewController : UIViewController <UIPopoverControllerDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate, UIAlertViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,CCProjectTaskDelegate,UISearchDisplayDelegate,CCLoggerDelegate,CoreDataDelegate,UIPrintInteractionControllerDelegate,CCGeneralCloserProtocol>
+@interface CCMasterViewController : UIViewController <UIPopoverControllerDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate, UIAlertViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,CCProjectTaskDelegate,UISearchDisplayDelegate,CCLoggerDelegate,CoreDataDelegate,UIPrintInteractionControllerDelegate,CCGeneralCloserProtocol,CCPopoverControllerDelegate>
 
 @property (strong, nonatomic) CCTextEntryPopoverController *projectNameView;
 @property (strong, nonatomic) CCDetailViewController *detailViewController;

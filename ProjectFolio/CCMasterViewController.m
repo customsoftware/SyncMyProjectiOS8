@@ -159,20 +159,17 @@ typedef enum kfilterModes{
         self.closer = nil;
         switch (buttonIndex) {
             case 2:
-                self.closer = [[CCGeneralCloser alloc] initForAll];
-                self.closer.printDelegate = self;
+                self.closer = [[CCGeneralCloser alloc] initForAllFor:self];
                 [self.closer setMessage];
                 break;
                 
             case 0:
-                self.closer = [[CCGeneralCloser alloc] initWithLastWeek];
-                self.closer.printDelegate = self;
+                self.closer = [[CCGeneralCloser alloc] initWithLastWeekFor:self];
                 [self.closer setMessage];
                 break;
                 
             case 1:
-                self.closer = [[CCGeneralCloser alloc] initForYesterday];
-                self.closer.printDelegate = self;
+                self.closer = [[CCGeneralCloser alloc] initForYesterdayFor:self];
                 [self.closer setMessage];
                 break;
                 
@@ -283,7 +280,7 @@ typedef enum kfilterModes{
 	// Do any additional setup after loading the view, typically from a nib.
     self.detailViewController = (CCDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     // Set up the add button.
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
     self.navigationItem.rightBarButtonItem = addButton;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -695,13 +692,13 @@ typedef enum kfilterModes{
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
-        cell.imageView.image = [UIImage imageNamed:@"checkmark-box-small-green.png"];
+        cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
     } else if ( completeVal == NO & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Should start: %@", startDate];
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == YES){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
-        cell.imageView.image = [UIImage imageNamed:@"checkmark-box-small-green.png"];
+        cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
     } else {
         caption = [[NSString alloc] initWithFormat:@"Should finish: %@", endDate];
         cell.imageView.image = nil;
@@ -721,17 +718,44 @@ typedef enum kfilterModes{
     cell.detailTextLabel.text = caption;
 }
 
-- (void)insertNewObject
+- (void)insertNewObject:(UIBarButtonItem *)sender
 {
-    UIAlertView *alertViewProjectName = [[UIAlertView alloc]
-                                             initWithTitle:@"Project Name" 
-                                             message:@"Please enter a name for the project" 
-                                             delegate:self 
-                                             cancelButtonTitle:[self noButtonTitle]
-                                             otherButtonTitles:[self yesButtonTitle],nil];
-    alertViewProjectName.alertViewStyle = UIAlertViewStylePlainTextInput;
-        
-    [alertViewProjectName show];
+    CCNewProjectViewController *newProject = [self.storyboard instantiateViewControllerWithIdentifier:@"newProjectName"];
+    newProject.contentSizeForViewInPopover = CGSizeMake(400, 175);
+    newProject.popoverDelegate = self;
+    self.projectPopover = [[UIPopoverController alloc] initWithContentViewController:newProject];
+    NSMutableArray *passThrough = [[NSMutableArray alloc] init];
+    [passThrough addObject:self.view];
+    [passThrough addObject:self.detailViewController.view];
+    self.projectPopover.passthroughViews = passThrough;
+    [self.projectPopover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+}
+
+#pragma mark - <CCPopoverControllerDelegate>
+- (void)cancelPopover{
+    [self.detailViewController.view endEditing:YES];
+    [self.view endEditing:YES];
+    [self.projectPopover dismissPopoverAnimated:YES];
+}
+
+- (void)savePopoverData{
+    [self.detailViewController.view endEditing:YES];
+    [self.view endEditing:YES];
+    CCNewProjectViewController *newProjectController = (CCNewProjectViewController *)self.projectPopover.contentViewController;
+    Project *newProject = [CoreData createProjectWithName:newProjectController.projectName.text];
+    newProject.dateStart = newProject.dateCreated;
+    
+    [[CoreData sharedModel:self] saveContext];
+    // Position the active cell on the new project
+    for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
+        if ([project.projectUUID isEqualToString:newProject.projectUUID]) {
+            NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+            [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
+            break;
+        }
+    }
+    [self.projectPopover dismissPopoverAnimated:YES];
 }
 
 #pragma mark - Lazy getters

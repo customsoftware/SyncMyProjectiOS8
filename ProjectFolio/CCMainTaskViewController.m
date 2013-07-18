@@ -33,24 +33,6 @@
 @end
 
 @implementation CCMainTaskViewController
-@synthesize tableView = _tableView;
-@synthesize displayOptions = _displayOptions;
-@synthesize request = _request;
-@synthesize allPredicate = _allPredicate;
-@synthesize incompletePredicate = _incompletePredicate;
-@synthesize assignedPredicate = _assignedPredicate;
-@synthesize sourceProject = _sourceProject;
-@synthesize taskFRC = _taskFRC;
-@synthesize dateFormatter = _dateFormatter;
-@synthesize navButton = _navButton;
-@synthesize userDrivenDataModelChange = _userDrivenDataModelChange;
-@synthesize currentTask = _currentTask;
-@synthesize selectedPath = _selectedPath;
-@synthesize detailViewController = _detailViewController;
-@synthesize subTaskController = _subTaskController;
-@synthesize logger = _logger;
-@synthesize isNew = _isNew;
-
 
 #pragma mark - IBActions/Outlets
 -(IBAction)navButton:(UISegmentedControl *)sender{
@@ -58,10 +40,12 @@
         self.tableView.editing = !self.tableView.editing;
         
         if (self.tableView.editing == YES) {
-            [self.navButton setTitle:@"Done" forSegmentAtIndex:0];
+            [self.navButton setImage:[UIImage imageNamed:@"33-cabinet.png"] forSegmentAtIndex:0];
         } else {
-            [self.navButton setTitle:@"Edit" forSegmentAtIndex:0];
+            [self.navButton setImage:[UIImage imageNamed:@"187-white-pencil.png"] forSegmentAtIndex:0];
         }
+        
+        [self.tableView reloadData];
         
     } else if ( sender.selectedSegmentIndex == 1 ) {
         [self insertTask];
@@ -165,6 +149,18 @@
     
     NSString *addTaskNotification = [[NSString alloc] initWithFormat:@"%@", @"newTaskNotification"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:addTaskNotification object:nil];
+    
+    // Double Tapp on UITableViewCell
+//    UITapGestureRecognizer* doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
+//    doubleTap.numberOfTapsRequired = 2;
+//    doubleTap.numberOfTouchesRequired = 1;
+//    [self.tableView addGestureRecognizer:doubleTap];
+//    
+//    UITapGestureRecognizer* singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
+//    singleTap.numberOfTapsRequired = 1;
+//    singleTap.numberOfTouchesRequired = 1;
+//    [singleTap requireGestureRecognizerToFail:doubleTap];
+//    [self.tableView addGestureRecognizer:singleTap];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -187,23 +183,10 @@
     self.assignedPredicate = nil;
 }
 
--(void)viewDidUnload{
-    self.tableView = nil;
-    self.displayOptions = nil;
-    self.taskFRC = nil;
-    self.request = nil;
-    self.allPredicate = nil;
-    self.incompletePredicate = nil;
-    self.assignedPredicate = nil;
-    self.dateFormatter = nil;
-    self.currentTask = nil;
-    self.selectedPath = nil;
-    self.navButton = nil;
-    self.currentTask = nil;
-    self.detailViewController = nil;
-    self.logger = nil;
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
-
 
 - (void)didReceiveMemoryWarning
 {
@@ -297,7 +280,8 @@
     cell.detailTextLabel.text = detailMessage;
 
     cell.textLabel.textColor = [UIColor blackColor];
-
+    cell.imageView.image = nil;
+    
     if (taskItem.virtualComplete == TASK_COMPLETE) {
         cell.textLabel.textColor = [UIColor darkGrayColor];
         cell.detailTextLabel.textColor = [UIColor colorWithHue:0.333 saturation:.8 brightness:.539 alpha:1];
@@ -308,7 +292,11 @@
     }
     if (cell.reuseIdentifier == CollapsedParentIdentifier) {
         if ([taskItem isExpanded]) {
-            cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
+            if (taskItem.virtualComplete == TASK_COMPLETE) {
+                cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+            } else if (taskItem.notes.length > 0) {
+                cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
+            }
             if (taskItem.dueDate == nil) {
                 detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@", ownerName];
             } else {
@@ -326,7 +314,11 @@
         cell.detailTextLabel.text = detailMessage;
     } else if (cell.reuseIdentifier == CollapsedLateParentIdentifier) {
         if ([taskItem isExpanded]) {
-            cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
+            if (taskItem.virtualComplete == TASK_COMPLETE) {
+                cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+            } else if (taskItem.notes.length > 0) {
+                cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
+            }
             if (taskItem.dueDate == nil) {
                 detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@", ownerName];
             } else {
@@ -348,7 +340,9 @@
         } else {
             detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@ Due: %@", ownerName, [self.dateFormatter stringFromDate:taskItem.dueDate]];
         }
-        if (taskItem.notes.length > 0) {
+        if (taskItem.virtualComplete == TASK_COMPLETE) {
+            cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+        } else if (taskItem.notes.length > 0) {
             cell.imageView.image = [UIImage imageNamed:@"179-notepad.png"];
         } else {
             cell.imageView.image = nil;
@@ -394,7 +388,7 @@
     
     // Configure the cell...
     [self configureCell:cell forTask:task];
-    
+//    cell.userInteractionEnabled = tableView.editing;
     return cell;
 }
 
@@ -506,6 +500,37 @@
         [self showTaskDetails:self.tableView rowIndex:indexPath];
     }
 }
+
+#pragma mark - Helper
+- (void)doubleTap:(UISwipeGestureRecognizer*)tap
+{
+    if (UIGestureRecognizerStateEnded == tap.state)
+    {
+        CGPoint p = [tap locationInView:tap.view];
+        NSIndexPath* indexPath = [self.tableView indexPathForRowAtPoint:p];
+        // Get the task
+        Task *selectedTask =  [self.taskFRC objectAtIndexPath:indexPath];
+        // If the task is not complete, complete it
+        if ([selectedTask.completed boolValue]) {
+            selectedTask.completed = [NSNumber numberWithBool:NO];
+        } else {
+            selectedTask.completed = [NSNumber numberWithBool:YES];
+        }
+        [self.tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+    }
+
+}
+
+-(void)singleTap:(UISwipeGestureRecognizer*)tap
+{
+    if (UIGestureRecognizerStateEnded == tap.state)
+    {
+        CGPoint p = [tap locationInView:tap.view];
+        NSIndexPath* indexPath = [self.tableView indexPathForRowAtPoint:p];
+        [self tableView:self.tableView didSelectRowAtIndexPath:indexPath];
+    }
+}
+
 
 #pragma mark - Lazy Getters
 -(NSFetchRequest *)request{

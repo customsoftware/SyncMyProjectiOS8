@@ -453,7 +453,7 @@
                                 <rect key="frame" x="238" y="7" width="77" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
-                                    <segment title="" image="187-pencil.png"/>
+                                    <segment title="" image="187-white-pencil.png"/>
                                     <segment title="" image="Small Plus.png"/>
                                 </segments>
                                 <connections>
@@ -2988,7 +2988,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="122-stats.png" width="27" height="19"/>
         <image name="172-pricetag.png" width="28" height="23"/>
         <image name="179-notepad.png" width="22" height="28"/>
-        <image name="187-pencil.png" width="23" height="23"/>
+        <image name="187-white-pencil.png" width="23" height="23"/>
         <image name="19-gear.png" width="26" height="26"/>
         <image name="196-radiation.png" width="24" height="22"/>
         <image name="64-zap.png" width="12" height="24"/>
