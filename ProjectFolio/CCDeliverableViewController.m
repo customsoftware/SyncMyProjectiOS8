@@ -284,7 +284,7 @@
                                  self.deliverable.paidTo,
                                  [self.dateFormatter stringFromDate:self.deliverable.datePaid]];
     if (self.deliverable.expensed == DELIVER_COMPLETE) {
-        cell.imageView.image = [UIImage imageNamed:@"checkmark-box-small-green.png"];
+        cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
         cell.description.text = self.deliverable.pmtDescription;
         if ([self.deliverable.milage floatValue] == 0 ) {
             cell.amountPaid.text = [self.numberFormatter stringFromNumber:self.deliverable.amount];

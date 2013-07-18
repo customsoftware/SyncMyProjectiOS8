@@ -2,19 +2,17 @@
 //  CCNewProjectViewController.m
 //  ProjectFolio
 //
-//  Created by Kenneth Cluff on 4/5/13.
+//  Created by Kenneth Cluff on 7/17/13.
 //
 //
 
 #import "CCNewProjectViewController.h"
-#define kBlueNameKey @"bluebalance"
-#define kRedNameKey @"redbalance"
-#define kGreenNameKey @"greenbalance"
-#define kSaturation @"saturation"
-#define kFontNameKey @"font"
-#define kFontSize @"fontSize"
 
 @interface CCNewProjectViewController ()
+- (IBAction)saveProjectName:(UIBarButtonItem *)sender;
+- (IBAction)cancelNewProject:(UIBarButtonItem *)sender;
+- (IBAction)projectName:(UITextField *)sender;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *saveButton;
 
 @end
 
@@ -33,8 +31,8 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    [self setDisplayBackGroundColor];
     [self setFontForDisplay];
+    [self setDisplayBackGroundColor];
 }
 
 - (void)didReceiveMemoryWarning
@@ -43,18 +41,19 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Configure view
--(void)setDisplayBackGroundColor{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    CGFloat alpha = [defaults floatForKey:kSaturation];
-    CGFloat red = [defaults floatForKey:kRedNameKey];
-    CGFloat blue = [defaults floatForKey:kBlueNameKey];
-    CGFloat green = [defaults floatForKey:kGreenNameKey];
-    UIColor *newColor = [[UIColor alloc] initWithRed:red green:green blue:blue alpha:alpha];
-    //self.projectNotes.backgroundColor = newColor;
-    self.view.backgroundColor = newColor;
+- (IBAction)saveProjectName:(UIBarButtonItem *)sender {
+    [self.popoverDelegate savePopoverData];
 }
 
+- (IBAction)cancelNewProject:(UIBarButtonItem *)sender {
+    [self.popoverDelegate cancelPopover];
+}
+
+- (IBAction)projectName:(UITextField *)sender {
+    self.saveButton.enabled = YES;
+}
+
+#pragma mark - Helpers
 -(void)setFontForDisplay{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *fontFamily = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
@@ -67,26 +66,16 @@
         fontSize = 16;
     }
     UIFont *displayFont = [UIFont fontWithName:fontFamily size:fontSize];
-    self.label.font = displayFont;
+    self.projectName.font = displayFont;
 }
 
-#pragma mark - IBActions
-- (IBAction)saveData:(UIBarButtonItem *)sender {
-    [self.view endEditing:YES];
-    [self.popoverDelegate savePopoverData];
-}
-
-- (IBAction)cancel:(UIBarButtonItem *)sender {
-    [self.view endEditing:YES];
-    [self.popoverDelegate cancelPopover];
-}
-
-- (IBAction)projectName:(UITextField *)sender {
-    
-}
-
-- (void)viewDidUnload {
-    [self setLabel:nil];
-    [super viewDidUnload];
+-(void)setDisplayBackGroundColor{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    CGFloat alpha = [defaults floatForKey:kSaturation];
+    CGFloat red = [defaults floatForKey:kRedNameKey];
+    CGFloat blue = [defaults floatForKey:kBlueNameKey];
+    CGFloat green = [defaults floatForKey:kGreenNameKey];
+    UIColor *newColor = [[UIColor alloc] initWithRed:red green:green blue:blue alpha:alpha];
+    self.view.backgroundColor = newColor;
 }
 @end

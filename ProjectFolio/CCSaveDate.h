@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @protocol CCSaveDate <NSObject>
 
 -(void)saveDateValue:(NSDate *)dateValue;

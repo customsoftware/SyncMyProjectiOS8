@@ -7,14 +7,6 @@
 //
 
 #import "CCTimerSummaryViewController.h"
-#define UNBILLED 0
-#define BILLED 1
-#define ALL_UNBILLED 0
-#define YESTERDAY_UNBILLED 1
-#define LAST_WEEK_UNBILLED 2
-#define LAST_MONTH_UNBILLED 3
-#define ONE_DAY 24*60*60
-#define ONE_WEEK 24*60*60*7
 
 @interface CCTimerSummaryViewController ()
 

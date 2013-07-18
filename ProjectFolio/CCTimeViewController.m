@@ -146,7 +146,7 @@
     cell.textLabel.text = [[NSString alloc] initWithFormat:@"Elapse time: %@ minutes", elapseTimeString];
     cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"%@ - %@", [self.dateFormatter stringFromDate:newTime.start], [self.endDateFormatter stringFromDate:newTime.end]];
     if (indexPath.row == 0 && self.timeSelector.selectedSegmentIndex == 0 ) {
-        cell.imageView.image = [UIImage imageNamed:@"checkmark-box-small-green.png"];
+        cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
     } else {
         cell.imageView.image = nil;
     }

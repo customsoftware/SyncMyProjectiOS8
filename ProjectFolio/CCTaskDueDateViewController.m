@@ -10,14 +10,6 @@
 #import "Project.h"
 #import "CCCalendarControlViewController.h"
 
-#define HOUR_BEFORE   -3600
-#define DAY_BEFORE   -86400
-#define WEEK_BEFORE -604800
-#define EXACT    0
-#define ONE_HOUR 1
-#define ONE_DAY  2
-#define ONE_WEEK 3
-
 @interface CCTaskDueDateViewController ()
 
 @property (strong, nonatomic) CCCalendarControlViewController *calendarControl;

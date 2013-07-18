@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @protocol CCModalViewDelegate <NSObject>
 
 -(void)dismissModalView:(UIView *)sender;

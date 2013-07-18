@@ -128,7 +128,7 @@
     cell.textLabel.text = taskItem.title;
     cell.detailTextLabel.text = detailMessage;
     if (taskItem.completed == TASK_COMPLETE) {
-        cell.imageView.image = [UIImage imageNamed:@"checkmark-box-small-green.png"];
+        cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
         cell.detailTextLabel.text = nil;
     } else {
         if (cell.reuseIdentifier == CollapsedParentIdentifier) {

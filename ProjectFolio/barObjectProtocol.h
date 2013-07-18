@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @protocol barObjectProtocol <NSObject>
 
 -(UIInterfaceOrientation)getDeviceOrientation;
