@@ -24,6 +24,15 @@
 #import "CCPopoverControllerDelegate.h"
 #import "CCHotListViewController.h"
 #import "CCPrintNotesRender.h"
+#import "CCNewProjectViewController.h"
+
+typedef enum kfilterModes{
+    allProjectsMode,
+    activeProjectsMode,
+    openProjectsMode,
+    categoryMode,
+    hotListMode
+} kFilterModes;
 
 @interface CCMasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
@@ -42,27 +51,6 @@
 
 @implementation CCMasterViewController
 
-@synthesize detailViewController = _detailViewController;
-@synthesize fetchedProjectsController = __fetchedProjectsController;
-@synthesize projectDateController = _projectDateController;
-@synthesize projectPopover = _projectPopover;
-@synthesize projectNameView = _projectNameView;
-@synthesize controllingCell = _controllingCell;
-@synthesize controllingCellIndex = _controllingCellIndex;
-@synthesize tableView = _tableView;
-@synthesize projectActionsButton = _projectActionsButton;
-@synthesize closer = _closer;
-@synthesize mainTaskController = _mainTaskController;
-@synthesize activeProject = _activeProject;
-@synthesize request = _request;
-@synthesize activePredicate = _activePredicate;
-@synthesize openPredicate = _openPredicate;
-@synthesize hotListController = _hotListController;
-@synthesize filteredProjects = _filteredProjects;
-@synthesize searchBar = _searchBar;
-@synthesize logger = _logger;
-@synthesize projectTimer = _projectTimer;
-
 -(void)sendTimerStartNotificationForProject{
     NSDictionary *projectDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:self.activeProject, @"Project", nil];
     NSNotification *startTimer = [NSNotification notificationWithName:kStartNotification object:nil userInfo:projectDictionary];
@@ -77,18 +65,18 @@
 
 #pragma mark - IBActions
 -(IBAction)filterActions:(UISegmentedControl *)sender{
-    if (sender.selectedSegmentIndex == 4){
+    if (sender.selectedSegmentIndex == hotListMode){
         self.hotListController.projectDetailController = self.detailViewController;
         [self.navigationController pushViewController:self.hotListController animated:YES];
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];
     } else {
         self.lastSelected = sender.selectedSegmentIndex;
-        if (sender.selectedSegmentIndex == 0) {
+        if (sender.selectedSegmentIndex == allProjectsMode) {
             [self.request setPredicate:nil];
-        } else if ( sender.selectedSegmentIndex == 1 ) {
+        } else if ( sender.selectedSegmentIndex == activeProjectsMode ) {
             [self.request setPredicate:self.activePredicate];
-        } else if ( sender.selectedSegmentIndex == 2 ) {
+        } else if ( sender.selectedSegmentIndex == openProjectsMode ) {
             [self.request setPredicate:self.openPredicate];
         }
         NSError *fetchError = [[NSError alloc] init];
@@ -391,7 +379,12 @@
 -(void)updateDetailControllerForIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView{
     [self.detailViewController.projectNotes resignFirstResponder];
     if (tableView == self.tableView) {
-        self.activeProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
+        if (self.fetchedProjectsController.fetchedObjects.count >= indexPath.row) {
+            self.activeProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
+        } else {
+            self.activeProject = nil;
+            self.controllingCellIndex = nil;
+        }
     } else {
         self.activeProject = [self.filteredProjects objectAtIndex:indexPath.row];
     }
@@ -403,13 +396,21 @@
     [self sendTimerStartNotificationForProject];
     self.controllingCellIndex = indexPath;
     self.controllingCell = [self.tableView cellForRowAtIndexPath:indexPath];
-    if (self.activeProject.projectNotes) {
-        self.detailViewController.projectNotes.text = self.activeProject.projectNotes;
+    NSString *noteText = nil;
+    NSString *titleText = nil;
+    if (self.activeProject) {
+        titleText = [NSString stringWithFormat:@"%@: Notes", self.activeProject.projectName];
+        if (self.activeProject.projectNotes) {
+            noteText = self.activeProject.projectNotes;
+        } else {
+            noteText = [NSString stringWithFormat:@"Enter notes about the %@ project here", self.activeProject.projectName];
+        }
     } else {
-        self.detailViewController.projectNotes.text = [[NSString alloc] initWithFormat:@"Enter notes about the %@ project here", self.activeProject.projectName];
-        self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
+        noteText = @"Select a project";
+        titleText = @"Notes";
     }
-    self.detailViewController.title = [[NSString alloc] initWithFormat:@"%@: Notes", self.activeProject.projectName ];
+    self.detailViewController.projectNotes.text = noteText;
+    self.detailViewController.title = titleText;
 }
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
@@ -706,6 +707,17 @@
         cell.imageView.image = nil;
     }
 
+    if (self.lastSelected == categoryMode) {
+        UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(230, 5, 44, 34)];
+        catColor.backgroundColor = [newProject.projectPriority getCategoryColor];
+        catColor.layer.cornerRadius = 3;
+        catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+        catColor.layer.borderWidth = 1;
+        cell.accessoryView = catColor;
+    } else {
+        cell.accessoryView = nil;
+    }
+    
     cell.detailTextLabel.text = caption;
 }
 

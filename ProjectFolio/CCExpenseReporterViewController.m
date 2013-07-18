@@ -59,7 +59,7 @@
     [message appendString:CR_LF];
     
     //Itemization of non-milage expenses
-    [message appendString:@"Expense itemization:\n\r"];
+    [message appendString:@"Expense itemization:<br>"];
     [message appendString:SCORE];
     int itemCount = 0;
     for (Deliverables *expense in expenses) {

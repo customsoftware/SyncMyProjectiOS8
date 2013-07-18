@@ -7,6 +7,10 @@
 //
 
 #import "CCDeliverableViewController.h"
+#import "CCPrintNotesRender.h"
+#define kFontNameKey @"font"
+#define kFontSize @"fontSize"
+
 #define DELIVER_COMPLETE [[NSNumber alloc] initWithInt:1]
 #define DELIVER_ACTIVE [[NSNumber alloc] initWithInt:0]
 
@@ -74,15 +78,72 @@
 
 #pragma mark - IBActions
 -(IBAction)clickSummaryButton:(UIBarButtonItem *)sender{
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:@"Expense Report Options" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"EMail", @"Print", nil];
+    [sheet showInView:self.view.superview];
+    //[self sendToPrinter];
+}
+
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    switch (buttonIndex) {
+        case 0:
+            [self sendAsEmail];
+            break;
+        
+        case 1:
+            [self sendToPrinter];
+            break;
+            
+        default:
+            break;
+    }
+}
+
+- (void)sendAsEmail{
     self.emailer = [[CCEmailer alloc] init];
     self.emailer.emailDelegate = self;
     self.expenseCalculator = [[CCExpenseReporterViewController alloc] init];
     
     self.emailer.subjectLine = [[NSString alloc] initWithFormat:@"Expense Report For: %@ As of %@", self.project.projectName, [self.dateFormatter stringFromDate:[NSDate date]]];
     self.emailer.messageText = [self.expenseCalculator getExpenseReportForProject:self.project];
+    self.emailer.useHTML = [NSNumber numberWithBool:YES];
     [self.emailer sendEmail];
     [self.emailer addImageAttachments:self.expenseCalculator.receiptList];
     [self presentModalViewController:self.emailer.mailComposer animated:YES];
+}
+
+- (void)sendToPrinter{
+    self.expenseCalculator = [[CCExpenseReporterViewController alloc] init];
+    UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
+    pic.delegate = self;
+    
+    UIPrintInfo *printInfo = [UIPrintInfo printInfo];
+    printInfo.outputType = UIPrintInfoOutputGrayscale;
+    printInfo.jobName = self.project.projectName;
+    pic.printInfo = printInfo;
+    
+    UIMarkupTextPrintFormatter *notesFormatter = [[UIMarkupTextPrintFormatter alloc]
+                                                  initWithMarkupText:[self.expenseCalculator getExpenseReportForProject:self.project]];
+    notesFormatter.startPage = 0;
+    CCPrintNotesRender *renderer = [[CCPrintNotesRender alloc] init];
+    renderer.headerString = [[NSString alloc] initWithFormat:@"Expense Report For: %@ As of %@", self.project.projectName, [self.dateFormatter stringFromDate:[NSDate date]]];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    renderer.fontName = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
+    renderer.fontSize = [defaults integerForKey:kFontSize];
+    [renderer addPrintFormatter:notesFormatter startingAtPageAtIndex:0];
+    pic.printPageRenderer = renderer;
+    pic.showsPageRange = YES;
+    
+    void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
+    ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
+        if (!completed && error) {
+            NSLog(@"Printing could not complete because of error: %@", error);
+        }
+    };
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [pic presentFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES completionHandler:completionHandler];
+    } else {
+        [pic presentAnimated:YES completionHandler:completionHandler];
+    }
 }
 
 -(IBAction)clickTableDisplayOptions:(UISegmentedControl *)sender{

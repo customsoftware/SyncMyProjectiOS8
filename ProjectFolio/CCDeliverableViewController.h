@@ -17,7 +17,7 @@
 #import "CCEmailer.h"
 #import "CCErrorLogger.h"
 
-@interface CCDeliverableViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,CCPopoverControllerDelegate,CCEmailDelegate,CCLoggerDelegate>
+@interface CCDeliverableViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,CCPopoverControllerDelegate,CCEmailDelegate,CCLoggerDelegate,UIActionSheetDelegate,UIPrintInteractionControllerDelegate>
 
 @property (strong, nonatomic) Project *project;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;

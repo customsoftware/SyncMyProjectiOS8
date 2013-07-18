@@ -190,7 +190,6 @@
     [numberFormatter setMinimumIntegerDigits:1];
     [numberFormatter setRoundingMode:NSNumberFormatterRoundUp];
     NSMutableString *messageString = [[NSMutableString alloc] init];
-    [messageString appendString:[NSString stringWithFormat:@"<font face=&quot;%@&quot;>",fontFamily]];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setDateStyle:NSDateFormatterShortStyle];
     [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
@@ -319,8 +318,7 @@
     
     NSString *newString = [[NSString alloc] initWithFormat:@"<p><b>Total Elapse time: %@</b><p>", [numberFormatter stringFromNumber:[NSNumber numberWithFloat:totalInterval]]];
     [messageString appendString:newString];
-    [messageString appendString:@"</font>"];
-    self.messageString = messageString;
+    self.messageString = [NSString stringWithFormat:@"<font face=&quot;%@&quot;>%@</font.>",fontFamily, messageString];
     [self.printDelegate sendOutput];
 }
 

@@ -28,6 +28,7 @@ This will present the email dialog box and accept a subject line, email body and
 @property (strong, nonatomic) NSString *subjectLine;
 @property (strong, nonatomic) NSString *messageText;
 @property (strong, nonatomic) NSString *addressee;
+@property (strong, nonatomic) NSNumber *useHTML;
 
 -(void)sendEmail;
 -(void)addImageAttachments:(NSArray *)images;

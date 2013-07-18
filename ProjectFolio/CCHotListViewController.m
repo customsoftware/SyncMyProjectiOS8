@@ -18,6 +18,13 @@
 #define ONE_WEEK 24*60*60*7
 #define ONE_MONTH 24*60*60*7*30
 
+typedef enum khotlistfilterModes{
+    allProjectsMode,
+    todayMode,
+    thisWeekMode,
+    categoryMode,
+    lateMode
+} kHotListFilterModes;
 
 @interface CCHotListViewController ()
 @property (strong, nonatomic) NSPredicate *allPredicate;
@@ -82,13 +89,13 @@
 
 -(IBAction)filterOptions:(UISegmentedControl *)sender{
     self.selectedFilter = sender.selectedSegmentIndex;
-    if (sender.selectedSegmentIndex == 0) {
+    if (sender.selectedSegmentIndex == allProjectsMode) {
         [self.fetchRequest setPredicate:self.allPredicate];
-    } else if ( sender.selectedSegmentIndex == 1 ) {
+    } else if ( sender.selectedSegmentIndex == todayMode ) {
         [self.fetchRequest setPredicate:self.todayPredicate];
-    } else if ( sender.selectedSegmentIndex == 2 ) {
+    } else if ( sender.selectedSegmentIndex == thisWeekMode ) {
         [self.fetchRequest setPredicate:self.nextWeekPredicate];
-    } else if ( sender.selectedSegmentIndex == 4 ) {
+    } else if ( sender.selectedSegmentIndex == lateMode ) {
         [self.fetchRequest setPredicate:self.latePredicate];
     }
     self.selectedSegment = sender.selectedSegmentIndex;
@@ -106,6 +113,7 @@
     self.hotListReporter = [[CCHotListReportViewController alloc] init];
     self.emailer.subjectLine = [[NSString alloc] initWithFormat:@"Hot List Report As of %@", [self.dateFormatter stringFromDate:[NSDate date]]];
     self.emailer.messageText = [self.hotListReporter getHotListReportForStatus:self.selectedFilter];
+    self.emailer.useHTML = [NSNumber numberWithBool:NO];
     [self.emailer sendEmail];
     [self presentModalViewController:self.emailer.mailComposer animated:YES];
 }
@@ -153,26 +161,6 @@
     }
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.task = nil;
-    self.dateFormatter = nil;
-    self.taskFRC = nil;
-    self.fetchRequest = nil;
-    self.latePredicate = nil;
-    self.todayPredicate = nil;
-    self.nextMonthPredicate = nil;
-    self.nextWeekPredicate = nil;
-    self.emailer = nil;
-    self.projectDetailController = nil;
-    self.hotListReporter = nil;
-    self.selectedIndex = nil;
-    self.projectTimer = nil;
-    self.filteredTasks = nil;
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
@@ -214,6 +202,17 @@
         cell.imageView.image = [UIImage imageNamed:@"179-notepad.png"];
     } else {
         cell.imageView.image = nil;
+    }
+    
+    if (self.selectedSegment == categoryMode) {
+        UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(230, 5, 44, 34)];
+        catColor.backgroundColor = [self.task.taskPriority getCategoryColor];
+        catColor.layer.cornerRadius = 3;
+        catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+        catColor.layer.borderWidth = 1;
+        cell.accessoryView = catColor;
+    } else {
+        cell.accessoryView = nil;
     }
 }
 

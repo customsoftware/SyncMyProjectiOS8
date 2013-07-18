@@ -44,7 +44,7 @@
     [self.mailComposer setModalPresentationStyle:UIModalPresentationFormSheet];
     [self.mailComposer setModalTransitionStyle:UIModalTransitionStyleFlipHorizontal];
     [self.mailComposer setSubject:self.subjectLine];
-    [self.mailComposer setMessageBody:self.messageText isHTML:YES];
+    [self.mailComposer setMessageBody:self.messageText isHTML:[self.useHTML boolValue]];
     if (self.addressee != nil) {
         [self.mailComposer setToRecipients:[[NSArray alloc] initWithObjects:self.addressee, nil]];
     }
@@ -84,4 +84,10 @@
     return _addressee;
 }
 
+- (NSNumber *)useHTML{
+    if (_useHTML == nil) {
+        _useHTML = [NSNumber numberWithBool:YES];
+    }
+    return _useHTML;
+}
 @end

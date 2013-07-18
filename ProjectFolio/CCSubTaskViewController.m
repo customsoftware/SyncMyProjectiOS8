@@ -143,6 +143,11 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    int selectCell = indexPath.row;
+    if (selectCell > self.controllingTask.subTasks.count - 1) {
+        NSLog(@"We are going to crash: tableViewCell");
+    }
+    
     Task *task = [[self.controllingTask.subTasks allObjects] objectAtIndex:indexPath.row];
     static NSString *CollapsedParentIdentifier = @"groupCell";
     static NSString *ChildIdentifier = @"childCellOnTime";

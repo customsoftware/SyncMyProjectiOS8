@@ -7,6 +7,7 @@
 //
 
 #import "CCCategoryTaskViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 @interface CCCategoryTaskViewController ()
 
@@ -108,6 +109,12 @@
     }
     
     // Configure the cell...
+    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(250, 5, 44, 34)];
+    catColor.backgroundColor = [priority getCategoryColor];
+    catColor.layer.cornerRadius = 3;
+    catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    catColor.layer.borderWidth = 1;
+    [cell addSubview:catColor];
     cell.textLabel.text = priority.priority;
     return cell;
 }

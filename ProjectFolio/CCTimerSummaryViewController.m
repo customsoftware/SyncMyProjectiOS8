@@ -204,7 +204,7 @@
 -(void)showActionSheet{
     UIActionSheet *outPutter = [[UIActionSheet alloc] initWithTitle:@"Close Options" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Just Close" otherButtonTitles: @"Send Report and Close", nil];
     
-    [outPutter showInView:self.navigationController.topViewController.view];
+    [outPutter showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
@@ -223,6 +223,7 @@
         
         self.emailer.subjectLine = @"Hours Billing Statement";
         self.emailer.messageText = billingString;
+        self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
         [self presentModalViewController:self.emailer.mailComposer animated:YES];
         
