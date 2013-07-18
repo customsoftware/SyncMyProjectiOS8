@@ -6,7 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
 #import <MessageUI/MessageUI.h>
 #import "CCiPhoneMasterViewController.h"
 #import "CCGeneralCloserProtocol.h"
@@ -22,8 +21,8 @@
 -(void)setMessage;
 -(void)billEvents;
 -(void)emailMessage;
--(CCGeneralCloser *)initWithLastWeek;
--(CCGeneralCloser *)initForYesterday;
--(CCGeneralCloser *)initForAll;
+-(CCGeneralCloser *)initWithLastWeekFor:(id)sender;
+-(CCGeneralCloser *)initForYesterdayFor:(id)sender;
+-(CCGeneralCloser *)initForAllFor:(id)sender;
 
 @end

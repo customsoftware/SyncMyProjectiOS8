@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @protocol CCLoggerDelegate <NSObject>
 
 -(void)releaseLogger;

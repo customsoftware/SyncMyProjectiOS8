@@ -37,6 +37,11 @@
     return self;
 }
 
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 -(void)timerTest{
     if (self.timer != nil ) {
         self.timer.billed = [NSNumber numberWithBool:NO];

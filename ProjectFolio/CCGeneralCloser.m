@@ -7,15 +7,7 @@
 //
 
 #import "CCGeneralCloser.h"
-#define kFontNameKey @"font"
-#define ALL_UNBILLED  0
-#define YESTERDAY_UNBILLED 1
-#define LAST_WEEK_UNBILLED 3
-#define THIS_WEEK_UNBILLED 2
-
-#define TWO_DAY 48*60*60
-#define ONE_DAY 24*60*60
-#define ONE_WEEK 24*60*60*7
+#import "CCiPhoneMasterViewController.h"
 
 @interface CCGeneralCloser()
 @property (strong, nonatomic) NSString *subjectLine;
@@ -51,22 +43,25 @@
 }
 
 #pragma mark - Init Variations
--(CCGeneralCloser *)initForAll{
+-(CCGeneralCloser *)initForAllFor:(id)sender{
     CCGeneralCloser *newCloser = [super init];
+    self.printDelegate = sender;
     self.mode = ALL_UNBILLED;
     self.subjectLine = @"Close all active projects";
     return newCloser;
 }
 
--(CCGeneralCloser *)initForYesterday{
+-(CCGeneralCloser *)initForYesterdayFor:(id)sender{
     CCGeneralCloser *newCloser = [super init];
+    self.printDelegate = sender;
     self.mode = YESTERDAY_UNBILLED;
     self.subjectLine = @"Close yesterday's projects";
     return newCloser;
 }
 
--(CCGeneralCloser *)initWithLastWeek{
+-(CCGeneralCloser *)initWithLastWeekFor:(id)sender{
     CCGeneralCloser *newCloser = [super init];
+    self.printDelegate = sender;
     self.mode = THIS_WEEK_UNBILLED;
     self.subjectLine = @"Close this week's projects";
     return newCloser;
@@ -156,15 +151,15 @@
     [self.fetchRequest setEntity:entity];
     NSPredicate *completedPredicate = nil;
     if ([self getStart] != nil){
-        completedPredicate = [NSPredicate predicateWithFormat:@"workProject.projectName != nil AND ( billed == nil OR billed == 0) AND start >= %@ AND start <= %@", [self getStart], [self getEnd]];
+        completedPredicate = [NSPredicate predicateWithFormat:@"workProject.projectName != nil AND ( billed == nil OR billed == 0) AND start >= %@ AND start <= %@ AND workProject.billable = 1", [self getStart], [self getEnd]];
     } else {
-        completedPredicate = [NSPredicate predicateWithFormat:@"workProject.projectName != nil AND ( billed == nil OR billed == 0 ) AND end != nil"];        
+        completedPredicate = [NSPredicate predicateWithFormat:@"workProject.projectName != nil AND ( billed == nil OR billed == 0 ) AND end != nil AND workProject.billable = 1"];
     }
     [self.fetchRequest setPredicate:completedPredicate];
     self.eventFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
-                                                         sectionNameKeyPath:nil
-                                                                  cacheName:nil];
+                                                        managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
+                                                          sectionNameKeyPath:nil
+                                                                   cacheName:nil];
     NSError *requestError = nil;
     [self.eventFRC performFetch:&requestError];
     return [self.eventFRC fetchedObjects];
@@ -196,11 +191,13 @@
     NSString *newProject = nil;
     NSString *oldProject = nil;
     NSString *newDate = nil;
+    NSNumber *billRate = nil;
     NSString *oldDate = [[NSString alloc] initWithFormat:@"Who me???"];
     float currentInterval = 0;
     float projectInterval = 0;
     float totalInterval = 0;
-        
+    float totalInvoicedAmount = 0;
+    
     self.billableResults = [self getBillableArray];
     for (WorkTime *event in self.billableResults) {
         // Get the building blocks
@@ -240,17 +237,19 @@
                                      [numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
                         [messageString appendString:newString];
                         
-                        [messageString appendString:[[NSString alloc] initWithFormat:@"_____________________________________<br>"]];
+                        [messageString appendString:[[NSString alloc] initWithFormat:@"___________________________________________________<br>"]];
                         
                         // Update the project counter
                         projectInterval = projectInterval + currentInterval;
                         projectInterval = roundf(projectInterval * 100)/100;
-                        
-                        newString = [[NSString alloc] initWithFormat:@"<i>%@ Elapse time:</i> %@<p>",
+                        float totalBilledCost = projectInterval * [billRate floatValue];
+                        totalInvoicedAmount = totalInvoicedAmount + totalBilledCost;
+                        newString = [[NSString alloc] initWithFormat:@"<i>%@ Elapse time:</i> %@ Billed Cost: $%0.02f<p>",
                                      oldProject,
-                                     [numberFormatter stringFromNumber:[NSNumber numberWithFloat:projectInterval]]];
+                                     [numberFormatter stringFromNumber:[NSNumber numberWithFloat:projectInterval]],
+                                     totalBilledCost];
                         [messageString appendString:newString];
-               
+                        
                         newString = [[NSString alloc] initWithFormat:@"<p><b>Project: %@</b><TABLE>", newProject];
                         [messageString appendString:newString];
                         totalInterval = totalInterval + projectInterval;
@@ -258,14 +257,14 @@
                     } else {
                         currentInterval = roundf(currentInterval * 100)/100;
                         newString = [[NSString alloc] initWithFormat:@"<TR><TD>Project:</TD><TD>%@</TD><TD>Day:</TD><TD>%@</TD><TD>Elapse time:</TD><TD>%@</TD></TR>",
-                                                  oldProject,
+                                     oldProject,
                                      oldDate,
                                      [numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
                         [messageString appendString:newString];
+                        totalInterval = totalInterval + currentInterval;
                     }
                     
-                }
-                else if ( ![newProject isEqualToString:@"Who me???"]  && self.mode != YESTERDAY_UNBILLED){
+                } else if ( ![newProject isEqualToString:@"Who me???"]  && self.mode != YESTERDAY_UNBILLED){
                     
                     newString = [[NSString alloc] initWithFormat:@"<p><b>Project: %@</b><TABLE>", newProject];
                     [messageString appendString:newString];
@@ -281,42 +280,54 @@
             // Get ready for the next Loop
             oldDate = newDate;
             oldProject = newProject;
+            billRate = event.workProject.hourlyRate;
         }
     }
     
     if (currentInterval != 0) {
-        if (![oldProject isEqualToString:@"Who me???"]) {            
+        if (![oldProject isEqualToString:@"Who me???"]) {
             if (self.mode != YESTERDAY_UNBILLED) {
                 currentInterval = roundf(currentInterval * 100)/100;
                 NSString *newString = [[NSString alloc] initWithFormat:@"<TR><TD>Day: %@</TD><TD></TD><TD>Elapse time: %@</TD></TR></TABLE>", oldDate,[numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
                 [messageString appendString:newString];
                 
-                [messageString appendString:[[NSString alloc] initWithFormat:@"_____________________________________<br>"]];
+                [messageString appendString:[[NSString alloc] initWithFormat:@"___________________________________________________<br>"]];
                 
                 // Update the project counter
                 projectInterval = projectInterval + currentInterval;
                 projectInterval = roundf(projectInterval * 100)/100;
-                newString = [[NSString alloc] initWithFormat:@"<i>%@ Elapse time:</i> %@<p>",
+                float totalBilledCost = projectInterval * [billRate floatValue];
+                totalInvoicedAmount = totalInvoicedAmount + totalBilledCost;
+                newString = [[NSString alloc] initWithFormat:@"<i>%@ Elapse time:</i> %@ Billed Cost: $%0.02f<p>",
                              oldProject,
-                             [numberFormatter stringFromNumber:[NSNumber numberWithFloat:projectInterval]]];
+                             [numberFormatter stringFromNumber:[NSNumber numberWithFloat:projectInterval]],
+                             totalBilledCost];
                 [messageString appendString:newString];
                 totalInterval = totalInterval + projectInterval;
                 
             } else {
-                currentInterval = roundf(currentInterval * 100)/100;
-                NSString *newString = [[NSString alloc] initWithFormat:@"<TR><TD><b>%@</b>   </TD><TD>Elapse time: %@</TD></TR>", oldProject, [numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
+                
+                NSString *newString = [[NSString alloc] initWithFormat:@"<TR><TD>Project:</TD><TD>%@</TD><TD>Day:</TD><TD>%@</TD><TD>Elapse time:</TD><TD>%@</TD></TR>",
+                                       oldProject,
+                                       oldDate,
+                                       [numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
                 [messageString appendString:newString];
                 totalInterval = totalInterval + currentInterval;
+                
+                /*currentInterval = roundf(currentInterval * 100)/100;
+                 NSString *newString = [[NSString alloc] initWithFormat:@"<TR><TD><b>%@</b>   </TD><TD>Elapse time: %@</TD></TR>", oldProject, [numberFormatter stringFromNumber:[NSNumber numberWithFloat:currentInterval]]];
+                 [messageString appendString:newString];
+                 totalInterval = totalInterval + currentInterval;*/
             }
-
+            
         }
     }
     
     [messageString appendString:@"</TABLE><br>"];
-    [messageString appendString:[[NSString alloc] initWithFormat:@"_____________________________________<br>"]];
-    [messageString appendString:[[NSString alloc] initWithFormat:@"_____________________________________"]];
+    [messageString appendString:[[NSString alloc] initWithFormat:@"___________________________________________________<br>"]];
+    [messageString appendString:[[NSString alloc] initWithFormat:@"___________________________________________________"]];
     
-    NSString *newString = [[NSString alloc] initWithFormat:@"<p><b>Total Elapse time: %@</b><p>", [numberFormatter stringFromNumber:[NSNumber numberWithFloat:totalInterval]]];
+    NSString *newString = [[NSString alloc] initWithFormat:@"<p><b>Total Elapse time: %@  Total Invoiced Amount: %0.02f</b><p>", [numberFormatter stringFromNumber:[NSNumber numberWithFloat:totalInterval]], totalInvoicedAmount];
     [messageString appendString:newString];
     self.messageString = [NSString stringWithFormat:@"<font face=&quot;%@&quot;>%@</font.>",fontFamily, messageString];
     [self.printDelegate sendOutput];

@@ -6,8 +6,6 @@
 //
 //
 
-#import <Foundation/Foundation.h>
-
 @interface CCSettingsControl : NSObject
 
 -(BOOL)saveString:(NSString *)stringValue atKey:(NSString *)keyName;

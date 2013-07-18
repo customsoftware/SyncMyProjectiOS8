@@ -8,6 +8,41 @@
 #warning "This project uses features only available in iOS SDK 5.0 and later."
 #endif
 
+#define kShowProjects @"neverShowProjects"
+#define kFontNameKey @"font"
+#define kFontSize @"fontSize"
+#define kBlueNameKey @"bluebalance"
+#define kRedNameKey @"redbalance"
+#define kGreenNameKey @"greenbalance"
+#define kSaturation @"saturation"
+#define MIN_MARGIN 36
+#define HEADER_FOOTER_MARGIN_PADDING  5
+#define MIN_HEADER_FOOTER_DISTANCE_FROM_CONTENT 10
+#define kFontPointSize 18
+
+#define ONE_HOUR 1
+#define TWO_DAY 48*60*60
+#define ONE_DAY 24*60*60
+#define ONE_WEEK 24*60*60*7
+
+#define UNBILLED 0
+#define BILLED 1
+#define ALL_UNBILLED 0
+#define YESTERDAY_UNBILLED 1
+#define THIS_WEEK_UNBILLED 2
+#define LAST_WEEK_UNBILLED 3
+#define LAST_MONTH_UNBILLED 4
+
+#define HOUR_BEFORE   -3600
+#define DAY_BEFORE   -86400
+#define WEEK_BEFORE -604800
+#define EXACT    0
+
+#define kAppString @"deviceKey"
+#define kAppStatus @"Status"
+#define kiCloudToken @"Token"
+#define kStartupFinished @"Startup Finished"
+
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
