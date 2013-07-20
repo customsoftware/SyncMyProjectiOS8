@@ -38,6 +38,9 @@
 #define WEEK_BEFORE -604800
 #define EXACT    0
 
+#define kSwipeDelay 0.05f
+#define kSwipeDuration 0.25f
+
 #define kAppString @"deviceKey"
 #define kAppStatus @"Status"
 #define kiCloudToken @"Token"

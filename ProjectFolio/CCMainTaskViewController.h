@@ -26,10 +26,7 @@
 @property (weak, nonatomic) id<CCProjectTaskDelegate> projectDelegate;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *navButton;
 
--(IBAction)displayOptions:(UISegmentedControl *)sender;
--(IBAction)cancelPopover;
--(IBAction)savePopoverData;
--(IBAction)navButton:(UISegmentedControl *)sender;
+
 -(BOOL)shouldShowCancelButton;
 -(void)cancelSummaryChart;
 -(Project *)getControllingProject;

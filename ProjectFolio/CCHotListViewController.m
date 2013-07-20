@@ -9,8 +9,9 @@
 #import "CCHotListViewController.h"
 #import "CCDetailViewController.h"
 #define kStartNotification @"ProjectTimerStartNotification"
-#define kStartTaskNotification @"TaskTimerStartNotification"
-#define kStopNotification @"ProjectTimerStopNotification"
+#define kStartTaskNotification  @"TaskTimerStartNotification"
+#define kStopNotification       @"ProjectTimerStopNotification"
+#define kHotListSearchState     @"searchModeHotList"
 
 #define TASK_COMPLETE [[NSNumber alloc] initWithInt:1]
 #define TASK_ACTIVE [[NSNumber alloc] initWithInt:0]
@@ -27,6 +28,14 @@ typedef enum khotlistfilterModes{
 } kHotListFilterModes;
 
 @interface CCHotListViewController ()
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
+
+-(BOOL)shouldShowCancelButton;
+-(IBAction)filterOptions:(UISegmentedControl *)sender;
+- (void)sendHotList;
+- (void)toggleSearchBar;
+
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) NSPredicate *todayPredicate;
 @property (strong, nonatomic) NSPredicate *nextWeekPredicate;
@@ -39,20 +48,11 @@ typedef enum khotlistfilterModes{
 @property (strong, nonatomic) CCHotListReportViewController *hotListReporter;
 @property NSInteger selectedFilter;
 @property NSInteger selectedSegment;
+@property (nonatomic) BOOL notInSearchMode;
 
 @end
 
 @implementation CCHotListViewController
-@synthesize task = _task;
-@synthesize dateFormatter = _dateFormatter;
-@synthesize fetchRequest = _fetchRequest;
-@synthesize taskFRC = _taskFRC;
-@synthesize emailer = _emailer;
-@synthesize hotListReporter = _hotListReporter;
-@synthesize projectDetailController = _projectDetailController;
-@synthesize selectedIndex = _selectedIndex;
-@synthesize projectTimer = _projectTimer;
-@synthesize filteredTasks = _filteredTasks;
 
 -(void)sendTimerStartNotificationForProject{
     NSDictionary *projectDictionary = @{ @"Project" : self.task.taskProject };
@@ -70,7 +70,75 @@ typedef enum khotlistfilterModes{
     NSNotification *startTimer = [NSNotification notificationWithName:kStartTaskNotification object:nil userInfo:projectDictionary];
     [[NSNotificationCenter defaultCenter] postNotification:startTimer];
 }
+#pragma mark - View Life cycle
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+    self.dateFormatter = [[NSDateFormatter alloc] init];
+    [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+    [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+    NSSortDescriptor *dueWhenDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dueDate" ascending:YES];
+    NSSortDescriptor *projectDescriptor = [[NSSortDescriptor alloc] initWithKey:@"taskProject.dateFinish" ascending:NO];
+    NSSortDescriptor *taskDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects: dueWhenDescriptor, projectDescriptor, taskDescriptor, nil];
+    [self.fetchRequest setSortDescriptors:sortDescriptors];
+    [self.fetchRequest setEntity:entity];
+    [self.fetchRequest setPredicate:self.allPredicate];
+    
+    self.taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
+                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
+                                                         sectionNameKeyPath:nil
+                                                                  cacheName:nil];
+    
+    self.taskFRC.delegate = self;
+    
+    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
+    searchButton.style = UIBarButtonItemStyleBordered;
+    [buttons addObject:searchButton];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(sendHotList)];
+    addButton.style = UIBarButtonItemStyleBordered;
+    [buttons addObject:addButton];
+    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
+    [tools setItems:buttons animated:NO];
+    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
+    self.navigationItem.rightBarButtonItem = twoButtons;
+    self.notInSearchMode = [[NSUserDefaults standardUserDefaults] boolForKey:kHotListSearchState];
+}
 
+-(void)viewWillAppear:(BOOL)animated{
+    NSError *requestError = nil;
+    if ([self.taskFRC performFetch:&requestError]) {
+        [self.tableView reloadData];
+    }
+    if (self.selectedIndex != nil) {
+        [self.tableView selectRowAtIndexPath:self.selectedIndex animated:YES scrollPosition:UITableViewScrollPositionNone];
+        //       [self updateDetailControllerForIndexPath:self.selectedIndex];
+    } else if (self.projectTimer != nil){
+        [self.projectTimer releaseTimer];
+        self.projectTimer = nil;
+    }
+    
+    if (self.notInSearchMode) {
+        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
+    } else {
+        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kHotListSearchState];
+    [super viewWillDisappear:animated];
+}
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+	return YES;
+}
 
 #pragma mark - Delegate actions
 -(void)didFinishWithError:(NSError *)error{
@@ -107,65 +175,6 @@ typedef enum khotlistfilterModes{
     [self.tableView reloadData];
 }
 
--(IBAction)sendHotList:(UIBarButtonItem *)sender{
-    self.emailer = [[CCEmailer alloc] init];
-    self.emailer.emailDelegate = self;
-    self.hotListReporter = [[CCHotListReportViewController alloc] init];
-    self.emailer.subjectLine = [[NSString alloc] initWithFormat:@"Hot List Report As of %@", [self.dateFormatter stringFromDate:[NSDate date]]];
-    self.emailer.messageText = [self.hotListReporter getHotListReportForStatus:self.selectedFilter];
-    self.emailer.useHTML = [NSNumber numberWithBool:NO];
-    [self.emailer sendEmail];
-    [self presentModalViewController:self.emailer.mailComposer animated:YES];
-}
-
--(BOOL)shouldShowCancelButton{
-    return  NO;
-}
-
-#pragma mark - View Life cycle
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-    self.dateFormatter = [[NSDateFormatter alloc] init];
-    [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-    [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];
-    
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-    NSSortDescriptor *dueWhenDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dueDate" ascending:YES];
-    NSSortDescriptor *projectDescriptor = [[NSSortDescriptor alloc] initWithKey:@"taskProject.dateFinish" ascending:NO];
-    NSSortDescriptor *taskDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects: dueWhenDescriptor, projectDescriptor, taskDescriptor, nil];
-    [self.fetchRequest setSortDescriptors:sortDescriptors];
-    [self.fetchRequest setEntity:entity];
-    [self.fetchRequest setPredicate:self.allPredicate];
-
-    self.taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
-                                                       managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
-                                                         sectionNameKeyPath:nil
-                                                                  cacheName:nil];
-    
-    self.taskFRC.delegate = self;
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    NSError *requestError = nil;
-    if ([self.taskFRC performFetch:&requestError]) {
-        [self.tableView reloadData];
-    }
-    if (self.selectedIndex != nil) {
-        [self.tableView selectRowAtIndexPath:self.selectedIndex animated:YES scrollPosition:UITableViewScrollPositionNone];
- //       [self updateDetailControllerForIndexPath:self.selectedIndex];
-    } else if (self.projectTimer != nil){
-        [self.projectTimer releaseTimer];
-        self.projectTimer = nil;
-    }
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-	return YES;
-}
-
 #pragma mark - Search Bar Functionality
 -(void)filterContentForSearchText:(NSString *)searchText scope:(NSString *)scope{
     [self.filteredTasks removeAllObjects];
@@ -184,6 +193,10 @@ typedef enum khotlistfilterModes{
     return YES;
 }
 
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    [self.searchBar resignFirstResponder];
+    [self toggleSearchBar];
+}
 
 #pragma mark - Table view data source
 -(void)configureCell:(UITableViewCell *)cell{
@@ -219,13 +232,7 @@ typedef enum khotlistfilterModes{
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    NSInteger retvalue;
-    if (tableView == self.tableView) {
-        retvalue = [[self.taskFRC sections] count];
-    } else {
-        retvalue = 1;
-    }
-    return retvalue;
+    return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -235,7 +242,7 @@ typedef enum khotlistfilterModes{
         id <NSFetchedResultsSectionInfo> sectionInfo = [[self.taskFRC sections] objectAtIndex:section];
         retValue = [sectionInfo numberOfObjects];
     } else {
-        retValue = [self.filteredTasks count];
+        retValue = self.filteredTasks.count;
     }
     return retValue;
 }
@@ -275,18 +282,6 @@ typedef enum khotlistfilterModes{
 {
     // Return NO if you do not want the specified item to be editable.
     return NO;
-}
-
-// Override to support editing the table view.
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    /*if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    }   
-    else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    } */
 }
 
 #pragma mark - Table view delegate
@@ -353,7 +348,51 @@ typedef enum khotlistfilterModes{
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
-#pragma mark - Date methods
+#pragma mark - Helper
+- (void)toggleSearchBar
+{
+    self.notInSearchMode = !self.notInSearchMode;
+
+    if (self.notInSearchMode) {
+        [UIView animateWithDuration:kSwipeDuration
+                              delay:kSwipeDelay
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
+                         completion:^(BOOL finished){
+                             [self.tableView beginUpdates];
+                             [self.tableView endUpdates];
+                         }];
+    } else {
+        [UIView animateWithDuration:kSwipeDuration
+                              delay:kSwipeDelay
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
+                         completion:^(BOOL finished){
+                             [self.tableView beginUpdates];
+                             [self.tableView endUpdates];
+                         }];
+    }
+}
+
+-(void)sendHotList{
+    self.emailer = [[CCEmailer alloc] init];
+    self.emailer.emailDelegate = self;
+    self.hotListReporter = [[CCHotListReportViewController alloc] init];
+    self.emailer.subjectLine = [[NSString alloc] initWithFormat:@"Hot List Report As of %@", [self.dateFormatter stringFromDate:[NSDate date]]];
+    self.emailer.messageText = [self.hotListReporter getHotListReportForStatus:self.selectedFilter];
+    self.emailer.useHTML = [NSNumber numberWithBool:NO];
+    [self.emailer sendEmail];
+    [self presentModalViewController:self.emailer.mailComposer animated:YES];
+}
+
+-(BOOL)shouldShowCancelButton{
+    return  NO;
+}
+
 -(NSDate *)today{
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
     NSDate *today = [[NSDate alloc] init];
@@ -433,4 +472,8 @@ typedef enum khotlistfilterModes{
     return _latePredicate;
 }
 
+- (void)viewDidUnload {
+    [self setSearchBar:nil];
+    [super viewDidUnload];
+}
 @end

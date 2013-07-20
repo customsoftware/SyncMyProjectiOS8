@@ -30,25 +30,13 @@
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property BOOL  isNew;
 @property NSInteger lastSegment;
+@property (strong, nonatomic) UIToolbar *holderBar;
+@property (strong, nonatomic) NSMutableArray *barButtons;
 @end
 
 @implementation CCiPhoneTaskViewController
 
 #pragma mark - IBActions/Outlets
--(IBAction)navButton:(UISegmentedControl *)sender{
-    if (sender.selectedSegmentIndex == 0) {
-        self.tableView.editing = !self.tableView.editing;
-        
-        if (self.tableView.editing == YES) {
-            [self.navButton setImage:[UIImage imageNamed:@"33-cabinet.png"] forSegmentAtIndex:0];
-        } else {
-            [self.navButton setImage:[UIImage imageNamed:@"187-white-pencil.png"] forSegmentAtIndex:0];
-        }
-        
-    } else if ( sender.selectedSegmentIndex == 1 ) {
-        [self insertTask];
-    }
-}
 
 -(Project *)getControllingProject{
     return self.sourceProject;
@@ -61,6 +49,28 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     // Any config stuff goes here...
+}
+
+- (void)toggleEditMode:(UIBarButtonItem *)sender
+{
+    self.tableView.editing = !self.tableView.editing;
+    [self.barButtons removeAllObjects];
+    UIBarButtonItem *newButton;
+    if (self.tableView.editing) {
+        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleEditMode:)];
+        newButton.style = UIBarButtonItemStyleBordered;
+    } else {
+        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
+        newButton.style = UIBarButtonItemStyleBordered;
+    }
+    [self.barButtons addObject:newButton];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertTask)];
+    addButton.style = UIBarButtonItemStyleBordered;
+    [self.barButtons addObject:addButton];
+    
+    [self.holderBar setItems:self.barButtons];
+    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:self.holderBar];
+    self.navigationItem.rightBarButtonItem = twoButtons;
 }
 
 -(IBAction)insertTask{
@@ -155,6 +165,23 @@
     
     NSString *addTaskNotification = [[NSString alloc] initWithFormat:@"%@", @"newTaskNotification"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:addTaskNotification object:nil];
+    
+    // Set up the add button.
+    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
+    searchButton.style = UIBarButtonItemStyleBordered;
+    [buttons addObject:searchButton];
+    
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertTask)];
+    addButton.style = UIBarButtonItemStyleBordered;
+    [buttons addObject:addButton];
+    
+    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
+    [tools setItems:buttons animated:NO];
+    self.holderBar = tools;
+    self.barButtons = buttons;
+    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
+    self.navigationItem.rightBarButtonItem = twoButtons;
 }
 
 - (void)viewWillAppear:(BOOL)animated

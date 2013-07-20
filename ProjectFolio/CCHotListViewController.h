@@ -18,20 +18,15 @@
 
 @class CCDetailViewController;
 
-@interface CCHotListViewController : UIViewController<CCEmailDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,CCPopoverControllerDelegate>
+@interface CCHotListViewController : UIViewController<CCEmailDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,CCPopoverControllerDelegate,UISearchBarDelegate>
 @property (strong, nonatomic) CCDetailViewController *projectDetailController;
 @property (strong, nonatomic) Task *task;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
 @property (strong, nonatomic) NSFetchedResultsController *taskFRC;
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
 @property (strong, nonatomic) NSIndexPath * selectedIndex;
 
--(IBAction)cancelPopover;
--(IBAction)savePopoverData;
--(BOOL)shouldShowCancelButton;
--(IBAction)filterOptions:(UISegmentedControl *)sender;
--(IBAction)sendHotList:(UIBarButtonItem *)sender;
+
 
 @end

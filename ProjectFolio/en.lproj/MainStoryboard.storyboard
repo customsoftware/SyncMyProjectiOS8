@@ -1651,10 +1651,12 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <action selector="actionButton:" destination="KPg-Bm-uWY" id="mPP-HF-rmD"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="m9B-GM-Fo1"/>
                     </navigationItem>
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
                         <outlet property="projectActionsButton" destination="P1u-nP-qBn" id="jtF-GM-S7L"/>
+                        <outlet property="searchBar" destination="pDy-Gy-bxw" id="FGp-TR-1fu"/>
                         <outlet property="tableView" destination="kJ5-YF-bS7" id="eMC-35-txx"/>
                         <segue destination="5gh-va-CTE" kind="push" identifier="hotListPush" id="Caf-ai-aAh"/>
                         <segue destination="JM5-Z9-f4D" kind="push" identifier="mainTaskListSegue" id="Ho8-ud-5P0"/>
@@ -3045,6 +3047,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     <navigationItem key="navigationItem" title="Hot List" id="vHs-PS-1YW"/>
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
+                        <outlet property="searchBar" destination="2uf-IR-1FP" id="1lN-Yd-T7E"/>
                         <outlet property="searchDisplayController" destination="e0B-u6-Mbh" id="ezw-4P-ZD4"/>
                         <outlet property="tableView" destination="yRI-Ks-iCm" id="ob2-SE-kf6"/>
                     </connections>
@@ -3241,25 +3244,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Tasks" id="TdO-YP-7zP">
-                        <barButtonItem key="rightBarButtonItem" id="YIH-7e-Pia">
-                            <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" momentary="YES" id="OVV-Wi-3zN">
-                                <rect key="frame" x="225" y="7" width="88" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="" image="187-white-pencil.png"/>
-                                    <segment title="" image="Small Plus.png"/>
-                                </segments>
-                                <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <action selector="navButton:" destination="JM5-Z9-f4D" eventType="valueChanged" id="OuC-qS-mKh"/>
-                                </connections>
-                            </segmentedControl>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Tasks" id="TdO-YP-7zP"/>
                     <connections>
                         <outlet property="displayOptions" destination="3Mh-bP-1Lp" id="htH-ZH-F7b"/>
-                        <outlet property="navButton" destination="OVV-Wi-3zN" id="1oj-BT-UER"/>
                         <outlet property="searchDisplayController" destination="Tc1-JP-R4h" id="Xhx-Eb-1jX"/>
                         <outlet property="tableView" destination="sfe-WH-0At" id="eXL-9v-blc"/>
                         <segue destination="Upk-cn-M3f" kind="push" identifier="taskDetails" id="rgk-BB-67C"/>
@@ -3695,7 +3682,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="16-line-chart.png" width="30" height="24"/>
         <image name="172-pricetag.png" width="28" height="23"/>
         <image name="179-notepad.png" width="22" height="28"/>
-        <image name="187-white-pencil.png" width="23" height="23"/>
         <image name="19-gear.png" width="26" height="26"/>
         <image name="196-radiation.png" width="24" height="22"/>
         <image name="64-zap.png" width="12" height="24"/>
@@ -3703,7 +3689,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <image name="83-calendar.png" width="23" height="25"/>
         <image name="86-camera.png" width="24" height="18"/>
         <image name="Collapsed.png" width="25" height="29"/>
-        <image name="Small Plus.png" width="30" height="30"/>
         <image name="configuration.png" width="32" height="32"/>
         <image name="delete-item.png" width="32" height="32"/>
         <image name="home.png" width="32" height="32"/>

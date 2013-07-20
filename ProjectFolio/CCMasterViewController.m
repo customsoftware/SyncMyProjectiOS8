@@ -9,15 +9,11 @@
 #define END_INDEX [NSIndexPath indexPathForRow:1 inSection:0]
 #define SWITCH_ON [[NSNumber alloc] initWithInt:1]
 #define SWITCH_OFF [[NSNumber alloc] initWithInt:0]
-#define kFontNameKey @"font"
-#define kFontSize @"fontSize"
-#define kBlueNameKey @"bluebalance"
-#define kRedNameKey @"redbalance"
-#define kGreenNameKey @"greenbalance"
-#define kSaturation @"saturation"
+
 #define kStartNotification @"ProjectTimerStartNotification"
 #define kStopNotification @"ProjectTimerStopNotification"
 #define kSelectedProject @"activeProject"
+#define kSearchState    @"searchMode"
 
 #import "CCMasterViewController.h"
 #import "CCDetailViewController.h"
@@ -47,21 +43,112 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) NSMutableArray *filteredProjects;
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
+@property (nonatomic) BOOL notInSearchMode;
+
 @end
 
 @implementation CCMasterViewController
 
--(void)sendTimerStartNotificationForProject{
-    NSDictionary *projectDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:self.activeProject, @"Project", nil];
-    NSNotification *startTimer = [NSNotification notificationWithName:kStartNotification object:nil userInfo:projectDictionary];
-    [[NSNotificationCenter defaultCenter] postNotification:startTimer];
+#pragma mark - View lifecycle
+
+- (void)awakeFromNib
+{
+    // self.clearsSelectionOnViewWillAppear = NO;
+    self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
+    [super awakeFromNib];
 }
 
--(void)sendTimerStopNotification{
-    NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
+- (void)didReceiveMemoryWarning
+{
+    [super didReceiveMemoryWarning];
+    // Release any cached data, images, etc that aren't in use.
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	
+    self.detailViewController = (CCDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    // Set up the two buttons in the nav bar.
+    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
+    searchButton.style = UIBarButtonItemStyleBordered;
+    [buttons addObject:searchButton];
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+    addButton.style = UIBarButtonItemStyleBordered;
+    [buttons addObject:addButton];
+    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 95, 44)];
+    [tools setItems:buttons animated:NO];
+    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
+    self.navigationItem.rightBarButtonItem = twoButtons;
+    
+    self.tableView.dataSource = self;
+    self.tableView.delegate = self;
+    // Set up the search controller
+    self.searchDisplayController.delegate = self;
+    self.projectTimer = [[CCProjectTimer alloc] init];
+    self.notInSearchMode = [[NSUserDefaults standardUserDefaults] boolForKey:kSearchState];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    if (self.activeProject != nil) {
+        [self enableControls];
+    }
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    if (self.notInSearchMode) {
+        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
+    } else {
+        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
+    }
+    
+    NSString *enableNotification = @"EnableControlsNotification";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:enableNotification object:nil];
+    if (self.hotListController.projectTimer != nil) {
+        [self.hotListController.projectTimer releaseTimer];
+        self.hotListController.selectedIndex = nil;
+    }
+    if (self.activeProject != nil ){
+        [self sendTimerStartNotificationForProject];
+        if (self.activeProject == self.detailViewController.project) {
+            self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
+            [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.tableView];
+        } else {
+            [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.tableView];
+        }
+    } else {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *tempProject = [defaults objectForKey:kSelectedProject];
+        
+        if (tempProject == nil) {
+            tempProject = [[NSString alloc]initWithFormat:@"Sample Project"];
+        }
+        for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
+            if ([project.projectUUID isEqualToString:tempProject]) {
+                NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
+                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+                [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
+                break;
+            }
+        }
+    }
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kSearchState];
+    [super viewWillDisappear:animated];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+    return YES;
+}
 
 #pragma mark - IBActions
 -(IBAction)filterActions:(UISegmentedControl *)sender{
@@ -142,6 +229,16 @@ typedef enum kfilterModes{
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString{
     [self filterContentForSearchText:searchString scope:[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
     return YES;
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
+    [searchBar setShowsCancelButton:YES animated:YES];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    [self.searchBar resignFirstResponder];
+    [self toggleSearchBar];
+    [searchBar setShowsCancelButton:NO];
 }
 
 #pragma mark - ActionSheet Functionality
@@ -259,87 +356,16 @@ typedef enum kfilterModes{
     self.logger = nil;
 }
 
-#pragma mark - View lifecycle
-
-- (void)awakeFromNib
-{
-    // self.clearsSelectionOnViewWillAppear = NO;
-    self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
-    [super awakeFromNib];
+#pragma mark - Helper
+-(void)sendTimerStartNotificationForProject{
+    NSDictionary *projectDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:self.activeProject, @"Project", nil];
+    NSNotification *startTimer = [NSNotification notificationWithName:kStartNotification object:nil userInfo:projectDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:startTimer];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Release any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    self.detailViewController = (CCDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-    // Set up the add button.
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
-    self.tableView.dataSource = self;
-    self.tableView.delegate = self;
-    // Set up the search controller
-    self.searchDisplayController.delegate = self;
-    self.projectTimer = [[CCProjectTimer alloc] init];
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    if (self.activeProject != nil) {
-        [self enableControls];
-    }
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    NSString *enableNotification = @"EnableControlsNotification";
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:enableNotification object:nil];
-    if (self.hotListController.projectTimer != nil) {
-        [self.hotListController.projectTimer releaseTimer];
-        self.hotListController.selectedIndex = nil;
-    }
-    if (self.activeProject != nil ){
-        [self sendTimerStartNotificationForProject];
-        if (self.activeProject == self.detailViewController.project) {
-            self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
-            [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.tableView];
-        } else {
-            [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.tableView];
-        }
-    } else {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *tempProject = [defaults objectForKey:kSelectedProject];
-        // CCSettingsControl *settings = [[CCSettingsControl alloc] init];
-        // NSString *tempProject = [settings recallStringAtKey:kSelectedProject];
-        
-        if (tempProject == nil) {
-            tempProject = [[NSString alloc]initWithFormat:@"Sample Project"];
-        }
-        for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
-            if ([project.projectUUID isEqualToString:tempProject]) {
-                NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
-                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-                [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
-                break;
-            }
-        }
-    }
-}
-
-- (void)viewWillDisappear:(BOOL)animated
-{
-    [super viewWillDisappear:animated];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-    return YES;
+-(void)sendTimerStopNotification{
+    NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
 }
 
 #pragma mark - Public functionality
@@ -729,6 +755,34 @@ typedef enum kfilterModes{
     [passThrough addObject:self.detailViewController.view];
     self.projectPopover.passthroughViews = passThrough;
     [self.projectPopover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+}
+
+- (void)toggleSearchBar
+{
+    self.notInSearchMode = !self.notInSearchMode;
+    if (self.notInSearchMode) {
+        [UIView animateWithDuration:kSwipeDuration
+                              delay:kSwipeDelay
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
+                         completion:^(BOOL finished){
+                             [self.tableView beginUpdates];
+                             [self.tableView endUpdates];
+                         }];
+    } else {
+        [UIView animateWithDuration:kSwipeDuration
+                              delay:kSwipeDelay
+                            options:UIViewAnimationOptionCurveEaseIn
+                         animations:^{
+                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
+                         completion:^(BOOL finished){
+                             [self.tableView beginUpdates];
+                             [self.tableView endUpdates];
+                         }];
+    }
 }
 
 #pragma mark - <CCPopoverControllerDelegate>

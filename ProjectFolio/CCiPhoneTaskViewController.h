@@ -29,7 +29,6 @@
 -(IBAction)displayOptions:(UISegmentedControl *)sender;
 -(IBAction)cancelPopover;
 -(IBAction)savePopoverData;
--(IBAction)navButton:(UISegmentedControl *)sender;
 -(BOOL)shouldShowCancelButton;
 -(void)cancelSummaryChart;
 -(Project *)getControllingProject;
