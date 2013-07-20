@@ -297,7 +297,7 @@
         self.emailer.subjectLine = @"Project Folio Feedback";
         self.emailer.messageText = @"Enter your comments here.";
         self.emailer.emailDelegate = self;
-        self.emailer.addressee = @"feedback@ktcsoftware.com";
+        self.emailer.addressee = @"projectfolio@ktcsoftware.com";
         self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
         [self presentModalViewController:self.emailer.mailComposer animated:YES];

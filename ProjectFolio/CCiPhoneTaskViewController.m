@@ -101,7 +101,8 @@
         [self refreshTableView];
         self.lastSegment = sender.selectedSegmentIndex;
     }
-    
+    [[NSUserDefaults standardUserDefaults] setInteger:sender.selectedSegmentIndex forKey:kTaskFilterStatus];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 -(IBAction)cancelPopover{
@@ -182,6 +183,8 @@
     self.barButtons = buttons;
     UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
     self.navigationItem.rightBarButtonItem = twoButtons;
+    self.displayOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
+    self.lastSegment = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
 }
 
 - (void)viewWillAppear:(BOOL)animated

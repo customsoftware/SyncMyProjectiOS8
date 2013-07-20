@@ -19,6 +19,11 @@
 #define HEADER_FOOTER_MARGIN_PADDING  5
 #define MIN_HEADER_FOOTER_DISTANCE_FROM_CONTENT 10
 #define kFontPointSize 18
+#define kDefaultEmail @"defaultEmail"
+#define kProjectFilterStatus    @"projectFilterStatus"
+#define kTaskFilterStatus       @"taskFilterStatus"
+#define kHotListFilterStatus    @"hotListFilterStatus"
+#define kSelectedProject        @"activeProject"
 
 #define ONE_HOUR 1
 #define TWO_DAY 48*60*60

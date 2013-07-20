@@ -10,10 +10,9 @@
 #define SWITCH_ON [[NSNumber alloc] initWithInt:1]
 #define SWITCH_OFF [[NSNumber alloc] initWithInt:0]
 
-#define kStartNotification @"ProjectTimerStartNotification"
-#define kStopNotification @"ProjectTimerStopNotification"
-#define kSelectedProject @"activeProject"
-#define kSearchState    @"searchMode"
+#define kStartNotification  @"ProjectTimerStartNotification"
+#define kStopNotification   @"ProjectTimerStopNotification"
+#define kSearchState        @"searchMode"
 
 #import "CCiPhoneMasterViewController.h"
 #import "CCPopoverControllerDelegate.h"
@@ -45,6 +44,7 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *projectActionsButton;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *filterSegmentControl;
 
 -(IBAction)filterActions:(UISegmentedControl *)sender;
 -(IBAction)actionButton:(UIBarButtonItem *)sender;
@@ -74,6 +74,8 @@ typedef enum kfilterModes{
         [self sendTimerStopNotification];
     } else {
         self.lastSelected = sender.selectedSegmentIndex;
+        [[NSUserDefaults standardUserDefaults] setInteger:self.lastSelected forKey:kProjectFilterStatus];
+        [[NSUserDefaults standardUserDefaults] synchronize];
         if (sender.selectedSegmentIndex == allProjectsMode) {
             [self.request setPredicate:nil];
         } else if ( sender.selectedSegmentIndex == activeProjectsMode ) {
@@ -96,7 +98,7 @@ typedef enum kfilterModes{
 }
 
 -(IBAction)actionButton:(UIBarButtonItem *)sender{
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Close Projects" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"This Week", @"Yesterday", @"All Active", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Close Projects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"This Week", @"Yesterday", @"All Active", nil];
     [actionSheet showInView:self.view];
 }
 
@@ -269,6 +271,7 @@ typedef enum kfilterModes{
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     if (self.notInSearchMode) {
         self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
         self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
@@ -283,13 +286,19 @@ typedef enum kfilterModes{
         [self.hotListController.projectTimer releaseTimer];
         self.hotListController.selectedIndex = nil;
     }
+    
+    self.lastSelected = [[NSUserDefaults standardUserDefaults] integerForKey:kProjectFilterStatus];
+    self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
+    [self filterActions:self.filterSegmentControl];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
     if (self.activeProject != nil ){
         [self sendTimerStartNotificationForProject];
     } else {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *tempProject = [defaults objectForKey:kSelectedProject];
-        // CCSettingsControl *settings = [[CCSettingsControl alloc] init];
-        // NSString *tempProject = [settings recallStringAtKey:kSelectedProject];
         
         if (tempProject == nil) {
             tempProject = [[NSString alloc]initWithFormat:@"Sample Project"];
@@ -302,14 +311,7 @@ typedef enum kfilterModes{
             }
         }
     }
-    CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
-    UIAlertView *alert = nil;
-    if (![application iCloudIsAvailableNow]) {
-        alert = [[UIAlertView alloc] initWithTitle:@"iCloud Availability" message:@"The cloud is not available now" delegate:self cancelButtonTitle:@"Bummer" otherButtonTitles:nil];
-    } else {
-        alert = [[UIAlertView alloc] initWithTitle:@"iCloud Availability" message:@"The cloud is available now" delegate:self cancelButtonTitle:@"Kewel" otherButtonTitles:nil];
-    }
-    // [alert show];
+
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -662,6 +664,7 @@ typedef enum kfilterModes{
 - (void)toggleSearchBar
 {
     self.notInSearchMode = !self.notInSearchMode;
+    [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kSearchState];
     if (self.notInSearchMode) {
         [UIView animateWithDuration:kSwipeDuration
                               delay:kSwipeDelay

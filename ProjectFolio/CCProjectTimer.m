@@ -10,7 +10,6 @@
 #define kStartNotification @"ProjectTimerStartNotification"
 #define kStartTaskNotification @"TaskTimerStartNotification"
 #define kStopNotification @"ProjectTimerStopNotification"
-#define kSelectedProject @"activeProject"
 
 @interface CCProjectTimer ()
 

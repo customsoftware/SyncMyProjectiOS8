@@ -24,7 +24,7 @@
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *displayOptions;
 @property (weak, nonatomic) id<CCProjectTaskDelegate> projectDelegate;
-@property (strong, nonatomic) IBOutlet UISegmentedControl *navButton;
+//@property (strong, nonatomic) IBOutlet UISegmentedControl *navButton;
 
 
 -(BOOL)shouldShowCancelButton;

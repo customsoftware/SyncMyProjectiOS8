@@ -117,6 +117,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="filterSegmentControl" destination="yJy-sV-NAh" id="uBb-vX-sfO"/>
                         <outlet property="projectActionsButton" destination="a7l-Pc-KfO" id="obw-8l-yz1"/>
                         <outlet property="searchBar" destination="9Il-Sf-qJI" id="kCo-BR-NQV"/>
                         <outlet property="searchDisplayController" destination="6aa-SH-9wD" id="shn-hx-y4d"/>
@@ -253,6 +254,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Hot List" id="V5Y-jp-7Y4"/>
                     <connections>
+                        <outlet property="filterOptions" destination="0uM-cJ-2fl" id="d85-YE-poy"/>
                         <outlet property="searchBar" destination="cJE-gb-nSj" id="NJ5-cj-CFO"/>
                         <outlet property="searchDisplayController" destination="Q6V-g4-pc2" id="fxn-Qg-KDX"/>
                         <outlet property="tableView" destination="3ro-a2-ImS" id="suw-HN-dOm"/>
@@ -3130,6 +3132,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <source key="sourceIdentifier" type="project" relativePath="./Classes/CCHotListViewController.h"/>
             <relationships>
                 <relationship kind="action" name="filterOptions:" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="filterOptions" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
                 <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>
             </relationships>
@@ -3224,6 +3227,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <relationships>
                 <relationship kind="action" name="actionButton:" candidateClass="UIBarButtonItem"/>
                 <relationship kind="action" name="filterActions:" candidateClass="UISegmentedControl"/>
+                <relationship kind="outlet" name="filterSegmentControl" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="projectActionsButton" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
                 <relationship kind="outlet" name="tableView" candidateClass="UITableView"/>

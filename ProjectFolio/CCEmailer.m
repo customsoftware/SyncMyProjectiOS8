@@ -7,7 +7,6 @@
 //
 
 #import "CCEmailer.h"
-#define kDefaultEmail @"defaultEmail"
 
 @interface CCEmailer ()
 
@@ -16,14 +15,6 @@
 @end
 
 @implementation CCEmailer
-
-@synthesize mailComposer = _mailComposer;
-@synthesize defaults = _defaults;
-@synthesize subjectLine = _subjectLine;
-@synthesize messageText = _messageText;
-@synthesize addressee = _addressee;
-@synthesize emailDelegate = _emailDelegate;
-@synthesize attachments = _attachments;
 
 -(void)addImageAttachments:(NSArray *)images{
     for (NSData * attachment in images) {
@@ -59,20 +50,10 @@
     }
 }
 
--(void)viewDidUnload{
-    self.defaults = nil;
-    self.subjectLine = nil;
-    self.messageText = nil;
-    self.addressee = nil;
-    self.emailDelegate = nil;
-    self.mailComposer = nil;
-    self.attachments = nil;
-}
-
 #pragma mark - Lazy Getters
 -(NSUserDefaults *)defaults{
     if (_defaults == nil) {
-        _defaults = [[NSUserDefaults alloc] init];
+        _defaults = [NSUserDefaults standardUserDefaults];
     }
     return _defaults;
 }

@@ -25,25 +25,6 @@
 
 @implementation CCTimerSummaryViewController
 
-@synthesize totalProjectTime = _totalProjectTime;
-@synthesize billedTime = _billedTime;
-@synthesize unbilledTime = _unbilledTime;
-@synthesize markBilled = _markBilled;
-@synthesize outPut = _outPut;
-@synthesize reportableTime = _reportableTime;
-@synthesize billRate = _billRate;
-@synthesize billingAmount = _billingAmount;
-@synthesize remainingTime = _remainingTime;
-@synthesize remainingBudget = _remainingBudget;
-@synthesize time = _time;
-@synthesize emailer = _emailer;
-@synthesize fetchRequest = _fetchRequest;
-@synthesize timerFRC = _timerFRC;
-@synthesize projectDelegate = _projectDelegate;
-@synthesize billableTimers = _billableTimers;
-@synthesize timerDetails = _timerDetails;
-// @synthesize pic = _pic;
-
 #pragma mark - Date methods
 -(NSDate *)yesterday{
     NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];

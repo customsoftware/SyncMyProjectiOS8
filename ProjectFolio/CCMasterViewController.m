@@ -10,10 +10,9 @@
 #define SWITCH_ON [[NSNumber alloc] initWithInt:1]
 #define SWITCH_OFF [[NSNumber alloc] initWithInt:0]
 
-#define kStartNotification @"ProjectTimerStartNotification"
-#define kStopNotification @"ProjectTimerStopNotification"
-#define kSelectedProject @"activeProject"
-#define kSearchState    @"searchMode"
+#define kStartNotification  @"ProjectTimerStartNotification"
+#define kStopNotification   @"ProjectTimerStopNotification"
+#define kSearchState        @"searchMode"
 
 #import "CCMasterViewController.h"
 #import "CCDetailViewController.h"
@@ -111,6 +110,7 @@ typedef enum kfilterModes{
         [self.hotListController.projectTimer releaseTimer];
         self.hotListController.selectedIndex = nil;
     }
+    
     if (self.activeProject != nil ){
         [self sendTimerStartNotificationForProject];
         if (self.activeProject == self.detailViewController.project) {
@@ -134,6 +134,10 @@ typedef enum kfilterModes{
                 break;
             }
         }
+        
+        self.lastSelected = [defaults integerForKey:kProjectFilterStatus];
+        self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
+        [self filterActions:self.filterSegmentControl];
     }
 }
 
@@ -141,6 +145,7 @@ typedef enum kfilterModes{
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kSearchState];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [super viewWillDisappear:animated];
 }
 
@@ -159,6 +164,7 @@ typedef enum kfilterModes{
         [self sendTimerStopNotification];
     } else {
         self.lastSelected = sender.selectedSegmentIndex;
+        [[NSUserDefaults standardUserDefaults] setInteger:self.lastSelected forKey:kProjectFilterStatus];
         if (sender.selectedSegmentIndex == allProjectsMode) {
             [self.request setPredicate:nil];
         } else if ( sender.selectedSegmentIndex == activeProjectsMode ) {
@@ -849,4 +855,8 @@ typedef enum kfilterModes{
     return _hotListController;
 }
 
+- (void)viewDidUnload {
+    [self setFilterSegmentControl:nil];
+    [super viewDidUnload];
+}
 @end

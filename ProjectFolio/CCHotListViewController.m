@@ -30,6 +30,7 @@ typedef enum khotlistfilterModes{
 @interface CCHotListViewController ()
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *filterOptions;
 
 -(BOOL)shouldShowCancelButton;
 -(IBAction)filterOptions:(UISegmentedControl *)sender;
@@ -94,25 +95,27 @@ typedef enum khotlistfilterModes{
     
     self.taskFRC.delegate = self;
     
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+//    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
     UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
     searchButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:searchButton];
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(sendHotList)];
-    addButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:addButton];
-    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
-    [tools setItems:buttons animated:NO];
-    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.rightBarButtonItem = twoButtons;
+//    [buttons addObject:searchButton];
+//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(sendHotList)];
+//    addButton.style = UIBarButtonItemStyleBordered;
+//    [buttons addObject:addButton];
+//    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
+//    [tools setItems:buttons animated:NO];
+//    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
+    self.navigationItem.rightBarButtonItem = searchButton;
     self.notInSearchMode = [[NSUserDefaults standardUserDefaults] boolForKey:kHotListSearchState];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    NSError *requestError = nil;
-    if ([self.taskFRC performFetch:&requestError]) {
-        [self.tableView reloadData];
-    }
+    self.filterOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kHotListFilterStatus];
+    [self filterOptions:self.filterOptions];
+//    NSError *requestError = nil;
+//    if ([self.taskFRC performFetch:&requestError]) {
+//        [self.tableView reloadData];
+//    }
     if (self.selectedIndex != nil) {
         [self.tableView selectRowAtIndexPath:self.selectedIndex animated:YES scrollPosition:UITableViewScrollPositionNone];
         //       [self updateDetailControllerForIndexPath:self.selectedIndex];
@@ -169,7 +172,8 @@ typedef enum khotlistfilterModes{
     self.selectedSegment = sender.selectedSegmentIndex;
     [self.projectTimer releaseTimer];
     self.projectTimer = nil;
-    
+    [[NSUserDefaults standardUserDefaults] setInteger:sender.selectedSegmentIndex forKey:kHotListFilterStatus];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     NSError *fetchError = [[NSError alloc] init];
     [self.taskFRC performFetch:&fetchError];
     [self.tableView reloadData];
@@ -474,6 +478,7 @@ typedef enum khotlistfilterModes{
 
 - (void)viewDidUnload {
     [self setSearchBar:nil];
+    [self setFilterOptions:nil];
     [super viewDidUnload];
 }
 @end

@@ -41,14 +41,6 @@
 @implementation CCMainTaskViewController
 
 #pragma mark - IBActions/Outlets
-//-(IBAction)navButton:(UISegmentedControl *)sender{
-//    if (sender.selectedSegmentIndex == 0) {
-//        [self setButtonImage];
-//
-//    } else if ( sender.selectedSegmentIndex == 1 ) {
-//        [self insertTask];
-//    }
-//}
 
 -(Project *)getControllingProject{
     return self.sourceProject;
@@ -103,6 +95,8 @@
     } else if ( sender.selectedSegmentIndex == 2){
         [self.taskFRC.fetchRequest setPredicate:self.incompletePredicate];
     }
+    [[NSUserDefaults standardUserDefaults] setInteger:sender.selectedSegmentIndex forKey:kTaskFilterStatus];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [self refreshTableView];
 }
 
@@ -133,7 +127,6 @@
 -(void)releaseLogger{
     self.logger = nil;
 }
-
 
 -(void)refreshTableView{
     NSError *fetchError = [[NSError alloc] init];
@@ -186,6 +179,8 @@
     self.barButtons = buttons;
     UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
     self.navigationItem.rightBarButtonItem = twoButtons;
+    
+    self.displayOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
     
     // Double Tapp on UITableViewCell
 //    UITapGestureRecognizer* doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
