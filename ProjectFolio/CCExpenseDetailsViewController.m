@@ -93,7 +93,7 @@
             self.imageController.delegate = self;
             [self.imageController setModalPresentationStyle:UIModalPresentationFullScreen];
             self.currentSize = self.view.frame;
-            [self presentModalViewController:self.imageController animated:YES];
+            [self presentViewController:self.imageController animated:YES completion:nil];
             break;
             
         default:
@@ -120,7 +120,7 @@
 -(void)releaseNotes{
     self.expense.notes = self.notesController.notes.text;
     self.notes.text = self.expense.notes;
-    [self.navigationController dismissModalViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)setReverseGeoCodeError{
@@ -381,12 +381,12 @@
         }
 
     }
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     self.view.frame = self.currentSize;
 }
 
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     self.view.frame = self.currentSize;
 }
 

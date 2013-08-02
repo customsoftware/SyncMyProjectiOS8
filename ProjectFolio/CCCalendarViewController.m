@@ -166,7 +166,7 @@
     self.childController.editViewDelegate = self;
     self.childController.modalPresentationStyle = UIModalPresentationCurrentContext;
     self.childController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
-    [self.navigationController presentModalViewController:self.childController animated:YES];
+    [self.navigationController presentViewController:self.childController animated:YES completion:nil];
 }
 
 -(void)eventEditViewController:(EKEventEditViewController *)controller didCompleteWithAction:(EKEventEditViewAction)action{
@@ -174,7 +174,7 @@
         case EKEventEditViewActionCanceled:
             //NSLog(@"cancelled");
             [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
-            [self.navigationController dismissModalViewControllerAnimated:YES];
+            [self.navigationController dismissViewControllerAnimated:YES completion:nil];
             break;
             
         case EKEventEditViewActionSaved:
@@ -184,13 +184,13 @@
             self.meeting.notes = self.childController.event.notes;
             self.meeting.event = self.childController.event.title;
             self.meeting.eventID = self.childController.event.eventIdentifier;
-            [self.navigationController dismissModalViewControllerAnimated:YES];
+            [self.navigationController dismissViewControllerAnimated:YES completion:nil];
             break;
             
         case EKEventEditViewActionDeleted:
             //NSLog(@"Here we remove the calendar");
             [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
-            [self.navigationController dismissModalViewControllerAnimated:YES];
+            [self.navigationController dismissViewControllerAnimated:YES completion:nil];
             break;
             
         default:
@@ -217,7 +217,7 @@
     switch (action) {
         case EKEventViewActionResponded:
             //NSLog(@"Responded to the edit");
-            [self.navigationController dismissModalViewControllerAnimated:YES];
+            [self.navigationController dismissViewControllerAnimated:YES completion:nil];
             break;
             
         case EKEventViewActionDone:
@@ -227,12 +227,12 @@
             self.meeting.notes = self.childController.event.notes;
             self.meeting.event = self.childController.event.title;
             self.meeting.eventID = self.childController.event.eventIdentifier;
-            [self.navigationController dismissModalViewControllerAnimated:YES];
+            [self.navigationController dismissViewControllerAnimated:YES completion:nil];
             break;
             
         case EKEventViewActionDeleted:
             [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
-            [self.navigationController dismissModalViewControllerAnimated:YES];
+            [self.navigationController dismissViewControllerAnimated:YES completion:nil];
             break;
             
         default:

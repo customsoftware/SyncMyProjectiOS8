@@ -81,8 +81,7 @@
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     self.locationManager.distanceFilter = 500;
-    [self.locationManager setPurpose:@"Project Folio needs to know where you are so it can compute milage for you when you want to record milage traveled for business purposes."];
-    self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+   self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     if ([CLLocationManager locationServicesEnabled]) {
         switch ([CLLocationManager authorizationStatus]) {
             case kCLAuthorizationStatusAuthorized:

@@ -66,7 +66,7 @@
 
 #pragma mark - Delegate actions
 -(void)didFinishWithError:(NSError *)error{
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)didFinishWithResult:(MFMailComposeResult)result{
@@ -88,7 +88,7 @@
         }
     }
     
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - IBActions
@@ -198,7 +198,7 @@
         self.emailer.messageText = billingString;
         self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
-        [self presentModalViewController:self.emailer.mailComposer animated:YES];
+        [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
         
     } else if (buttonIndex == 0){
         if ([self.markBilled isOn]) {

@@ -86,7 +86,7 @@
 -(void)releaseNotes{
     self.activeTask.notes = self.notesController.notes.text;
     self.notes = self.activeTask.notes;
-    [self.navigationController dismissModalViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)cancelParent{
@@ -285,13 +285,13 @@
     [self.mailComposer setToRecipients:recipients ];
     [self.mailComposer setMessageBody:newString isHTML:YES];
     self.mailComposer.mailComposeDelegate = self;
-    [self presentModalViewController:self.mailComposer animated:YES];
+    [self presentViewController:self.mailComposer animated:YES completion:nil];
 }
 
 -(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
     if (result == MFMailComposeResultCancelled) {
     }
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     self.mailComposer = nil;
     // self.view.frame = self.rect;
     //[self.navigationController popViewControllerAnimated:YES];
@@ -322,12 +322,12 @@
     self.activeTask.assignedTo = nil;
     self.activeTask.assignedFirst = nil;
     self.activeTask.assignedLast = nil;
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person{
     [self displayPerson:person];
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     return NO;
 }
 
@@ -401,7 +401,7 @@
         self.ownerController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
     }
     self.ownerController.peoplePickerDelegate = self;
-    [self presentModalViewController:self.ownerController animated:YES];
+    [self presentViewController:self.ownerController animated:YES completion:nil];
 }
 
 -(void)callDueDateController{

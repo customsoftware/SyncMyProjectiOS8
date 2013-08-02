@@ -19,10 +19,6 @@
 @end
 
 @implementation CCAuxCalendarSettingViewController
-@synthesize eventStore = _eventStore;
-@synthesize calendarList = _calendarList;
-@synthesize calendarTypes = _calendarTypes;
-@synthesize defaults = _defaults;
 
 #pragma mark - Life Cycle
 - (id)initWithStyle:(UITableViewStyle)style
@@ -43,7 +39,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.calendarTypes = [[ NSArray alloc] initWithObjects: @"Local", @"iCloud/CalDAV", @"Exchange", @"Subscription", @"Birthday", nil];
+    self.calendarTypes = @[@"Local", @"iCloud/CalDAV", @"Exchange", @"Subscription", @"Birthday"];
     NSMutableArray *workingList = [[NSMutableArray alloc] init];
     for (EKCalendar *thisCalendar in self.eventStore.calendars) {
         [workingList addObject:thisCalendar];

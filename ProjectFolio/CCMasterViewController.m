@@ -31,6 +31,8 @@ typedef enum kfilterModes{
 
 @interface CCMasterViewController ()
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
+- (IBAction)insertNewObject:(UIBarButtonItem *)sender;
+
 @property (strong, nonatomic) CCGeneralCloser *closer;
 @property (strong, nonatomic) CCMainTaskViewController *mainTaskController;
 @property (strong, nonatomic) Project *activeProject;
@@ -69,17 +71,19 @@ typedef enum kfilterModes{
 	
     self.detailViewController = (CCDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     // Set up the two buttons in the nav bar.
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
-    searchButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:searchButton];
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    addButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:addButton];
-    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 95, 44)];
-    [tools setItems:buttons animated:NO];
-    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.rightBarButtonItem = twoButtons;
+//    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
+//    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+//    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
+//    searchButton.style = UIBarButtonItemStyleBordered;
+//    [buttons addObject:searchButton];
+//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+//    addButton.style = UIBarButtonItemStyleBordered;
+//    [buttons addObject:addButton];
+//    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 95, 44)];
+////    tools.barStyle = UIBarStyleBlackTranslucent;
+//    [tools setItems:buttons animated:NO];
+//    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
+//    self.navigationItem.rightBarButtonItem = twoButtons;
     
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
@@ -96,14 +100,14 @@ typedef enum kfilterModes{
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    if (self.notInSearchMode) {
-        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
-    } else {
-        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
-    }
-    
+//    if (self.notInSearchMode) {
+//        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+//        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
+//    } else {
+//        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+//        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
+//    }
+//    
     NSString *enableNotification = @"EnableControlsNotification";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:enableNotification object:nil];
     if (self.hotListController.projectTimer != nil) {
@@ -243,7 +247,7 @@ typedef enum kfilterModes{
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [self.searchBar resignFirstResponder];
-    [self toggleSearchBar];
+//    [self toggleSearchBar];
     [searchBar setShowsCancelButton:NO];
 }
 
@@ -254,7 +258,7 @@ typedef enum kfilterModes{
     } else {
         [self.closer billEvents];
     }
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
@@ -283,7 +287,7 @@ typedef enum kfilterModes{
         switch (buttonIndex) {
             case 0:
                 [self.closer emailMessage];
-                [self.navigationController presentModalViewController:self.closer.mailComposer animated:YES];
+                [self.navigationController presentViewController:self.closer.mailComposer animated:YES completion:nil];
                 break;
                 
             case 1:
@@ -352,7 +356,7 @@ typedef enum kfilterModes{
         } else {
             Project *newProject = [CoreData createProjectWithName:[alertView textFieldAtIndex:0].text];
             newProject.dateStart = newProject.dateCreated;
-            newProject.projectNotes = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", newProject.projectName];
+//            newProject.projectNotes = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", newProject.projectName];
             [[CoreData sharedModel:self] saveContext];
         }
     }
@@ -432,7 +436,7 @@ typedef enum kfilterModes{
         if (self.activeProject.projectNotes) {
             noteText = self.activeProject.projectNotes;
         } else {
-            noteText = [NSString stringWithFormat:@"Enter notes about the %@ project here", self.activeProject.projectName];
+            noteText = [NSString stringWithFormat:@"Enter notes for %@ project here", self.activeProject.projectName];
         }
     } else {
         noteText = @"Select a project";
@@ -702,8 +706,8 @@ typedef enum kfilterModes{
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     [formatter setTimeStyle:NSDateFormatterNoStyle];
     
-    BOOL completeVal = (newProject.complete == SWITCH_ON) ? YES:NO;
-    BOOL activeVal = (newProject.active == SWITCH_ON) ? YES:NO;
+    BOOL completeVal = [newProject.complete boolValue];
+    BOOL activeVal = [newProject.active boolValue];
     
     NSString *endDate;
     if (newProject.dateFinish == nil) {
@@ -750,7 +754,7 @@ typedef enum kfilterModes{
     cell.detailTextLabel.text = caption;
 }
 
-- (void)insertNewObject:(UIBarButtonItem *)sender
+- (IBAction)insertNewObject:(UIBarButtonItem *)sender
 {
     CCNewProjectViewController *newProject = [self.storyboard instantiateViewControllerWithIdentifier:@"newProjectName"];
     newProject.contentSizeForViewInPopover = CGSizeMake(400, 175);
@@ -763,33 +767,33 @@ typedef enum kfilterModes{
     [self.projectPopover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 }
 
-- (void)toggleSearchBar
-{
-    self.notInSearchMode = !self.notInSearchMode;
-    if (self.notInSearchMode) {
-        [UIView animateWithDuration:kSwipeDuration
-                              delay:kSwipeDelay
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
-                         completion:^(BOOL finished){
-                             [self.tableView beginUpdates];
-                             [self.tableView endUpdates];
-                         }];
-    } else {
-        [UIView animateWithDuration:kSwipeDuration
-                              delay:kSwipeDelay
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
-                         completion:^(BOOL finished){
-                             [self.tableView beginUpdates];
-                             [self.tableView endUpdates];
-                         }];
-    }
-}
+//- (void)toggleSearchBar
+//{
+//    self.notInSearchMode = !self.notInSearchMode;
+//    if (self.notInSearchMode) {
+//        [UIView animateWithDuration:kSwipeDuration
+//                              delay:kSwipeDelay
+//                            options:UIViewAnimationOptionCurveEaseIn
+//                         animations:^{
+//                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+//                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
+//                         completion:^(BOOL finished){
+//                             [self.tableView beginUpdates];
+//                             [self.tableView endUpdates];
+//                         }];
+//    } else {
+//        [UIView animateWithDuration:kSwipeDuration
+//                              delay:kSwipeDelay
+//                            options:UIViewAnimationOptionCurveEaseIn
+//                         animations:^{
+//                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+//                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
+//                         completion:^(BOOL finished){
+//                             [self.tableView beginUpdates];
+//                             [self.tableView endUpdates];
+//                         }];
+//    }
+//}
 
 #pragma mark - <CCPopoverControllerDelegate>
 - (void)cancelPopover{
@@ -804,6 +808,7 @@ typedef enum kfilterModes{
     CCNewProjectViewController *newProjectController = (CCNewProjectViewController *)self.projectPopover.contentViewController;
     Project *newProject = [CoreData createProjectWithName:newProjectController.projectName.text];
     newProject.dateStart = newProject.dateCreated;
+    newProject.active = [NSNumber numberWithBool:YES];
     
     [[CoreData sharedModel:self] saveContext];
     // Position the active cell on the new project

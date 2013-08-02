@@ -21,7 +21,7 @@
 }
 
 -(IBAction)closeChart:(id)sender{
-    [self.delegate dismissModalViewControllerAnimated:YES];
+    [self.delegate dismissViewControllerAnimated:YES completion:nil];
 }
 
 #pragma mark - Life Cycle

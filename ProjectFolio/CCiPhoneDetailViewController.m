@@ -105,7 +105,7 @@
 
 #pragma mark - Popover Controls
 -(void)cancelSummaryChart{
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(Project *)getControllingProject{
@@ -117,7 +117,7 @@
 }
 
 -(void)dismissModalView:(UIView *)sender{
-    [self.navigationController dismissModalViewControllerAnimated:YES];
+    [self.navigationController dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)releasePopovers{
@@ -167,7 +167,7 @@
     self.summaryController.aProject = [self getActiveProject];
     self.summaryController.modalPresentationStyle = UIModalPresentationPageSheet;
     self.summaryController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
-    [self.navigationController presentModalViewController:self.summaryController animated:YES];
+    [self.navigationController presentViewController:self.summaryController animated:YES completion:nil];
     self.summaryController.summaryDelegate = self;
 }
 
@@ -259,11 +259,11 @@
     if (self.lastButton == 1) {
         [self.logger removeErrorFile];
     }
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)didFinishWithError:(NSError *)error{
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
@@ -280,7 +280,7 @@
         self.emailer.emailDelegate = self;
         self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
-        [self presentModalViewController:self.emailer.mailComposer animated:YES];
+        [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
     } else if (buttonIndex == 1){
         self.emailer.subjectLine = @"Project Folio Crash Report";
         self.emailer.messageText = @"Please enter any additional comments here.";
@@ -292,7 +292,7 @@
         NSArray *attachments = [[NSArray alloc] initWithObjects:[self.logger getErrorFile], nil];
         [self.emailer  addFileAttachements:attachments];
         [self.logger releaseLogger];
-        [self presentModalViewController:self.emailer.mailComposer animated:YES];
+        [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
     } else if (buttonIndex == 2) {
         self.emailer.subjectLine = @"Project Folio Feedback";
         self.emailer.messageText = @"Enter your comments here.";
@@ -300,7 +300,7 @@
         self.emailer.addressee = @"projectfolio@ktcsoftware.com";
         self.emailer.useHTML = [NSNumber numberWithBool:YES];
         [self.emailer sendEmail];
-        [self presentModalViewController:self.emailer.mailComposer animated:YES];
+        [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
     } else {
     }
 }

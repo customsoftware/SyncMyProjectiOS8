@@ -30,19 +30,19 @@
 -(IBAction)changeDueDate:(UISegmentedControl *)sender{
     int interval = 0;
     switch (sender.selectedSegmentIndex) {
-        case EXACT:
+        case SKIP_ONE_HOUR:
             interval = -HOUR_BEFORE;
             break;
             
-        case ONE_HOUR:
+        case SKIP_ONE_DAY:
             interval = -DAY_BEFORE;
             break;
             
-        case ONE_DAY:
+        case SKIP_ONE_WEEK:
             interval = -WEEK_BEFORE;
             break;
             
-        case ONE_WEEK:
+        case SKIP_ONE_MONTH:
             interval = -(4 * WEEK_BEFORE );
             break;
             
@@ -61,15 +61,15 @@
             interval = 0;
             break;
             
-        case ONE_HOUR:
+        case ONE_HOUR_BEFORE:
             interval = HOUR_BEFORE;
             break;
             
-        case ONE_DAY:
+        case ONE_DAY_BEFORE:
             interval = DAY_BEFORE;
             break;
             
-        case ONE_WEEK:
+        case ONE_WEEK_BEFORE:
             interval = WEEK_BEFORE;
             break;
             

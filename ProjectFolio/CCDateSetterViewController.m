@@ -22,28 +22,15 @@
 
 @implementation CCDateSetterViewController
 
-@synthesize delegate = _delegate;
-@synthesize projectName = _projectName;
-@synthesize parentController = _parentController;
-@synthesize settingsController = _settingsController;
-@synthesize ownerController = _ownerController;
-@synthesize dateController = _dateController;
-@synthesize dateFormatter = _dateFormatter;
-@synthesize activeSwitch = _activeSwitch;
-@synthesize completeSwitch = _completeSwitch;
-@synthesize hourlyRateField = _hourlyRateField;
-@synthesize project = _project;
-@synthesize popControll = _popControll;
-@synthesize durationController = _durationController;
-@synthesize categoryController = _categoryController;
-
 #pragma mark - Popover Controls
--(IBAction)utilities:(UISegmentedControl *)sender{
-    if (sender.selectedSegmentIndex == 0) {
-        [self performSegueWithIdentifier:@"projectClone" sender:self];
-    } else {
-        [CCCanIDoIt runAnalysisForProject:self.project];
-    }
+- (void)runCanDoAnalysis
+{
+    [CCCanIDoIt runAnalysisForProject:self.project];
+}
+
+- (void)runProjectClonePopover
+{
+    [self performSegueWithIdentifier:@"projectClone" sender:self];
 }
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
@@ -56,17 +43,17 @@
 }
 
 -(IBAction)completeProject:(UISwitch *)sender{
-    self.project.complete = ([sender isOn]) ? SWITCH_ON:SWITCH_OFF;
+    self.project.complete = [NSNumber numberWithBool:[sender isOn]];
     [self.view endEditing:YES];
 }
 
 -(IBAction)projectActive:(UISwitch *)sender{
-    self.project.active = ([sender isOn]) ? SWITCH_ON:SWITCH_OFF;
+    self.project.active = [NSNumber numberWithBool:[sender isOn]];
     [self.view endEditing:YES];
 }
 
 -(IBAction)billableProject:(UISwitch *)sender{
-    self.project.billable = ([sender isOn]) ? SWITCH_ON:SWITCH_OFF;
+    self.project.billable = [NSNumber numberWithBool:[sender isOn]];
     if ([sender isOn] && [self.project.hourlyRate floatValue] == 0 ){
         UIAlertView * alert = [[UIAlertView alloc]
                                initWithTitle:@"Data Inconsistency Warning" message:@"You've declared the project to be billable without setting a billable rate" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -96,7 +83,7 @@
     self.ownerController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     self.ownerController.peoplePickerDelegate = self;
     self.ownerController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
-    [self presentModalViewController:self.ownerController animated:YES];
+    [self presentViewController:self.ownerController animated:YES completion:nil];
 }
 
 -(void)callIntervalController{
@@ -114,14 +101,14 @@
 
 #pragma mark - Addressbook delegates
 -(void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker{
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     self.project.assignedTo = nil;
     [self.settingsController reloadData];
 }
 
 -(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person{
     [self displayPerson:person];
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     return NO;
 }
 
@@ -295,6 +282,19 @@
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setTimeStyle:NSDateFormatterNoStyle];
     [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
+    
+    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+    UIBarButtonItem *cloneButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"196-radiation.png"] style:UIBarButtonItemStylePlain target:self action:@selector(runCanDoAnalysis)];
+    [buttons addObject:cloneButton];
+    UIBarButtonItem *canDoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"117-todo.png"] style:UIBarButtonItemStylePlain target:self action:@selector(runProjectClonePopover)];
+    [buttons addObject:canDoButton];
+    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 70, 45)];
+    [tools setItems:buttons animated:NO];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        tools.barStyle = UIBarStyleBlackTranslucent;
+    }
+    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
+    self.navigationItem.rightBarButtonItem = twoButtons;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -302,30 +302,12 @@
     self.projectName.text = self.project.projectName;
     self.hourlyRateField.text = [[NSString alloc] initWithFormat:@"%@", self.project.hourlyRate];
     self.projectCostBudget.text = [self.project.costBudget stringValue];
-    BOOL activeVal = (self.project.active == SWITCH_ON) ? YES:NO;
+    BOOL activeVal = [self.project.active boolValue];
     [self.activeSwitch setOn:activeVal];
-    activeVal = (self.project.complete == SWITCH_ON) ? YES:NO;
+    activeVal = [self.project.complete boolValue];
     [self.completeSwitch setOn:activeVal];
-    activeVal = (self.project.billable == SWITCH_ON) ? YES:NO;
+    activeVal = [self.project.billable boolValue];
     [self.billableSwitch setOn:activeVal];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.delegate = nil;
-    self.projectName = nil;
-    self.parentController = nil;
-    self.settingsController = nil;
-    self.ownerController = nil;
-    self.dateController = nil;
-    self.dateFormatter = nil;
-    self.hourlyRateField = nil;
-    self.project = nil;
-    self.popControll = nil;
-    self.categoryController = nil;
-    self.durationController = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

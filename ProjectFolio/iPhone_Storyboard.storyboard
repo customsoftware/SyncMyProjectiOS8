@@ -14,12 +14,20 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="YIp-f3-UfX">
-                                <rect key="frame" x="0.0" y="44" width="320" height="416"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="460"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Enter project name" id="9Il-Sf-qJI">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="1F8-jI-Trh" id="p7I-aS-64E"/>
+                                    </connections>
+                                </searchBar>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="Cell" textLabel="O5G-zs-6mR" detailTextLabel="aei-hk-MG4" style="IBUITableViewCellStyleSubtitle" id="YnH-gx-Gy3">
-                                        <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="66" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
@@ -44,7 +52,7 @@
                                         </view>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="lateCell" textLabel="Xac-Bt-jgm" detailTextLabel="EED-Vt-wcK" style="IBUITableViewCellStyleSubtitle" id="rGS-IP-3PA">
-                                        <rect key="frame" x="0.0" y="66" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="110" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
@@ -80,7 +88,7 @@
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="qco-sR-hAV"/>
                                     <barButtonItem style="plain" id="a7l-Pc-KfO">
-                                        <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="yJy-sV-NAh">
+                                        <segmentedControl key="customView" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" id="yJy-sV-NAh">
                                             <rect key="frame" x="15" y="8" width="290" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segments>
@@ -98,14 +106,6 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="etS-Dx-Fd7"/>
                                 </items>
                             </toolbar>
-                            <searchBar contentMode="redraw" placeholder="Enter project name" id="9Il-Sf-qJI">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="1F8-jI-Trh" id="p7I-aS-64E"/>
-                                </connections>
-                            </searchBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -115,7 +115,13 @@
                                 <action selector="actionButton:" destination="1F8-jI-Trh" id="5Ol-AO-rKx"/>
                             </connections>
                         </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="sa6-ZG-htH">
+                            <connections>
+                                <action selector="insertNewObject:" destination="1F8-jI-Trh" id="xWC-Hp-gxW"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="filterSegmentControl" destination="yJy-sV-NAh" id="uBb-vX-sfO"/>
                         <outlet property="projectActionsButton" destination="a7l-Pc-KfO" id="obw-8l-yz1"/>
@@ -157,12 +163,20 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" id="3ro-a2-ImS">
-                                <rect key="frame" x="0.0" y="44" width="320" height="416"/>
+                                <rect key="frame" x="0.0" y="0.0" width="320" height="460"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <searchBar key="tableHeaderView" contentMode="redraw" placeholder="Enter task name" id="cJE-gb-nSj">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
+                                    <textInputTraits key="textInputTraits"/>
+                                    <connections>
+                                        <outlet property="delegate" destination="oV4-VH-xlr" id="mlY-Yq-hc1"/>
+                                    </connections>
+                                </searchBar>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="hotCell" textLabel="vBk-B4-atf" detailTextLabel="ACT-b3-6xv" style="IBUITableViewCellStyleSubtitle" id="G7E-dK-z18">
-                                        <rect key="frame" x="0.0" y="22" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="66" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
@@ -187,7 +201,7 @@
                                         </view>
                                     </tableViewCell>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="lateHotCell" textLabel="XHu-mV-jqZ" detailTextLabel="fqN-U8-XLa" style="IBUITableViewCellStyleSubtitle" id="O7n-XA-033">
-                                        <rect key="frame" x="0.0" y="66" width="320" height="44"/>
+                                        <rect key="frame" x="0.0" y="110" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
                                             <rect key="frame" x="0.0" y="0.0" width="300" height="43"/>
@@ -241,14 +255,6 @@
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="K1r-bz-bx5"/>
                                 </items>
                             </toolbar>
-                            <searchBar contentMode="redraw" placeholder="Enter task name" id="cJE-gb-nSj">
-                                <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                                <textInputTraits key="textInputTraits"/>
-                                <connections>
-                                    <outlet property="delegate" destination="oV4-VH-xlr" id="mlY-Yq-hc1"/>
-                                </connections>
-                            </searchBar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
@@ -438,7 +444,6 @@
                                                 <segment title="All"/>
                                                 <segment title="Assigned"/>
                                                 <segment title="Due"/>
-                                                <segment title="Notes"/>
                                             </segments>
                                             <connections>
                                                 <action selector="displayOptions:" destination="cDW-BX-JNo" eventType="valueChanged" id="6U1-zs-LUV"/>
@@ -527,7 +532,7 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" indicatorStyle="white" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="dZb-72-AB7">
                                 <rect key="frame" x="0.0" y="263" width="320" height="380"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="startCell" textLabel="QRd-0R-IG4" detailTextLabel="gFf-sy-Gw7" imageView="HH5-ct-zRL" style="IBUITableViewCellStyleValue1" id="EOc-6x-P9S">
                                         <rect key="frame" x="0.0" y="46" width="320" height="45"/>
@@ -744,23 +749,7 @@
                             </userDefinedRuntimeAttribute>
                         </userDefinedRuntimeAttributes>
                     </scrollView>
-                    <navigationItem key="navigationItem" title="Project Data" id="pF5-9l-VsM">
-                        <barButtonItem key="rightBarButtonItem" id="Q98-ZK-8hS">
-                            <segmentedControl key="customView" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" momentary="YES" id="2hz-3h-b91">
-                                <rect key="frame" x="244" y="7" width="71" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <segments>
-                                    <segment title="" image="117-todo.png"/>
-                                    <segment title="" image="196-radiation.png"/>
-                                </segments>
-                                <color key="tintColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <connections>
-                                    <action selector="utilities:" destination="8Jc-yz-Zxd" eventType="valueChanged" id="X8r-su-oXs"/>
-                                </connections>
-                            </segmentedControl>
-                            <color key="tintColor" red="0.89588994570000002" green="0.89588994570000002" blue="0.89588994570000002" alpha="1" colorSpace="calibratedRGB"/>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Project Data" id="pF5-9l-VsM"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <connections>
@@ -1174,7 +1163,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <tableView contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="jQn-VW-dBT">
                                 <rect key="frame" x="0.0" y="130" width="320" height="316"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" red="0.89588994570000002" green="0.89588994570000002" blue="0.89588994570000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="dueDateCell" textLabel="lL1-Vr-ClW" detailTextLabel="BeN-nl-Jok" imageView="qxm-aE-9oZ" style="IBUITableViewCellStyleValue1" id="Pev-tC-85P">
                                         <rect key="frame" x="0.0" y="46" width="320" height="45"/>
@@ -1341,7 +1330,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <action selector="completeTask:" destination="drd-DO-HA0" eventType="valueChanged" id="4uu-cg-fQ1"/>
                                 </connections>
                             </switch>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="x0X-Vl-I8l">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="x0X-Vl-I8l">
                                 <rect key="frame" x="256" y="74" width="44" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" size="button"/>
@@ -1520,7 +1509,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <fontDescription key="fontDescription" name="Optima-Italic" family="Optima" pointSize="18"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences" enablesReturnKeyAutomatically="YES"/>
                             </textView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="VyP-1t-aIP">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="blackOpaque" id="VyP-1t-aIP">
                                 <rect key="frame" x="0.0" y="460" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
@@ -1660,7 +1649,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="zGy-KS-58y">
                                 <rect key="frame" x="0.0" y="294" width="320" height="226"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="timerCell" textLabel="nh4-t8-ydW" detailTextLabel="nto-Rk-3ZT" style="IBUITableViewCellStyleValue1" id="7Ko-ag-Btn">
                                         <rect key="frame" x="0.0" y="46" width="320" height="45"/>
@@ -1890,7 +1879,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <tableView autoresizesSubviews="NO" clipsSubviews="YES" contentMode="redraw" bounces="NO" alwaysBounceVertical="YES" scrollEnabled="NO" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="10" sectionFooterHeight="10" id="d9n-Kj-2RS">
                                 <rect key="frame" x="0.0" y="449" width="320" height="300"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                                <color key="backgroundColor" red="0.89588994570000002" green="0.89588994570000002" blue="0.89588994570000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="expenseDateCell" textLabel="6Wa-FK-jKQ" detailTextLabel="ChI-Oe-DzU" style="IBUITableViewCellStyleValue1" id="T40-E6-dR9">
                                         <rect key="frame" x="0.0" y="46" width="320" height="46"/>
@@ -2157,7 +2146,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="10" id="3mb-jk-DVg">
                                 <rect key="frame" x="0.0" y="460" width="320" height="196"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="0.89588994570000002" green="0.89588994570000002" blue="0.89588994570000002" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="fontSetting" textLabel="Qgn-bY-Seh" detailTextLabel="ZFj-Fc-nxc" style="IBUITableViewCellStyleValue1" id="rlN-K1-oKO">
                                         <rect key="frame" x="0.0" y="46" width="320" height="45"/>
@@ -2974,12 +2963,10 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
     </scenes>
     <resources>
         <image name="111-user.png" width="24" height="21"/>
-        <image name="117-todo.png" width="18" height="19"/>
         <image name="122-stats.png" width="27" height="19"/>
         <image name="172-pricetag.png" width="28" height="23"/>
         <image name="179-notepad.png" width="22" height="28"/>
         <image name="19-gear.png" width="26" height="26"/>
-        <image name="196-radiation.png" width="24" height="22"/>
         <image name="64-zap.png" width="12" height="24"/>
         <image name="78-stopwatch.png" width="22" height="26"/>
         <image name="83-calendar.png" width="23" height="25"/>
@@ -3078,7 +3065,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 <relationship kind="action" name="name:" candidateClass="UITextField"/>
                 <relationship kind="action" name="projectActive:" candidateClass="UISwitch"/>
                 <relationship kind="action" name="projectCostBudget:" candidateClass="UITextField"/>
-                <relationship kind="action" name="utilities:" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="activeSwitch" candidateClass="UISwitch"/>
                 <relationship kind="outlet" name="billableSwitch" candidateClass="UISwitch"/>
                 <relationship kind="outlet" name="completeSwitch" candidateClass="UISwitch"/>
@@ -3227,6 +3213,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
             <relationships>
                 <relationship kind="action" name="actionButton:" candidateClass="UIBarButtonItem"/>
                 <relationship kind="action" name="filterActions:" candidateClass="UISegmentedControl"/>
+                <relationship kind="action" name="insertNewObject:" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="filterSegmentControl" candidateClass="UISegmentedControl"/>
                 <relationship kind="outlet" name="projectActionsButton" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="searchBar" candidateClass="UISearchBar"/>
@@ -3259,6 +3246,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <simulatedScreenMetrics key="destination" type="retina4"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="GlE-HX-rSZ"/>
+        <segue reference="lnP-Of-Kcs"/>
     </inferredMetricsTieBreakers>
 </document>

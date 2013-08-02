@@ -47,7 +47,6 @@
 -(IBAction)billableProject:(UISwitch *)sender;
 -(IBAction)hourlyRate:(UITextField *)sender;
 -(IBAction)projectCostBudget:(UITextField *)sender;
--(IBAction)utilities:(UISegmentedControl *)sender;
 
 -(Priority *)getCurrentCategory;
 -(void)saveSelectedCategory:(Priority *)newCategory;

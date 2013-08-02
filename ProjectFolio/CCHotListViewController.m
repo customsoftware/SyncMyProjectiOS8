@@ -35,7 +35,6 @@ typedef enum khotlistfilterModes{
 -(BOOL)shouldShowCancelButton;
 -(IBAction)filterOptions:(UISegmentedControl *)sender;
 - (void)sendHotList;
-- (void)toggleSearchBar;
 
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) NSPredicate *todayPredicate;
@@ -96,8 +95,8 @@ typedef enum khotlistfilterModes{
     self.taskFRC.delegate = self;
     
 //    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
-    searchButton.style = UIBarButtonItemStyleBordered;
+//    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
+//    searchButton.style = UIBarButtonItemStyleBordered;
 //    [buttons addObject:searchButton];
 //    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(sendHotList)];
 //    addButton.style = UIBarButtonItemStyleBordered;
@@ -105,8 +104,8 @@ typedef enum khotlistfilterModes{
 //    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
 //    [tools setItems:buttons animated:NO];
 //    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.rightBarButtonItem = searchButton;
-    self.notInSearchMode = [[NSUserDefaults standardUserDefaults] boolForKey:kHotListSearchState];
+//    self.navigationItem.rightBarButtonItem = searchButton;
+//    self.notInSearchMode = [[NSUserDefaults standardUserDefaults] boolForKey:kHotListSearchState];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -124,13 +123,13 @@ typedef enum khotlistfilterModes{
         self.projectTimer = nil;
     }
     
-    if (self.notInSearchMode) {
-        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
-    } else {
-        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
-    }
+//    if (self.notInSearchMode) {
+//        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+//        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
+//    } else {
+//        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+//        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
+//    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -145,11 +144,11 @@ typedef enum khotlistfilterModes{
 
 #pragma mark - Delegate actions
 -(void)didFinishWithError:(NSError *)error{
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)didFinishWithResult:(MFMailComposeResult)result{
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(IBAction)cancelPopover{
@@ -199,7 +198,7 @@ typedef enum khotlistfilterModes{
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [self.searchBar resignFirstResponder];
-    [self toggleSearchBar];
+//    [self toggleSearchBar];
 }
 
 #pragma mark - Table view data source
@@ -309,7 +308,7 @@ typedef enum khotlistfilterModes{
     if (self.task.taskProject.projectNotes) {
         self.projectDetailController.projectNotes.text = self.task.taskProject.projectNotes;
     } else {
-        self.projectDetailController.projectNotes.text = [[NSString alloc] initWithFormat:@"Enter notes about the %@ project here", self.task.taskProject.projectName];
+        self.projectDetailController.projectNotes.text = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", self.task.taskProject.projectName];
     }
     self.projectDetailController.title = [[NSString alloc] initWithFormat:@"%@: Notes", self.task.taskProject.projectName ];
 }
@@ -353,34 +352,34 @@ typedef enum khotlistfilterModes{
 }
 
 #pragma mark - Helper
-- (void)toggleSearchBar
-{
-    self.notInSearchMode = !self.notInSearchMode;
-
-    if (self.notInSearchMode) {
-        [UIView animateWithDuration:kSwipeDuration
-                              delay:kSwipeDelay
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
-                         completion:^(BOOL finished){
-                             [self.tableView beginUpdates];
-                             [self.tableView endUpdates];
-                         }];
-    } else {
-        [UIView animateWithDuration:kSwipeDuration
-                              delay:kSwipeDelay
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
-                         completion:^(BOOL finished){
-                             [self.tableView beginUpdates];
-                             [self.tableView endUpdates];
-                         }];
-    }
-}
+//- (void)toggleSearchBar
+//{
+//    self.notInSearchMode = !self.notInSearchMode;
+//
+//    if (self.notInSearchMode) {
+//        [UIView animateWithDuration:kSwipeDuration
+//                              delay:kSwipeDelay
+//                            options:UIViewAnimationOptionCurveEaseIn
+//                         animations:^{
+//                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+//                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
+//                         completion:^(BOOL finished){
+//                             [self.tableView beginUpdates];
+//                             [self.tableView endUpdates];
+//                         }];
+//    } else {
+//        [UIView animateWithDuration:kSwipeDuration
+//                              delay:kSwipeDelay
+//                            options:UIViewAnimationOptionCurveEaseIn
+//                         animations:^{
+//                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+//                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
+//                         completion:^(BOOL finished){
+//                             [self.tableView beginUpdates];
+//                             [self.tableView endUpdates];
+//                         }];
+//    }
+//}
 
 -(void)sendHotList{
     self.emailer = [[CCEmailer alloc] init];
@@ -390,7 +389,7 @@ typedef enum khotlistfilterModes{
     self.emailer.messageText = [self.hotListReporter getHotListReportForStatus:self.selectedFilter];
     self.emailer.useHTML = [NSNumber numberWithBool:NO];
     [self.emailer sendEmail];
-    [self presentModalViewController:self.emailer.mailComposer animated:YES];
+    [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
 }
 
 -(BOOL)shouldShowCancelButton{

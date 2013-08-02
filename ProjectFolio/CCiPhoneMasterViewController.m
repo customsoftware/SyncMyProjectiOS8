@@ -17,6 +17,7 @@
 #import "CCiPhoneMasterViewController.h"
 #import "CCPopoverControllerDelegate.h"
 #import "CCHotListViewController.h"
+#import "CCiPhoneDetailViewController.h"
 
 typedef enum kfilterModes{
     allProjectsMode,
@@ -40,6 +41,7 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
 @property (nonatomic) BOOL notInSearchMode;
+@property (strong, nonatomic) CCiPhoneDetailViewController *detailController;
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *projectActionsButton;
@@ -48,6 +50,7 @@ typedef enum kfilterModes{
 
 -(IBAction)filterActions:(UISegmentedControl *)sender;
 -(IBAction)actionButton:(UIBarButtonItem *)sender;
+- (IBAction)insertNewObject:(UIBarButtonItem *)sender;
 
 @end
 
@@ -102,6 +105,11 @@ typedef enum kfilterModes{
     [actionSheet showInView:self.view];
 }
 
+-(IBAction)showNotes:(UIBarButtonItem *)sender{
+    self.detailController.project = self.activeProject;
+    [self.navigationController pushViewController:self.detailController animated:YES];
+}
+
 #pragma mark - Popover Controls
 -(void)showProjectDatePicker:(NSIndexPath *)sender{
     // Configure the popover view
@@ -145,7 +153,7 @@ typedef enum kfilterModes{
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [self.searchBar resignFirstResponder];
-    [self toggleSearchBar];
+//    [self toggleSearchBar];
     [searchBar setShowsCancelButton:NO];
 }
 
@@ -156,7 +164,7 @@ typedef enum kfilterModes{
     } else {
         [self.closer billEvents];
     }
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
@@ -207,7 +215,8 @@ typedef enum kfilterModes{
                 newProject.projectName = [alertView textFieldAtIndex:0].text;
                 newProject.dateCreated = [NSDate date];
                 newProject.dateStart = newProject.dateCreated;
-                newProject.projectNotes = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", newProject.projectName];
+                newProject.active = [NSNumber numberWithBool:YES];
+//                newProject.projectNotes = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", newProject.projectName];
                 
                 NSError *error = [[NSError alloc] init];
                 @try {
@@ -250,18 +259,30 @@ typedef enum kfilterModes{
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Set up the add button.
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
-    searchButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:searchButton];
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
-    addButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:addButton];
-    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 95, 45)];
-    [tools setItems:buttons animated:NO];
-    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.rightBarButtonItem = twoButtons;
+	// Set up the right bar button.
+//    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+//    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
+//    searchButton.style = UIBarButtonItemStyleBordered;
+//    [buttons addObject:searchButton];
+//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
+//    addButton.style = UIBarButtonItemStyleBordered;
+//    [buttons addObject:addButton];
+//    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 95, 45)];
+//    [tools setItems:buttons animated:NO];
+//    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
+//    self.navigationItem.rightBarButtonItem = twoButtons;
+//    // Set up the left bar button.
+    NSMutableArray *leftButtons = [[NSMutableArray alloc] initWithCapacity:2];
+    UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButton:)];
+    sendButton.style = UIBarButtonItemStyleBordered;
+    [leftButtons addObject:sendButton];
+   UIBarButtonItem *noteButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"179-notepad.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showNotes:)];
+    noteButton.style = UIBarButtonItemStyleBordered;
+    [leftButtons addObject:noteButton];
+    UIToolbar *ltools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 95, 45)];
+    [ltools setItems:leftButtons animated:NO];
+    UIBarButtonItem *twoLeftButtons = [[UIBarButtonItem alloc] initWithCustomView:ltools];
+    self.navigationItem.leftBarButtonItem = twoLeftButtons;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     // Set up the search controller
@@ -272,13 +293,13 @@ typedef enum kfilterModes{
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    if (self.notInSearchMode) {
-        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
-    } else {
-        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
-    }
+//    if (self.notInSearchMode) {
+//        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+//        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
+//    } else {
+//        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+//        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
+//    }
     
     NSString *enableNotification = @"EnableControlsNotification";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:enableNotification object:nil];
@@ -648,7 +669,7 @@ typedef enum kfilterModes{
     cell.detailTextLabel.text = caption;
 }
 
-- (void)insertNewObject
+- (IBAction)insertNewObject:(UIBarButtonItem *)sender
 {
     UIAlertView *alertViewProjectName = [[UIAlertView alloc]
                                          initWithTitle:@"Project Name"
@@ -661,34 +682,34 @@ typedef enum kfilterModes{
     [alertViewProjectName show];
 }
 
-- (void)toggleSearchBar
-{
-    self.notInSearchMode = !self.notInSearchMode;
-    [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kSearchState];
-    if (self.notInSearchMode) {
-        [UIView animateWithDuration:kSwipeDuration
-                              delay:kSwipeDelay
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
-                         completion:^(BOOL finished){
-                             [self.tableView beginUpdates];
-                             [self.tableView endUpdates];
-                         }];
-    } else {
-        [UIView animateWithDuration:kSwipeDuration
-                              delay:kSwipeDelay
-                            options:UIViewAnimationOptionCurveEaseIn
-                         animations:^{
-                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
-                         completion:^(BOOL finished){
-                             [self.tableView beginUpdates];
-                             [self.tableView endUpdates];
-                         }];
-    }
-}
+//- (void)toggleSearchBar
+//{
+//    self.notInSearchMode = !self.notInSearchMode;
+//    [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kSearchState];
+//    if (self.notInSearchMode) {
+//        [UIView animateWithDuration:kSwipeDuration
+//                              delay:kSwipeDelay
+//                            options:UIViewAnimationOptionCurveEaseIn
+//                         animations:^{
+//                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
+//                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
+//                         completion:^(BOOL finished){
+//                             [self.tableView beginUpdates];
+//                             [self.tableView endUpdates];
+//                         }];
+//    } else {
+//        [UIView animateWithDuration:kSwipeDuration
+//                              delay:kSwipeDelay
+//                            options:UIViewAnimationOptionCurveEaseIn
+//                         animations:^{
+//                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
+//                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
+//                         completion:^(BOOL finished){
+//                             [self.tableView beginUpdates];
+//                             [self.tableView endUpdates];
+//                         }];
+//    }
+//}
 
 #pragma mark - Lazy getters
 -(NSManagedObjectContext *)managedObjectContext{
@@ -734,6 +755,13 @@ typedef enum kfilterModes{
         _hotListController = [self.storyboard instantiateViewControllerWithIdentifier:@"hotListView"];
     }
     return _hotListController;
+}
+
+-(CCiPhoneDetailViewController *)detailController{
+    if (_detailController == nil) {
+        _detailController = [self.storyboard instantiateViewControllerWithIdentifier:@"detailViewController"];
+    }
+    return _detailController;
 }
 
 @end

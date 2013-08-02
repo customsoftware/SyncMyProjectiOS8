@@ -18,7 +18,7 @@
 
 @class CCDetailViewController;
 
-@interface CCHotListViewController : UIViewController<CCEmailDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,CCPopoverControllerDelegate,UISearchBarDelegate>
+@interface CCHotListViewController : UIViewController<CCEmailDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,UITextViewDelegate,CCPopoverControllerDelegate>
 @property (strong, nonatomic) CCDetailViewController *projectDetailController;
 @property (strong, nonatomic) Task *task;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;

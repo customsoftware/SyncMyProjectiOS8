@@ -43,7 +43,7 @@
 }
 
 -(void)cancelSummaryChart{
-    [self dismissModalViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
     self.displayOptions.selectedSegmentIndex = -1;
 }
 
@@ -168,6 +168,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:addTaskNotification object:nil];
     
     // Set up the add button.
+//    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
     UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
     searchButton.style = UIBarButtonItemStyleBordered;
@@ -178,6 +179,7 @@
     [buttons addObject:addButton];
     
     UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
+//    tools.barStyle = UIBarStyleBlackTranslucent;
     [tools setItems:buttons animated:NO];
     self.holderBar = tools;
     self.barButtons = buttons;
