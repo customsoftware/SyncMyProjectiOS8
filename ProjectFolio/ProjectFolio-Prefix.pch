@@ -42,18 +42,28 @@
 #define DAY_BEFORE   -86400
 #define WEEK_BEFORE -604800
 #define EXACT    0
+#define ONE_HOUR_BEFORE 1
+#define ONE_DAY_BEFORE  2
+#define ONE_WEEK_BEFORE 3
+#define SKIP_ONE_HOUR   0
+#define SKIP_ONE_DAY    1
+#define SKIP_ONE_WEEK   2
+#define SKIP_ONE_MONTH  3
 
 #define kSwipeDelay 0.05f
 #define kSwipeDuration 0.25f
 
-#define kAppString @"deviceKey"
-#define kAppStatus @"Status"
-#define kiCloudToken @"Token"
-#define kStartupFinished @"Startup Finished"
+#define kAppString          @"deviceKey"
+#define kAppStatus          @"Status"
+#define kiCloudToken        @"Token"
+#define kStartupFinished    @"Startup Finished"
+#define kAppBundleName      @"com.customsoftware.projectfolio"
+#define kAppName            @"ProjectFolio"
 
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
     #import "Priority+Category.h"
+
 #endif

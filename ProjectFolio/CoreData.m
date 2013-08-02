@@ -36,16 +36,23 @@ static CoreData *sharedModel = nil;
     static CoreData *sharedModel = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-		if(sharedModel == nil)
+		if(sharedModel == nil) {
 			sharedModel = [[self alloc] initWithDelegate:delegate];
-		else {
+            id currentICloudToken = [[NSFileManager defaultManager] ubiquityIdentityToken];
+            if (currentICloudToken) {
+                NSData *newTokenData = [NSKeyedArchiver archivedDataWithRootObject:currentICloudToken];
+                [[NSUserDefaults standardUserDefaults] setObject:newTokenData forKey:kAppBundleName];
+            } else {
+                [[NSUserDefaults standardUserDefaults] removeObjectForKey:kAppBundleName];
+            }
+		} else {
 			if(delegate)
 				[sharedModel.delegates addObject:delegate];
 		}
     });
     return sharedModel;
 }
-    
+
 #pragma mark - Class Methods
 + (id)allocWithZone:(NSZone *)zone{
     @synchronized(self) {
@@ -182,7 +189,7 @@ static CoreData *sharedModel = nil;
             if (contentURL)
 #warning The app crashes due to not being able to validate models across devices.
 #warning Need to have one device be the designated time keeper. Wont work to have both doing the time keeping
-                self.iCloudAvailable = NO;
+                self.iCloudAvailable = YES;
             else
                 self.iCloudAvailable = NO;
         } else {
@@ -244,41 +251,40 @@ static CoreData *sharedModel = nil;
  If the context doesn't already exist, it is created and bound to the persistent store coordinator for the application.
  */
 - (NSManagedObjectContext *)managedObjectContext{
-    if (__managedObjectContext != nil){
-        return __managedObjectContext;
-    }
-    
-    NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
-    if (coordinator != nil){
-        
-        NSManagedObjectContext *moc = [[NSManagedObjectContext alloc]
-                                       initWithConcurrencyType:NSMainQueueConcurrencyType];
-        
-        [moc performBlockAndWait:^(void){
-            // Set up an undo manager, not included by default
-            NSUndoManager *undoManager = [[NSUndoManager alloc] init];
-            [undoManager setGroupsByEvent:NO];
-            [moc setUndoManager:undoManager];
+    if (!__managedObjectContext){
+        NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
+        if (coordinator){
             
+            NSManagedObjectContext *moc = [[NSManagedObjectContext alloc]
+                                           initWithConcurrencyType:NSMainQueueConcurrencyType];
             
-            // Set persistent store
-            [moc setPersistentStoreCoordinator:coordinator];
-
-            //icloud
-            //Test for iCloud availability
-            CCSettingsControl *settings = [[CCSettingsControl alloc] init];
-            if([settings isICloudAuthorized]){
-                [[NSNotificationCenter defaultCenter] addObserver:self
-                                                         selector:@selector(persistentStoreDidChange:)
-                                                             name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
-                                                           object:coordinator];
-           /*     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(mergeChangesFrom_iCloud:) name:NSPersistentStoreDidImportUbiquitousContentChangesNotification object:coordinator];*/
+            [moc performBlockAndWait:^(void){
+                // Set up an undo manager, not included by default
+                NSUndoManager *undoManager = [[NSUndoManager alloc] init];
+                [undoManager setGroupsByEvent:NO];
+                [moc setUndoManager:undoManager];
                 
-            }
-        }];
-        
-        
-        __managedObjectContext = moc;
+                
+                // Set persistent store
+                [moc setPersistentStoreCoordinator:coordinator];
+                [moc setMergePolicy:NSMergeByPropertyObjectTrumpMergePolicy];
+                
+                //icloud
+                //Test for iCloud availability
+                CCSettingsControl *settings = [[CCSettingsControl alloc] init];
+                if([settings isICloudAuthorized]){
+                    [[NSNotificationCenter defaultCenter] addObserver:self
+                                                             selector:@selector(persistentStoreDidChange:)
+                                                                 name:NSPersistentStoreDidImportUbiquitousContentChangesNotification
+                                                               object:coordinator];
+                    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(mergeChangesFrom_iCloud:) name:NSPersistentStoreDidImportUbiquitousContentChangesNotification object:coordinator];
+                    
+                }
+            }];
+            
+            
+            __managedObjectContext = moc;
+        }
     }
     return __managedObjectContext;
 }
@@ -286,17 +292,16 @@ static CoreData *sharedModel = nil;
 - (void)mergeChangesFrom_iCloud:(NSNotification *)notification {
     
 	NSManagedObjectContext* moc = [self managedObjectContext];
-    
-    [moc performBlock:^{
-        
-        [moc mergeChangesFromContextDidSaveNotification:notification];
-        
-        NSNotification* refreshNotification = [NSNotification notificationWithName:@"SomethingChanged"
-                                                                            object:self
-                                                                          userInfo:[notification userInfo]];
-        
-        [[NSNotificationCenter defaultCenter] postNotification:refreshNotification];
-    }];
+    if (moc) {
+        [moc performBlock:^{
+            [moc mergeChangesFromContextDidSaveNotification:notification];
+            [moc processPendingChanges];
+            NSNotification* refreshNotification = [NSNotification notificationWithName:@"SomethingChanged"
+                                                                                object:self
+                                                                              userInfo:[notification userInfo]];
+            [[NSNotificationCenter defaultCenter] postNotification:refreshNotification];
+        }];
+    }
 }
 
 
@@ -305,13 +310,10 @@ static CoreData *sharedModel = nil;
  If the model doesn't already exist, it is created from the application's model.
  */
 - (NSManagedObjectModel *)managedObjectModel{
-    if (__managedObjectModel != nil)
-    {
-        return __managedObjectModel;
+    if (!__managedObjectModel ) {
+        NSURL *modelURL = [[NSBundle mainBundle] URLForResource:[CCLocalData appID] withExtension:@"momd"];
+        __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     }
-    
-    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:[CCLocalData appID] withExtension:@"momd"];
-    __managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     return __managedObjectModel;
 }
 
@@ -320,47 +322,55 @@ static CoreData *sharedModel = nil;
  If the coordinator doesn't already exist, it is created and the application's store added to it.
  */
 - (NSPersistentStoreCoordinator *)persistentStoreCoordinator{
-    if (__persistentStoreCoordinator != nil){
-        return __persistentStoreCoordinator;
-    }
-    
-    // Set up persistent Store Coordinator
-    __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
-    
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-    
-        // Set up SQLite db and options dictionary
-        NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite",@"ProjectFolio"]];
-        NSDictionary * optionsDictionary = nil;
-        NSError *error = nil;
+    if (!__persistentStoreCoordinator) {
+        // Set up persistent Store Coordinator
+        __persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self managedObjectModel]];
         
-        // If we want to use iCloud, set up
-        //Test for iCloud availability
-        CCSettingsControl *settings = [[CCSettingsControl alloc] init];
-        if([settings isICloudAuthorized] && self.iCloudAvailable)
-        {
-           [[NSBundle mainBundle] bundleIdentifier];
-           NSFileManager *fileManager = [NSFileManager defaultManager];
-           NSURL *contentURL = [fileManager URLForUbiquityContainerIdentifier:@"4MAEKVPSTZ.com.customsoftware.ProjectFolio"];
-           
-           optionsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                @"com.customsoftware.ProjectFolio.CoreData", NSPersistentStoreUbiquitousContentNameKey,
-                                contentURL, NSPersistentStoreUbiquitousContentURLKey,
-                                [NSNumber numberWithBool:YES], NSMigratePersistentStoresAutomaticallyOption,
-                                [NSNumber numberWithBool:YES], NSInferMappingModelAutomaticallyOption,
-                                nil];
-        } else {
-               optionsDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    [NSNumber numberWithBool:YES],
-                                    NSMigratePersistentStoresAutomaticallyOption,
-                                    [NSNumber numberWithBool:YES],
-                                    NSInferMappingModelAutomaticallyOption,
-                                    nil];
-        }
-           
-       @try {
-           
-           if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:optionsDictionary error:&error]){
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        
+            // Set up SQLite db and options dictionary
+            NSURL *storeURL = [[self applicationDocumentsDirectory] URLByAppendingPathComponent:[NSString stringWithFormat:@"%@.sqlite",@"ProjectFolio"]];
+            NSDictionary * optionsDictionary = nil;
+            NSError *error = nil;
+            NSURL *cloudURL = [[ NSFileManager defaultManager] URLForUbiquityContainerIdentifier:nil];
+
+            // If we want to use iCloud, set up
+            //Test for iCloud availability
+            CCSettingsControl *settings = [[CCSettingsControl alloc] init];
+            if([settings isICloudAuthorized] && self.iCloudAvailable && cloudURL)
+            {
+                NSString* coreDataCloudContent = [[ cloudURL path] stringByAppendingPathComponent:kAppName];
+                cloudURL = [NSURL fileURLWithPath:coreDataCloudContent];
+                
+                optionsDictionary = @{NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES],
+                                      NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES],
+                                      NSPersistentStoreUbiquitousContentNameKey:@"projectFolioCoreData",
+                                      NSPersistentStoreUbiquitousContentURLKey:cloudURL,
+                                      };
+            } else {
+                optionsDictionary = @{NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES],
+                                      NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES] };
+            }
+               
+           @try {
+               
+               if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:optionsDictionary error:&error]){
+                   self.errorLogger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
+                   [self.errorLogger releaseLogger];
+                   UILocalNotification *notification = [[UILocalNotification alloc] init];
+                   notification.fireDate = [NSDate date];
+                   notification.timeZone = [NSTimeZone defaultTimeZone];
+                   notification.alertAction = @"Database Creation Failure Alert";
+                   notification.alertBody = @"You didn't do anything wrong, but the app failed to create the database needed to operate. Please send a bug report to the developer. Thanks.";
+                   notification.soundName = UILocalNotificationDefaultSoundName;
+                   notification.applicationIconBadgeNumber = notification.applicationIconBadgeNumber + 1;
+                   [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+                   
+                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Core Data Error" message:@"Creation of persistent store failed" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                   [alert show];
+               }
+           }
+           @catch (NSException *exception) {
                self.errorLogger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                [self.errorLogger releaseLogger];
                UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -371,30 +381,14 @@ static CoreData *sharedModel = nil;
                notification.soundName = UILocalNotificationDefaultSoundName;
                notification.applicationIconBadgeNumber = notification.applicationIconBadgeNumber + 1;
                [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-               
-               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Core Data Error" message:@"Creation of persistent store failed" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-               [alert show];
            }
-       }
-       @catch (NSException *exception) {
-           self.errorLogger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
-           [self.errorLogger releaseLogger];
-           UILocalNotification *notification = [[UILocalNotification alloc] init];
-           notification.fireDate = [NSDate date];
-           notification.timeZone = [NSTimeZone defaultTimeZone];
-           notification.alertAction = @"Database Creation Failure Alert";
-           notification.alertBody = @"You didn't do anything wrong, but the app failed to create the database needed to operate. Please send a bug report to the developer. Thanks.";
-           notification.soundName = UILocalNotificationDefaultSoundName;
-           notification.applicationIconBadgeNumber = notification.applicationIconBadgeNumber + 1;
-           [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-       }
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"SomethingChanged" object:self userInfo:nil];
-            [self testPriorityConfig];
-        });
-   });
-    
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [[NSNotificationCenter defaultCenter] postNotificationName:@"SomethingChanged" object:self userInfo:nil];
+                [self testPriorityConfig];
+            });
+       });
+    }
     return __persistentStoreCoordinator;
 }
 
