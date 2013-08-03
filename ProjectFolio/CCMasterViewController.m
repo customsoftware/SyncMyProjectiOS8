@@ -563,6 +563,7 @@ typedef enum kfilterModes{
         // NSLog(@"Project name: %@", self.activeProject.projectName);
         self.detailViewController.project.projectNotes = self.detailViewController.projectNotes.text;
         self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
+        [self.activeProject.managedObjectContext save:nil];
         [self sendTimerStopNotification];
     }
 }

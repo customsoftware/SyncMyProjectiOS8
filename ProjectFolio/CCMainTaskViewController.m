@@ -161,6 +161,7 @@
     self.taskFRC.delegate = self;
     
     NSString *addTaskNotification = [[NSString alloc] initWithFormat:@"%@", @"newTaskNotification"];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:kiCloudSyncNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:addTaskNotification object:nil];
     
     // Set up the add button.
@@ -212,6 +213,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self.currentTask.managedObjectContext save:nil];
     self.allPredicate = nil;
     self.incompletePredicate = nil;
     self.assignedPredicate = nil;

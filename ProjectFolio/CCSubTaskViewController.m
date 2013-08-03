@@ -261,6 +261,7 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Update the detail view contents
+    if (self.currentTask) [self.currentTask.managedObjectContext save:nil];
     self.currentTask = [[self.controllingTask.subTasks allObjects] objectAtIndex:indexPath.row];
     if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
         self.subTaskController.controllingTask = [[self.controllingTask.subTasks allObjects] objectAtIndex:indexPath.row];

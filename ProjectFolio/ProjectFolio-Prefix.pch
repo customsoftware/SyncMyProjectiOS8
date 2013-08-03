@@ -65,5 +65,5 @@
     #import <Foundation/Foundation.h>
     #import <CoreData/CoreData.h>
     #import "Priority+Category.h"
-
+    #import "CoreData.h"
 #endif

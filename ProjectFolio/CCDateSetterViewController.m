@@ -276,6 +276,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setViewControlValues) name:kiCloudSyncNotification object:nil];
     // Do any additional setup after loading the view from its nib.
     self.settingsController.delegate = self;
     self.settingsController.dataSource = self;
@@ -298,6 +299,26 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [self setViewControlValues];
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
+    [self.project.managedObjectContext save:nil];
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
+{
+    // Return YES for supported orientations
+	return YES;
+}
+
+#pragma mark - Helpers
+- (void)setViewControlValues {
     [self.settingsController reloadData];
     self.projectName.text = self.project.projectName;
     self.hourlyRateField.text = [[NSString alloc] initWithFormat:@"%@", self.project.hourlyRate];
@@ -310,13 +331,7 @@
     [self.billableSwitch setOn:activeVal];
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
-{
-    // Return YES for supported orientations
-	return YES;
-}
-
-#pragma mark - Lazy Getters
+#pragma mark - Accessors
 -(ABPeoplePickerNavigationController *)ownerController{
     if (_ownerController == nil) {
         _ownerController = [[ABPeoplePickerNavigationController alloc] init];

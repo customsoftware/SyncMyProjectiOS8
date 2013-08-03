@@ -57,7 +57,7 @@
 
 #pragma mark - Delegates
 -(void)saveDateValue:(NSDate *)dateValue{
-    
+    [self.expense.managedObjectContext save:nil];
 }
 
 #pragma mark - Life Cycle
@@ -75,19 +75,12 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = @"Deliverable Details";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadViewProperties) name:kiCloudSyncNotification object:nil];
+
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    self.payee.text = self.expense.paidTo;
-    self.notes.text = self.expense.notes;
-    self.itemPurchased.text = self.expense.pmtDescription;
-    self.amountPaid.text = [self.expense.amount stringValue];
-    BOOL activeVal = (self.expense.expensed == SWITCH_ON) ? YES:NO;
-    [self.expensed setOn:activeVal];
-    if (self.expense.datePaid == nil) {
-        self.expense.datePaid = [NSDate date];
-    }
-    self.datePicker.date = self.expense.datePaid;
+    [self reloadViewProperties];
     // [self.deliverableParameters reloadData];
 }
 
@@ -95,22 +88,26 @@
     self.expense.notes = self.notes.text;
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.expense = nil;
-    self.expensed = nil;
-    self.notes = nil;
-    self.payee = nil;
-    self.amountPaid = nil;
-    self.itemPurchased = nil;
-    self.datePicker = nil;
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
+}
+
+- (void)reloadViewProperties {
+    self.payee.text = self.expense.paidTo;
+    self.notes.text = self.expense.notes;
+    self.itemPurchased.text = self.expense.pmtDescription;
+    self.amountPaid.text = [self.expense.amount stringValue];
+    BOOL activeVal = [self.expense.expensed boolValue];
+    [self.expensed setOn:activeVal];
+    if (self.expense.datePaid == nil) {
+        self.expense.datePaid = [NSDate date];
+    }
+    self.datePicker.date = self.expense.datePaid;
 }
 
 #pragma mark - Table View Data source

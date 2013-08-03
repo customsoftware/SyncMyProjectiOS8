@@ -16,6 +16,8 @@
 #import "CCSettingsControl.h"
 #import "CCLocalData.h"
 
+#define kiCloudSyncNotification @"SomethingChanged"
+
 @protocol CoreDataDelegate <NSObject>
 - (void)persistentStoreDidChange;
 

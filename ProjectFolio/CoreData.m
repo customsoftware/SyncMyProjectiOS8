@@ -185,10 +185,7 @@ static CoreData *sharedModel = nil;
             [[NSBundle mainBundle] bundleIdentifier];
             NSFileManager *fileManager = [NSFileManager defaultManager];
             NSURL *contentURL = [fileManager URLForUbiquityContainerIdentifier:[CCLocalData ubiquityContainerID]];
-            //if((contentURL) && (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad))
             if (contentURL)
-#warning The app crashes due to not being able to validate models across devices.
-#warning Need to have one device be the designated time keeper. Wont work to have both doing the time keeping
                 self.iCloudAvailable = YES;
             else
                 self.iCloudAvailable = NO;
@@ -202,7 +199,6 @@ static CoreData *sharedModel = nil;
 }
 
 - (void)fixExistingData{
-    
 #warning Fix existing data needs to be implemented
 }
 
@@ -296,7 +292,7 @@ static CoreData *sharedModel = nil;
         [moc performBlock:^{
             [moc mergeChangesFromContextDidSaveNotification:notification];
             [moc processPendingChanges];
-            NSNotification* refreshNotification = [NSNotification notificationWithName:@"SomethingChanged"
+            NSNotification* refreshNotification = [NSNotification notificationWithName:kiCloudSyncNotification
                                                                                 object:self
                                                                               userInfo:[notification userInfo]];
             [[NSNotificationCenter defaultCenter] postNotification:refreshNotification];
@@ -384,7 +380,7 @@ static CoreData *sharedModel = nil;
            }
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:@"SomethingChanged" object:self userInfo:nil];
+                [[NSNotificationCenter defaultCenter] postNotificationName:kiCloudSyncNotification object:self userInfo:nil];
                 [self testPriorityConfig];
             });
        });

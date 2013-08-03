@@ -157,9 +157,12 @@
         [self.expenseFRC.fetchRequest setPredicate:self.allPredicate];
     }
     
+    [self resetTableView];
+}
+
+- (void)resetTableView {
     [self.expenseFRC performFetch:nil];
     [self.tableView reloadData];
-    
 }
 
 -(BOOL)shouldShowCancelButton{
@@ -179,7 +182,7 @@
     if (self.isNew && self.deliverable != nil) {
         self.deliverable.expenseProject = self.project;
         [self.project addProjectExpenseObject:self.deliverable];
-        [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
+        [self.project.managedObjectContext save:nil];
     }
 }
 
@@ -234,10 +237,10 @@
     [self clickTableDisplayOptions:self.displayOptions];
 }
 
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetTableView) name:kiCloudSyncNotification object:nil];
 	// Do any additional setup after loading the view.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Expense" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *paidDateDescriptor = [[NSSortDescriptor alloc] initWithKey:@"datePaid" ascending:NO];
@@ -252,29 +255,13 @@
                                                                      cacheName:nil];
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.project = nil;
-    self.selectedCell = nil;
-    self.selectedIndexPath = nil;
-    self.childController = nil;
-    self.deliverable = nil;
-    self.numberFormatter = nil;
-    self.popController = nil;
-    self.fetchRequest = nil;
-    self.expenseFRC = nil;
-    self.theIndex = nil;
-    self.unbilledPredicate = nil;
-    self.billedPredicate = nil;
-    self.allPredicate = nil;
-    self.displayOptions = nil;
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Table view data source

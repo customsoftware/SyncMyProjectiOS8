@@ -221,12 +221,14 @@
     self.tableView.dataSource = self;
     self.receipt.layer.borderWidth = 1.50f;
     self.receipt.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadExpenseValues) name:kiCloudSyncNotification object:nil];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
     self.expense.paidTo = self.paidTo.text;
     self.expense.pmtDescription = self.itemPurchased.text;
     self.expense.amount = [self.numberFormatter numberFromString:self.amountPaid.text];
+    [self.expense.managedObjectContext save:nil];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         self.expense.receipt = UIImagePNGRepresentation(self.receipt.image);
     }
@@ -234,18 +236,9 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-   // self.tableView.frame = CGRectMake(0,200, 320.0f, 120.0f);
     [self.tableView reloadData];
     [self releaseFirstResponders];
-    self.notes.text = self.expense.notes;
-    self.itemPurchased.text = self.expense.pmtDescription;
-    self.amountPaid.text = [self.numberFormatter stringFromNumber:self.expense.amount];
-    self.paidTo.text = self.expense.paidTo;
-    self.milage.text = [self.numberFormatter stringFromNumber:self.expense.milage];
-    UIImage *image = [[UIImage alloc] initWithData:self.expense.receipt];
-    self.receipt.image = image;
-    BOOL activeVal = (self.expense.expensed == SWITCH_ON) ? YES:NO;
-    [self.billed setOn:activeVal];
+    [self loadExpenseValues];
     [self.view endEditing:YES];
     if ([self.popDelegate shouldShowCancelButton] ){
         UIBarButtonItem *cancelButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCancel target:self action:@selector(cancelNew)];
@@ -255,32 +248,25 @@
     }
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.tableView = nil;
-    self.expense = nil;
-    self.dateFormatter = nil;
-    self.numberFormatter = nil;
-    self.popControll = nil;
-    self.popDelegate = nil;
-    self.controllingIndex = nil;
-    self.locationManager = nil;
-    
-    self.itemPurchased = nil;
-    self.paidTo = nil;
-    self.amountPaid = nil;
-    self.billed = nil;
-    self.receipt = nil;
-    self.milage = nil;
-    self.utilityControll = nil;
-    self.isNew = nil;
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+- (void)loadExpenseValues {
+    self.notes.text = self.expense.notes;
+    self.itemPurchased.text = self.expense.pmtDescription;
+    self.amountPaid.text = [self.numberFormatter stringFromNumber:self.expense.amount];
+    self.paidTo.text = self.expense.paidTo;
+    self.milage.text = [self.numberFormatter stringFromNumber:self.expense.milage];
+    UIImage *image = [[UIImage alloc] initWithData:self.expense.receipt];
+    self.receipt.image = image;
+    BOOL activeVal = [self.expense.expensed boolValue];
+    [self.billed setOn:activeVal];
 }
 
 #pragma mark - Image Capture
