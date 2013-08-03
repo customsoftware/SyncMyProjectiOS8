@@ -259,30 +259,6 @@ typedef enum kfilterModes{
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Set up the right bar button.
-//    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-//    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
-//    searchButton.style = UIBarButtonItemStyleBordered;
-//    [buttons addObject:searchButton];
-//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject)];
-//    addButton.style = UIBarButtonItemStyleBordered;
-//    [buttons addObject:addButton];
-//    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 95, 45)];
-//    [tools setItems:buttons animated:NO];
-//    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-//    self.navigationItem.rightBarButtonItem = twoButtons;
-//    // Set up the left bar button.
-    NSMutableArray *leftButtons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *sendButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButton:)];
-    sendButton.style = UIBarButtonItemStyleBordered;
-    [leftButtons addObject:sendButton];
-   UIBarButtonItem *noteButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"179-notepad.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showNotes:)];
-    noteButton.style = UIBarButtonItemStyleBordered;
-    [leftButtons addObject:noteButton];
-    UIToolbar *ltools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 95, 45)];
-    [ltools setItems:leftButtons animated:NO];
-    UIBarButtonItem *twoLeftButtons = [[UIBarButtonItem alloc] initWithCustomView:ltools];
-    self.navigationItem.leftBarButtonItem = twoLeftButtons;
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     // Set up the search controller
@@ -293,14 +269,7 @@ typedef enum kfilterModes{
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-//    if (self.notInSearchMode) {
-//        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-//        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
-//    } else {
-//        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-//        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
-//    }
-    
+
     NSString *enableNotification = @"EnableControlsNotification";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:enableNotification object:nil];
     if (self.hotListController.projectTimer != nil) {
@@ -479,6 +448,7 @@ typedef enum kfilterModes{
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (tableView == self.tableView) {
+        [self.activeProject.managedObjectContext save:nil];
         [self sendTimerStopNotification];
     }
 }

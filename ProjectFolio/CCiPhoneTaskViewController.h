@@ -25,6 +25,7 @@
 @property (strong, nonatomic) IBOutlet UISegmentedControl *displayOptions;
 @property (weak, nonatomic) id<CCProjectTaskDelegate> projectDelegate;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *navButton;
+- (IBAction)goToNotes:(UIBarButtonItem *)sender;
 
 -(IBAction)displayOptions:(UISegmentedControl *)sender;
 -(IBAction)cancelPopover;

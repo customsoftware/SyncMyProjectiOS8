@@ -7,6 +7,8 @@
 //
 
 #import "CCiPhoneTaskViewController.h"
+#import "CCiPhoneDetailViewController.h"
+
 #define TASK_COMPLETE [[NSNumber alloc] initWithInt:1]
 #define TASK_ACTIVE [[NSNumber alloc] initWithInt:0]
 
@@ -32,6 +34,7 @@
 @property NSInteger lastSegment;
 @property (strong, nonatomic) UIToolbar *holderBar;
 @property (strong, nonatomic) NSMutableArray *barButtons;
+
 @end
 
 @implementation CCiPhoneTaskViewController
@@ -82,6 +85,12 @@
     self.currentTask = newTask;
     self.isNew = YES;
     [self showTaskDetails:self.tableView rowIndex:nil];
+}
+
+- (IBAction)goToNotes:(UIBarButtonItem *)sender {
+    self.detailController.project = self.currentTask.taskProject;
+    [self.navigationController pushViewController:self.detailController animated:YES];
+
 }
 
 -(IBAction)displayOptions:(UISegmentedControl *)sender{
@@ -166,6 +175,7 @@
     
     NSString *addTaskNotification = [[NSString alloc] initWithFormat:@"%@", @"newTaskNotification"];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:addTaskNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:kiCloudSyncNotification object:nil];
     
     // Set up the add button.
 //    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
@@ -468,6 +478,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    if (self.currentTask) [self.currentTask.managedObjectContext save:nil];
     self.currentTask = [self.taskFRC objectAtIndexPath:indexPath];
     // Update the detail view contents
     if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
