@@ -614,12 +614,14 @@ typedef enum kfilterModes{
     } else if ( completeVal == YES & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
         cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+        cell.detailTextLabel.textColor = kGreenColor;
     } else if ( completeVal == NO & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Should start: %@", startDate];
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == YES){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
         cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+        cell.detailTextLabel.textColor = kGreenColor;
     } else {
         caption = [[NSString alloc] initWithFormat:@"Should finish: %@", endDate];
         cell.imageView.image = nil;

@@ -74,6 +74,8 @@ typedef enum khotlistfilterModes{
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDisplayedItemsInHotList) name:kiCloudSyncNotification object:nil];
+	
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
     [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];
@@ -109,12 +111,8 @@ typedef enum khotlistfilterModes{
 }
 
 -(void)viewWillAppear:(BOOL)animated{
-    self.filterOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kHotListFilterStatus];
-    [self filterOptions:self.filterOptions];
-//    NSError *requestError = nil;
-//    if ([self.taskFRC performFetch:&requestError]) {
-//        [self.tableView reloadData];
-//    }
+    [self updateDisplayedItemsInHotList];
+
     if (self.selectedIndex != nil) {
         [self.tableView selectRowAtIndexPath:self.selectedIndex animated:YES scrollPosition:UITableViewScrollPositionNone];
         //       [self updateDetailControllerForIndexPath:self.selectedIndex];
@@ -140,6 +138,10 @@ typedef enum khotlistfilterModes{
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
+}
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 #pragma mark - Delegate actions
@@ -315,6 +317,7 @@ typedef enum khotlistfilterModes{
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
     self.projectDetailController.project.projectNotes = self.projectDetailController.projectNotes.text;
+    [self.task.managedObjectContext save:nil];
     [self.projectTimer releaseTimer];
     self.projectTimer = nil;
 }
@@ -380,6 +383,11 @@ typedef enum khotlistfilterModes{
 //                         }];
 //    }
 //}
+
+- (void)updateDisplayedItemsInHotList {
+    self.filterOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kHotListFilterStatus];
+    [self filterOptions:self.filterOptions];
+}
 
 -(void)sendHotList{
     self.emailer = [[CCEmailer alloc] init];

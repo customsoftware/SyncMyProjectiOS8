@@ -69,22 +69,7 @@ typedef enum kfilterModes{
 {
     [super viewDidLoad];
 	
-    self.detailViewController = (CCDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-    // Set up the two buttons in the nav bar.
-//    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-//    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-//    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
-//    searchButton.style = UIBarButtonItemStyleBordered;
-//    [buttons addObject:searchButton];
-//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-//    addButton.style = UIBarButtonItemStyleBordered;
-//    [buttons addObject:addButton];
-//    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 95, 44)];
-////    tools.barStyle = UIBarStyleBlackTranslucent;
-//    [tools setItems:buttons animated:NO];
-//    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-//    self.navigationItem.rightBarButtonItem = twoButtons;
-    
+    self.detailViewController = (CCDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];    
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     // Set up the search controller
@@ -730,12 +715,14 @@ typedef enum kfilterModes{
     } else if ( completeVal == YES & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
         cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+        cell.detailTextLabel.textColor = kGreenColor;
     } else if ( completeVal == NO & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Should start: %@", startDate];
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == YES){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
         cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+        cell.detailTextLabel.textColor = kGreenColor;
     } else {
         caption = [[NSString alloc] initWithFormat:@"Should finish: %@", endDate];
         cell.imageView.image = nil;
