@@ -309,7 +309,12 @@
     }
     if (cell.reuseIdentifier == CollapsedParentIdentifier) {
         if ([taskItem isExpanded]) {
-            cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
+            if (taskItem.virtualComplete == TASK_COMPLETE) {
+                cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+                cell.detailTextLabel.textColor = kGreenColor;
+            } else {
+                cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
+            }
             if (taskItem.dueDate == nil) {
                 detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@", ownerName];
             } else {
@@ -327,7 +332,12 @@
         cell.detailTextLabel.text = detailMessage;
     } else if (cell.reuseIdentifier == CollapsedLateParentIdentifier) {
         if ([taskItem isExpanded]) {
-            cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
+            if (taskItem.virtualComplete == TASK_COMPLETE) {
+                cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+                cell.detailTextLabel.textColor = kGreenColor;
+            } else {
+                cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
+            }
             if (taskItem.dueDate == nil) {
                 detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@", ownerName];
             } else {
@@ -349,7 +359,10 @@
         } else {
             detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@ Due: %@", ownerName, [self.dateFormatter stringFromDate:taskItem.dueDate]];
         }
-        if (taskItem.notes.length > 0) {
+        if (taskItem.virtualComplete == TASK_COMPLETE) {
+            cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+            cell.detailTextLabel.textColor = kGreenColor;
+        } else if (taskItem.notes.length > 0) {
             cell.imageView.image = [UIImage imageNamed:@"179-notepad.png"];
         } else {
             cell.imageView.image = nil;

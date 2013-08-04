@@ -100,18 +100,22 @@
 
 #pragma  mark - API
 -(void)drawRect:(CGRect)rect{
-    if (self.projectUUID == nil) {
-        self.projectUUID = [[NSString alloc] initWithFormat:@"%@",[self.defaults objectForKey:kActiveProject]];
-    }
+    self.projectUUID = [[NSString alloc] initWithFormat:@"%@",[self.defaults objectForKey:kActiveProject]];
     
     if (self.projectUUID == nil) {
         // NSLog(@"Bailing: No Project name");
     } else {
         NSError *fetchError;
         rect.size.width = rect.size.width - 21;
+    
         [self.fetchedProjectsController performFetch:&fetchError];
-        [self.taskFRC performFetch:&fetchError];
+        
+        if (self.fetchedProjectsController.fetchedObjects.count == 0) {
+            return;
+        }
+        
         self.controllingProject = [[self.fetchedProjectsController fetchedObjects] objectAtIndex:0];
+        [self.taskFRC performFetch:&fetchError];
         
         CGFloat height = rect.size.height;
         CGFloat width = rect.size.width;

@@ -15,6 +15,7 @@
 #import "CCErrorLogger.h"
 #import "CCAuxPriorityViewController.h"
 #import "CCAuxCalendarSettingViewController.h"
+#import "CCUpgradesViewController.h"
 
 @interface CCAuxSettingsViewController : UIViewController<UITableViewDelegate,UITableViewDataSource,UIGestureRecognizerDelegate,CCLocationDelegate,CCLoggerDelegate>
 -(IBAction)changeFontSize:(UIStepper *)sender;

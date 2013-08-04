@@ -162,7 +162,7 @@
 }
 
 -(IBAction)openFAQ:(UIButton *)sender{
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.weatherbytes.net/pf/faq/faq.html"]];
+    [self performSegueWithIdentifier:@"pushPurchases" sender:self];
 }
 
 -(IBAction)setHomeLocation:(UIButton *)sender{
@@ -309,6 +309,9 @@
 
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     if ([[segue identifier] isEqualToString:@"showFonts"]) {
+        UIViewController *destinationView = [segue destinationViewController];
+        destinationView.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+    } else if ( [segue.identifier isEqualToString:@"pushPurchases"]) {
         UIViewController *destinationView = [segue destinationViewController];
         destinationView.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
     }

@@ -8,7 +8,8 @@
 #warning "This project uses features only available in iOS SDK 5.0 and later."
 #endif
 
-#define kGreenColor [UIColor colorWithRed:0.07451 green:0.48627 blue:0.05882 alpha:1]
+//#define kGreenColor [UIColor colorWithRed:0.07451 green:0.48627 blue:0.05882 alpha:1]
+#define kGreenColor [UIColor colorWithHue:0.333 saturation:.8 brightness:.539 alpha:1]
 
 #define kShowProjects @"neverShowProjects"
 #define kFontNameKey @"font"

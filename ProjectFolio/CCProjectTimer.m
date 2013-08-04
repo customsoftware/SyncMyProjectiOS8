@@ -23,11 +23,6 @@
 
 @implementation CCProjectTimer
 
-@synthesize timer = _timer;
-@synthesize formatter = _formatter;
-@synthesize parentProject = _parentProject;
-@synthesize defaults = _defaults;
-
 -(CCProjectTimer *)init{
     self = [super init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(startTimingNameForProject:) name:kStartNotification object:nil];

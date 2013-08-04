@@ -330,6 +330,7 @@
         if ([taskItem isExpanded]) {
             if (taskItem.virtualComplete == TASK_COMPLETE) {
                 cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+                cell.detailTextLabel.textColor = kGreenColor;
             } else {
                 cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
             }
@@ -352,6 +353,7 @@
         if ([taskItem isExpanded]) {
             if (taskItem.virtualComplete == TASK_COMPLETE) {
                 cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+                cell.detailTextLabel.textColor = kGreenColor;
             } else {
                 cell.imageView.image = [UIImage imageNamed:@"Expanded.png"];
             }
@@ -378,6 +380,7 @@
         }
         if (taskItem.virtualComplete == TASK_COMPLETE) {
             cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
+            cell.detailTextLabel.textColor = kGreenColor;
         } else if (taskItem.notes.length > 0) {
             cell.imageView.image = [UIImage imageNamed:@"179-notepad.png"];
         } else {

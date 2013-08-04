@@ -13,6 +13,7 @@
 #define kStartNotification  @"ProjectTimerStartNotification"
 #define kStopNotification   @"ProjectTimerStopNotification"
 #define kSearchState        @"searchMode"
+#define kActiveProject      @"activeProject"
 
 #import "CCiPhoneMasterViewController.h"
 #import "CCPopoverControllerDelegate.h"
@@ -42,6 +43,7 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
 @property (nonatomic) BOOL notInSearchMode;
 @property (strong, nonatomic) CCiPhoneDetailViewController *detailController;
+@property (weak, nonatomic) CCAuxSettingsViewController *settings;
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *projectActionsButton;
@@ -50,8 +52,8 @@ typedef enum kfilterModes{
 
 -(IBAction)filterActions:(UISegmentedControl *)sender;
 -(IBAction)actionButton:(UIBarButtonItem *)sender;
-- (IBAction)insertNewObject:(UIBarButtonItem *)sender;
-
+-(IBAction)insertNewObject:(UIBarButtonItem *)sender;
+-(IBAction)showSettings:(UIBarButtonItem *)sender;
 @end
 
 @implementation CCiPhoneMasterViewController
@@ -105,10 +107,10 @@ typedef enum kfilterModes{
     [actionSheet showInView:self.view];
 }
 
--(IBAction)showNotes:(UIBarButtonItem *)sender{
-    self.detailController.project = self.activeProject;
-    [self.navigationController pushViewController:self.detailController animated:YES];
-}
+//-(IBAction)showNotes:(UIBarButtonItem *)sender{
+//    self.detailController.project = self.activeProject;
+//    [self.navigationController pushViewController:self.detailController animated:YES];
+//}
 
 #pragma mark - Popover Controls
 -(void)showProjectDatePicker:(NSIndexPath *)sender{
@@ -264,7 +266,31 @@ typedef enum kfilterModes{
     // Set up the search controller
     self.searchDisplayController.delegate = self;
     self.projectTimer = [[CCProjectTimer alloc] init];
-    self.notInSearchMode = [[NSUserDefaults standardUserDefaults] boolForKey:kSearchState];
+    
+    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+    UIBarButtonItem *actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButton:)];
+    [actionButton setStyle:UIBarButtonItemStyleBordered];
+    [buttons addObject:actionButton];
+    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"19-gear.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showSettings:)];
+    [settingsButton setStyle:UIBarButtonItemStyleBordered];
+    [buttons addObject:settingsButton];
+    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
+    [tools setItems:buttons animated:NO];
+    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
+    self.navigationItem.leftBarButtonItem = twoButtons;
+    
+    NSMutableArray *rightButtons = [[NSMutableArray alloc] initWithCapacity:2];
+    UIBarButtonItem *helpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"HelpAliased-26.png"] style:UIBarButtonItemStylePlain target:self action:@selector(openFAQ:)];
+    [helpButton setStyle:UIBarButtonItemStyleBordered];
+    [rightButtons addObject:helpButton];
+    
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+    [rightButtons addObject:addButton];
+    [addButton setStyle:UIBarButtonItemStyleBordered];
+    UIToolbar *rightTools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 98, 45)];
+    [rightTools setItems:rightButtons animated:NO];
+    UIBarButtonItem *twoRightButtons = [[UIBarButtonItem alloc] initWithCustomView:rightTools];
+    self.navigationItem.rightBarButtonItem = twoRightButtons;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -317,6 +343,17 @@ typedef enum kfilterModes{
     return YES;
 }
 
+#pragma mark - Helper
+-(IBAction)showSettings:(UIBarButtonItem *)sender{
+    self.settings = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsMain"];
+    [self.navigationController pushViewController:self.settings animated:YES];
+}
+
+
+-(IBAction)openFAQ:(UIButton *)sender{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.ktcsoftware.com/pf/faq/faq.html"]];
+}
+
 #pragma mark - Public functionality
 -(Project *)getActiveProject{
     return self.activeProject;
@@ -329,6 +366,7 @@ typedef enum kfilterModes{
     } else {
         self.activeProject = [self.filteredProjects objectAtIndex:indexPath.row];
     }
+    [[NSUserDefaults standardUserDefaults] setObject:self.activeProject.projectUUID forKey:kActiveProject];
     [self sendTimerStopNotification];
     [self sendTimerStartNotificationForProject];
     self.controllingCellIndex = indexPath;

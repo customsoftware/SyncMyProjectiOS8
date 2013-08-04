@@ -26,6 +26,8 @@
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *sendingNotes;
 @property NSInteger lastButton;
+-(IBAction)showHelp:(UIBarButtonItem *)sender;
+-(IBAction)sendNotes:(UIBarButtonItem *)sender;
 
 @end
 
@@ -248,6 +250,11 @@
     return YES;
 }
 
+
+-(IBAction)showHelp:(UIButton *)sender{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.ktcsoftware.com/pf/faq/faq.html"]];
+}
+
 #pragma mark - Custom Menu
 -(void)handleCustomMenu{
     NSRange range = self.projectNotes.selectedRange;
@@ -450,6 +457,21 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
         menu.menuItems = [NSArray arrayWithArray:menuArray];
         [menu update];
     }
+    
+    NSMutableArray *rightButtons = [[NSMutableArray alloc] initWithCapacity:2];
+    UIBarButtonItem *helpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"HelpAliased-26.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showHelp:)];
+    [helpButton setStyle:UIBarButtonItemStyleBordered];
+    [rightButtons addObject:helpButton];
+    
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sendNotes:)];
+    [addButton setStyle:UIBarButtonItemStyleBordered];
+    [rightButtons addObject:addButton];
+    UIToolbar *rightTools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 110, 45)];
+    [rightTools setItems:rightButtons animated:NO];
+    UIBarButtonItem *twoRightButtons = [[UIBarButtonItem alloc] initWithCustomView:rightTools];
+    self.navigationItem.rightBarButtonItem = twoRightButtons;
+    
+    
     [self configureView];
 }
 

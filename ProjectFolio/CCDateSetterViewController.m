@@ -289,7 +289,7 @@
     [buttons addObject:cloneButton];
     UIBarButtonItem *canDoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"117-todo.png"] style:UIBarButtonItemStylePlain target:self action:@selector(runProjectClonePopover)];
     [buttons addObject:canDoButton];
-    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 70, 45)];
+    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
     [tools setItems:buttons animated:NO];
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         tools.barStyle = UIBarStyleBlackTranslucent;
