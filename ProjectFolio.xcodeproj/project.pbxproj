@@ -160,6 +160,8 @@
 		90ADE54C177C66630040D701 /* email.png in Resources */ = {isa = PBXBuildFile; fileRef = 90ADE546177C66630040D701 /* email.png */; };
 		90ADE54D177C66630040D701 /* plane.png in Resources */ = {isa = PBXBuildFile; fileRef = 90ADE547177C66630040D701 /* plane.png */; };
 		90ADE54E177C66630040D701 /* home.png in Resources */ = {isa = PBXBuildFile; fileRef = 90ADE548177C66630040D701 /* home.png */; };
+		90B44D3417ADC0DF00A2A6C4 /* HelpAliased-26.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B44D3317ADC0DF00A2A6C4 /* HelpAliased-26.png */; };
+		90B44D3717ADC51000A2A6C4 /* CCUpgradesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B44D3617ADC51000A2A6C4 /* CCUpgradesViewController.m */; };
 		90BE7B5416D973EF00421003 /* CCLocalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BE7B5316D973EF00421003 /* CCLocalData.m */; };
 		90BE7B5516D973EF00421003 /* CCLocalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BE7B5316D973EF00421003 /* CCLocalData.m */; };
 		90DF5DFD16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel in Sources */ = {isa = PBXBuildFile; fileRef = 90DF5DFC16BA436E003B745E /* ModelFm20121204to1218A.xcmappingmodel */; };
@@ -426,6 +428,9 @@
 		90ADE546177C66630040D701 /* email.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = email.png; sourceTree = "<group>"; };
 		90ADE547177C66630040D701 /* plane.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = plane.png; sourceTree = "<group>"; };
 		90ADE548177C66630040D701 /* home.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = home.png; sourceTree = "<group>"; };
+		90B44D3317ADC0DF00A2A6C4 /* HelpAliased-26.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HelpAliased-26.png"; sourceTree = "<group>"; };
+		90B44D3517ADC51000A2A6C4 /* CCUpgradesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUpgradesViewController.h; sourceTree = "<group>"; };
+		90B44D3617ADC51000A2A6C4 /* CCUpgradesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUpgradesViewController.m; sourceTree = "<group>"; };
 		90BE7B5216D973EF00421003 /* CCLocalData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLocalData.h; sourceTree = "<group>"; };
 		90BE7B5316D973EF00421003 /* CCLocalData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLocalData.m; sourceTree = "<group>"; };
 		90DF5DFB16BA41AF003B745E /* PF20121218A.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF20121218A.xcdatamodel; sourceTree = "<group>"; };
@@ -760,6 +765,8 @@
 				24C4DE53165E6701004643CF /* CCAuxCalendarSettingViewController.m */,
 				90ABA1A016C392D8009AB966 /* CCCalendarControlViewController.h */,
 				90ABA1A116C392D8009AB966 /* CCCalendarControlViewController.m */,
+				90B44D3517ADC51000A2A6C4 /* CCUpgradesViewController.h */,
+				90B44D3617ADC51000A2A6C4 /* CCUpgradesViewController.m */,
 			);
 			name = "Auxiliary Controllers";
 			sourceTree = "<group>";
@@ -803,6 +810,7 @@
 				90ABA19E16C38053009AB966 /* 179-notepad.png */,
 				24E376BA15E24B8100286A8A /* 112-group.png */,
 				241DC41C15E9A8F300886DB3 /* 63-runner.png */,
+				90B44D3317ADC0DF00A2A6C4 /* HelpAliased-26.png */,
 				9050B8601797646200153FA7 /* 187-pencil.png */,
 				9050B8611797646200153FA7 /* Small Plus.png */,
 				24E376B815E24AFE00286A8A /* 78-stopwatch.png */,
@@ -988,6 +996,7 @@
 				9064D20D17978D6A00408E59 /* 187-white-pencil.png in Resources */,
 				9064D2141797920C00408E59 /* 10-medical.png in Resources */,
 				9064D2151797920C00408E59 /* 33-cabinet.png in Resources */,
+				90B44D3417ADC0DF00A2A6C4 /* HelpAliased-26.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1115,6 +1124,7 @@
 				9050B8571797611600153FA7 /* Priority+Category.m in Sources */,
 				9050B85D179761ED00153FA7 /* Priority.m in Sources */,
 				9064D2081797712F00408E59 /* CCNewProjectViewController.m in Sources */,
+				90B44D3717ADC51000A2A6C4 /* CCUpgradesViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
