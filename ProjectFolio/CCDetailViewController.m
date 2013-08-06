@@ -243,6 +243,9 @@
         UINavigationController *viewController = (UINavigationController *)self.popover.contentViewController;
         self.calendar = (CCCalendarViewController *)viewController.visibleViewController;
         self.calendar.project = self.project;
+    } else if ([segue.identifier isEqualToString:@"popLatest"]) {
+        CCLatestNewsViewController *latestController = (CCLatestNewsViewController *)self.popover.contentViewController;
+        latestController.popDelegate = self;
     }
 }
 
@@ -464,6 +467,7 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
     [rightButtons addObject:helpButton];
     
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sendNotes:)];
+    self.sendingNotes = addButton;
     [addButton setStyle:UIBarButtonItemStyleBordered];
     [rightButtons addObject:addButton];
     UIToolbar *rightTools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 110, 45)];
@@ -494,6 +498,13 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
      name:UIKeyboardWillHideNotification object:nil];
 }
 
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    BOOL showNews = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontShowNewsAgain"];
+    if (!showNews) {
+        [self performSegueWithIdentifier:@"popLatest" sender:nil];
+    }
+}
 
 - (void)viewWillDisappear:(BOOL)animated
 {
@@ -505,6 +516,10 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
 {
     // Return YES for supported orientations
     return YES;
+}
+
+-(IBAction)cancelPopover{
+    [self.popover dismissPopoverAnimated:YES];
 }
 
 #pragma mark - Split view

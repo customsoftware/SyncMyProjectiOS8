@@ -1,0 +1,15 @@
+Welcome to the latest version of ProjectFolio. I'm excited to announce that starting with this version of the app, you can sync project data between multiple devices using iCloud sync. It's available as an in-app purchase for just 2.99 USD.
+
+Regarding the data sync. ProjectFolio will allow only one device at a time, when iCloud sync is enabled, to track time spent on projects. This is so the project timer will not be confused by getting conflicting timer data from multiple devices for the same period of time. To get accurate time spent reports, you must generate your project time reports and expense reports from the device which is configured to track time.
+
+We've also added a button to take you to an online help site containing videos on how to make the most of ProjectFolio. You'll see the button in the navigation bar of the Project list view of the iPhone app and you'll see it in the upper right corner of the Project Notes view of the iPad app. The icon on the button is a triangle with a "?" in it.
+
+We've also made some changes to the arrangement of views in the iPhone version of the app.
+1.	The app settings button is now in the navigation bar of the Project list view. The settings view allows you to set the display font of the app, the background color of the notes views and manage the categories and the default email address to which reports are sent.
+2.	The notes button is now at the bottom of the Task list view. From the Notes view you can see the expenses view, the meetings view, the project timer data and the task timeline chart.
+
+To view this information again, click on the Help button and go to the "what's new" web page.
+
+As you get started using the app, I suggest opening the Settings view and set the font, font size, view color and other settings before you start using the app. The settings view is opend by tapping on the button with the "Gear" icon.
+
+Thanks for using ProjectFolio.

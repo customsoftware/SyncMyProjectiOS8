@@ -19,6 +19,7 @@
 #import "CCPopoverControllerDelegate.h"
 #import "CCHotListViewController.h"
 #import "CCiPhoneDetailViewController.h"
+#import "CCLatestNewsViewController.h"
 
 typedef enum kfilterModes{
     allProjectsMode,
@@ -291,6 +292,13 @@ typedef enum kfilterModes{
     [rightTools setItems:rightButtons animated:NO];
     UIBarButtonItem *twoRightButtons = [[UIBarButtonItem alloc] initWithCustomView:rightTools];
     self.navigationItem.rightBarButtonItem = twoRightButtons;
+    CCLatestNewsViewController *latestController = [self.storyboard instantiateViewControllerWithIdentifier:@"latestNews"];
+    latestController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    
+    BOOL showNews = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontShowNewsAgain"];
+    if (!showNews) {
+        [self.navigationController presentViewController:latestController animated:YES completion:nil];
+    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{

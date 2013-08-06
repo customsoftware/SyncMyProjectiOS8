@@ -120,6 +120,7 @@
                         <segue destination="oV4-VH-xlr" kind="push" identifier="hotListPush" id="Aep-Fj-zGd"/>
                         <segue destination="cDW-BX-JNo" kind="push" identifier="mainTaskListPush" id="Tmj-Ym-Kim"/>
                         <segue destination="8Jc-yz-Zxd" kind="push" identifier="pushProjectDetails" id="8FW-P0-Ols"/>
+                        <segue destination="HIQ-YQ-Vek" kind="modal" identifier="showLatestNews" modalTransitionStyle="crossDissolve" id="bb2-2V-7Le"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1zz-tS-QJY" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -142,6 +143,66 @@
                 </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="1169" y="673"/>
+        </scene>
+        <!--Latest News View Controller - New News-->
+        <scene sceneID="KRU-1b-SkJ">
+            <objects>
+                <viewController storyboardIdentifier="latestNews" title="New News" useStoryboardIdentifierAsRestorationIdentifier="YES" id="HIQ-YQ-Vek" customClass="CCLatestNewsViewController" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="oIq-SP-bXw">
+                        <rect key="frame" x="0.0" y="20" width="320" height="548"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="GfY-1z-07d">
+                                <rect key="frame" x="0.0" y="504" width="320" height="44"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <items>
+                                    <barButtonItem systemItem="done" id="m1C-yK-aUE">
+                                        <connections>
+                                            <action selector="dsimissView:" destination="HIQ-YQ-Vek" id="1Wj-k3-Pb8"/>
+                                        </connections>
+                                    </barButtonItem>
+                                </items>
+                            </toolbar>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="News about the ProjectFolio" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rCM-7k-c01">
+                                <rect key="frame" x="20" y="20" width="280" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="19"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" id="M5G-gj-YQA">
+                                <rect key="frame" x="20" y="59" width="280" height="404"/>
+                                <autoresizingMask key="autoresizingMask" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" id="7hK-Xd-lom">
+                                <rect key="frame" x="223" y="471" width="79" height="27"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <action selector="dontShow:" destination="HIQ-YQ-Vek" eventType="valueChanged" id="1Qn-eO-1g0"/>
+                                </connections>
+                            </switch>
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Dont display again" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Ff7-B6-BF3">
+                                <rect key="frame" x="20" y="474" width="195" height="21"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMinY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <color key="backgroundColor" red="0.91283118210000003" green="0.83552362840000005" blue="0.68600394119999997" alpha="1" colorSpace="calibratedRGB"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="i6o-M6-J0u"/>
+                    <connections>
+                        <outlet property="latestNews" destination="M5G-gj-YQA" id="Ceh-GU-WvH"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="tae-I0-1wD" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1169" y="1438"/>
         </scene>
         <!--Hot List View Controller - Hot List-->
         <scene sceneID="i65-jA-AEx">

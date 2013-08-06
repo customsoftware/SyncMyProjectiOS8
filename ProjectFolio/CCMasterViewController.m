@@ -75,7 +75,6 @@ typedef enum kfilterModes{
     // Set up the search controller
     self.searchDisplayController.delegate = self;
     self.projectTimer = [[CCProjectTimer alloc] init];
-    self.notInSearchMode = [[NSUserDefaults standardUserDefaults] boolForKey:kSearchState];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -176,7 +175,7 @@ typedef enum kfilterModes{
 }
 
 -(IBAction)actionButton:(UIBarButtonItem *)sender{
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Close Projects" delegate:self cancelButtonTitle:nil destructiveButtonTitle:nil otherButtonTitles:@"This Week", @"Yesterday", @"All Active", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Close Projects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"This Week", @"Yesterday", @"All Active", nil];
     actionSheet.tag = 1;
     [actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES];
 }

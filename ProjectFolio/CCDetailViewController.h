@@ -16,6 +16,8 @@
 #import "CCProjectChartViewController.h"
 #import "CCModalViewDelegate.h"
 #import "CCEmailer.h"
+#import "CCLatestNewsViewController.h"
+
 
 @interface CCDetailViewController : UIViewController <CCProjectTaskDelegate,UIPopoverControllerDelegate, UISplitViewControllerDelegate,CCModalViewDelegate,UIActionSheetDelegate,CCEmailDelegate,CCLoggerDelegate,CCTaskSummaryDelegate,UIGestureRecognizerDelegate,UIPrintInteractionControllerDelegate>
 
