@@ -47,6 +47,25 @@
     application.applicationIconBadgeNumber = 0;
     CCVisibleFixer *fixer = [[CCVisibleFixer alloc] init];
     [fixer fixAllVisible];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
+    NSString *storedVersion = [defaults objectForKey:(NSString *)kCFBundleVersionKey];
+    if (![storedVersion isEqualToString:version]) {
+        [defaults setBool:NO forKey:@"dontShowNewsAgain"];
+        [defaults setObject:version forKey:(NSString *)kCFBundleVersionKey];
+    }
+    float redTest = [defaults floatForKey:kRedNameKey];
+    float blueTest = [defaults floatForKey:kRedNameKey];
+    if (redTest == 0 && blueTest == 0) {
+        [defaults setFloat:.95f forKey:kRedNameKey];
+        [defaults setFloat:.85f forKey:kGreenNameKey];
+        [defaults setFloat:.85f forKey:kBlueNameKey];
+        [defaults setFloat:1.0f forKey:kSaturation];
+        [defaults setInteger:18 forKey:kFontSize];
+        [defaults setObject:@"Optima" forKey:kFontNameKey];
+    }
+    
     [self setButtonStateWithShow:NO];
     return YES;
 }
