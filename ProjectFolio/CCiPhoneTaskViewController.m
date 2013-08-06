@@ -88,7 +88,7 @@
 }
 
 - (IBAction)goToNotes:(UIBarButtonItem *)sender {
-    self.detailController.project = self.currentTask.taskProject;
+    self.detailController.project = self.sourceProject;
     [self.navigationController pushViewController:self.detailController animated:YES];
 
 }
