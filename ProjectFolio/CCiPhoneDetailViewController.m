@@ -172,7 +172,7 @@
 }
 
 -(IBAction)sendNotes:(UIBarButtonItem *)sender{
-    UIActionSheet *actionSheet = [[ UIActionSheet alloc] initWithTitle:@"Reporting Center" delegate:self cancelButtonTitle:@"OK" destructiveButtonTitle:nil otherButtonTitles:@"Email Notes", @"Send Error Report", @"Submit Feedback", nil];
+    UIActionSheet *actionSheet = [[ UIActionSheet alloc] initWithTitle:@"Reporting Center" delegate:self cancelButtonTitle:@"OK" destructiveButtonTitle:nil otherButtonTitles:@"Email Notes", @"Send Error Report", @"Submit Feedback", @"Print Notes", nil];
     [actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
     [self.projectNotes resignFirstResponder];
 }
@@ -315,6 +315,8 @@
     NSString *startingText = self.projectNotes.text;
     if ([startingText rangeOfString:@"Enter notes for "].length > 0) {
         self.projectNotes.text = @"";
+    } else {
+        self.projectNotes.text = startingText;
     }
 }
 
@@ -349,6 +351,11 @@
 
 -(void) handleKeyboardWillHide:(NSNotification *)paramNotification{
     self.projectNotes.contentInset = UIEdgeInsetsZero;
+}
+
+#pragma mark - Helpers
+- (void)handleTap {
+    [self.projectNotes resignFirstResponder];
 }
 
 #pragma mark - View lifecycle
@@ -401,19 +408,18 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    UITapGestureRecognizer *navTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap)];
+    [navTap setNumberOfTapsRequired:2];
+    [navTap setNumberOfTouchesRequired:1];
+    [self.navigationController.navigationBar addGestureRecognizer:navTap];
     [self configureView];
 }
-
 
 - (void)viewWillDisappear:(BOOL)animated
 {
 	[super viewWillDisappear:animated];
+    self.project.projectNotes = self.projectNotes.text;
     [self.projectNotes resignFirstResponder];
-}
-
-- (void)viewDidDisappear:(BOOL)animated
-{
-	[super viewDidDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

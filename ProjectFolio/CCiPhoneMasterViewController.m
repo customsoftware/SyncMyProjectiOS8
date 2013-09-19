@@ -29,8 +29,10 @@ typedef enum kfilterModes{
     hotListMode
 } kFilterModes;
 
-@interface CCiPhoneMasterViewController ()
+@interface CCiPhoneMasterViewController () <CCPopoverControllerDelegate>
+
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
+
 @property (strong, nonatomic) CCGeneralCloser *closer;
 @property (strong, nonatomic) CCiPhoneTaskViewController *mainTaskController;
 @property (strong, nonatomic) Project *activeProject;
@@ -52,9 +54,11 @@ typedef enum kfilterModes{
 @property (weak, nonatomic) IBOutlet UISegmentedControl *filterSegmentControl;
 
 -(IBAction)filterActions:(UISegmentedControl *)sender;
--(IBAction)actionButton:(UIBarButtonItem *)sender;
--(IBAction)insertNewObject:(UIBarButtonItem *)sender;
--(IBAction)showSettings:(UIBarButtonItem *)sender;
+-(IBAction)actionButton:(UIButton *)sender;
+-(IBAction)insertNewObject:(UIButton *)sender;
+-(IBAction)showSettings:(UIButton *)sender;
+-(IBAction)openFAQ:(UIButton *)sender;
+
 @end
 
 @implementation CCiPhoneMasterViewController
@@ -103,15 +107,10 @@ typedef enum kfilterModes{
     }
 }
 
--(IBAction)actionButton:(UIBarButtonItem *)sender{
+-(IBAction)actionButton:(UIButton *)sender{
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Close Projects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"This Week", @"Yesterday", @"All Active", nil];
     [actionSheet showInView:self.view];
 }
-
-//-(IBAction)showNotes:(UIBarButtonItem *)sender{
-//    self.detailController.project = self.activeProject;
-//    [self.navigationController pushViewController:self.detailController animated:YES];
-//}
 
 #pragma mark - Popover Controls
 -(void)showProjectDatePicker:(NSIndexPath *)sender{
@@ -121,7 +120,7 @@ typedef enum kfilterModes{
     self.controllingCell = [self.tableView cellForRowAtIndexPath:sender];
     Project *project = [self.fetchedProjectsController objectAtIndexPath:sender];
     self.projectPopover.project = project;
-    self.projectPopover.contentSizeForViewInPopover = CGSizeMake(320.0f, 560.0f);
+    self.projectPopover.preferredContentSize = CGSizeMake(320.0f, 560.0f);
     [self.navigationController pushViewController:self.projectPopover animated:YES];
 }
 
@@ -156,7 +155,6 @@ typedef enum kfilterModes{
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [self.searchBar resignFirstResponder];
-//    [self toggleSearchBar];
     [searchBar setShowsCancelButton:NO];
 }
 
@@ -249,7 +247,7 @@ typedef enum kfilterModes{
 - (void)awakeFromNib
 {
     // self.clearsSelectionOnViewWillAppear = NO;
-    self.contentSizeForViewInPopover = CGSizeMake(320.0, 600.0);
+    self.preferredContentSize = CGSizeMake(320.0, 600.0);
     [super awakeFromNib];
 }
 
@@ -268,44 +266,18 @@ typedef enum kfilterModes{
     self.searchDisplayController.delegate = self;
     self.projectTimer = [[CCProjectTimer alloc] init];
     
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *actionButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(actionButton:)];
-    [actionButton setStyle:UIBarButtonItemStyleBordered];
-    [buttons addObject:actionButton];
-    UIBarButtonItem *settingsButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"19-gear.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showSettings:)];
-    [settingsButton setStyle:UIBarButtonItemStyleBordered];
-    [buttons addObject:settingsButton];
-    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
-    [tools setItems:buttons animated:NO];
-    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.leftBarButtonItem = twoButtons;
-    
-    NSMutableArray *rightButtons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *helpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"HelpAliased-26.png"] style:UIBarButtonItemStylePlain target:self action:@selector(openFAQ:)];
-    [helpButton setStyle:UIBarButtonItemStyleBordered];
-    [rightButtons addObject:helpButton];
-    
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    [rightButtons addObject:addButton];
-    [addButton setStyle:UIBarButtonItemStyleBordered];
-    UIToolbar *rightTools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 98, 45)];
-    [rightTools setItems:rightButtons animated:NO];
-    UIBarButtonItem *twoRightButtons = [[UIBarButtonItem alloc] initWithCustomView:rightTools];
-    self.navigationItem.rightBarButtonItem = twoRightButtons;
     CCLatestNewsViewController *latestController = [self.storyboard instantiateViewControllerWithIdentifier:@"latestNews"];
     latestController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
+    latestController.popDelegate = self;
     
     BOOL showNews = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontShowNewsAgain"];
     if (!showNews) {
-        [self.navigationController presentViewController:latestController animated:YES completion:nil];
+        [self.navigationController pushViewController:latestController animated:YES];
     }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-
-    NSString *enableNotification = @"EnableControlsNotification";
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:enableNotification object:nil];
     if (self.hotListController.projectTimer != nil) {
         [self.hotListController.projectTimer releaseTimer];
         self.hotListController.selectedIndex = nil;
@@ -352,7 +324,7 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - Helper
--(IBAction)showSettings:(UIBarButtonItem *)sender{
+-(IBAction)showSettings:(UIButton *)sender{
     self.settings = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsMain"];
     [self.navigationController pushViewController:self.settings animated:YES];
 }
@@ -362,7 +334,15 @@ typedef enum kfilterModes{
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.ktcsoftware.com/pf/faq/faq.html"]];
 }
 
-#pragma mark - Public functionality
+#pragma mark - Helper and Delegates
+- (void)savePopoverData {
+    NSLog(@"Implemented just to keep the compiler happy. Not used");
+}
+
+- (void)cancelPopover {
+    NSLog(@"Implemented just to keep the compiler happy. Not used");
+}
+
 -(Project *)getActiveProject{
     return self.activeProject;
 }
@@ -687,7 +667,7 @@ typedef enum kfilterModes{
     cell.detailTextLabel.text = caption;
 }
 
-- (IBAction)insertNewObject:(UIBarButtonItem *)sender
+- (IBAction)insertNewObject:(UIButton *)sender
 {
     UIAlertView *alertViewProjectName = [[UIAlertView alloc]
                                          initWithTitle:@"Project Name"

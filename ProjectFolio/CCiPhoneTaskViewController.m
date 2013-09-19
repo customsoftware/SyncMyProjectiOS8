@@ -11,7 +11,9 @@
 
 #define TASK_COMPLETE [[NSNumber alloc] initWithInt:1]
 #define TASK_ACTIVE [[NSNumber alloc] initWithInt:0]
-
+#define kStartNotification @"ProjectTimerStartNotification"
+#define kStartTaskNotification @"TaskTimerStartNotification"
+#define kStopNotification @"ProjectTimerStopNotification"
 
 @interface CCiPhoneTaskViewController ()
 
@@ -229,6 +231,27 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+#pragma mark - Helpers
+-(void)sendTimerStartNotificationForTask{
+    NSDictionary *projectDictionary = @{ @"Project" :self.currentTask.taskProject,
+                                         @"Task" : self.currentTask };
+    NSNotification *startTimer = [NSNotification notificationWithName:kStartTaskNotification object:nil userInfo:projectDictionary];
+    [[NSNotificationCenter defaultCenter] postNotification:startTimer];
+}
+
+-(void)sendTimerStartNotificationForProject{
+    NSDictionary *projectDictionary = @{ @"Project" : self.currentTask.taskProject };
+    [[NSNotificationCenter defaultCenter] postNotificationName:kStartNotification object:nil userInfo:projectDictionary];
+}
+
+-(void)sendTimerStopNotification{
+    NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
+}
+
+
+
 
 #pragma mark - Table Support
 -(void)showTaskDetails:(UITableView *)tableView rowIndex:(NSIndexPath *)indexPath{
@@ -491,8 +514,10 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if (self.currentTask) [self.currentTask.managedObjectContext save:nil];
+    if (self.currentTask) [self.currentTask.managedObjectContext save:nil];    
     self.currentTask = [self.taskFRC objectAtIndexPath:indexPath];
+    [self sendTimerStopNotification];
+    [self sendTimerStartNotificationForTask];
     // Update the detail view contents
     if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
         // What we do here is make the sub
