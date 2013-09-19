@@ -1,0 +1,11 @@
+This explains some of the features/controls accessible from this form.
+
+Project Customer - this is who you are going it for. The list that displays is from your address book.
+
+Cost Budget - Total available budget for project. As you work and bill time and make purchases, the funds are deducted from this amount. This amount is auto-computed for you based upon the Hour budget and Hourly Rate entries. You can edit this computed amount. 
+
+Double tapping the form resets the Hour budget, Hourly rate and Cost budget field amounts to zero.
+
+Clone Project tasks - If this is something you do repeatedly, this allows you to "clone" a set of tasks from another similar project into this project. Cloning a project copies all tasks from one project and puts them in this project. IT OVERWRITES ANY TASKS YOU'VE ALREADY ENTERED IN THIS PROJECT. You can also append tasks from another project into this one by drilling into the tasks of the other project and selecting them to be added to this project. If you append a task with sub-tasks, all of the sub-tasks are added too. Appending tasks from one project DOES NOT overwrite the existing tasks in this project.
+
+Can we finish in time? - This tells you if you can complete the project by the scheduled stop/due date based upon how many hours you say it will take to finish this project. It also takes into consideration the time required for other concurrently running projects. For example, a project may take 40 hours and be due this week, but if you have another project due next week that still has 80 hours to go, it will warn you that you can't finish in time. For a more in-depth explanation of how this is determined, check the help pages at the app's web site. You can get there by tapping the question mark icon in the upper right corner of the app.

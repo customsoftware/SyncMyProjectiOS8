@@ -60,8 +60,11 @@
 #define kAppStatus          @"Status"
 #define kiCloudToken        @"Token"
 #define kStartupFinished    @"Startup Finished"
-#define kAppBundleName      @"com.customsoftware.projectfolio"
+#define kAppBundleName      @"com.customsoftware.ProjectFolio"
 #define kAppName            @"ProjectFolio"
+#define kAppleID            @"572353940"
+#define kRatingCounterKey   @"RatingCounterRunKey"
+#define kRatingCounterReferenceKey   @"RatingCounterReferenceKey"
 
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
