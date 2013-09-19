@@ -18,9 +18,6 @@
 @end
 
 @implementation CCExpenseReporterViewController
-@synthesize currencyFormatter = _currencyFormatter;
-@synthesize dateFormatter = _dateFormatter;
-@synthesize receiptList = _receiptList;
 
 #pragma mark - API
 -(NSString *)getExpenseReportForProject:(Project *)project{
@@ -62,6 +59,7 @@
     [message appendString:@"Expense itemization:<br>"];
     [message appendString:SCORE];
     int itemCount = 0;
+    NSString *documentString = [self getDocumentsDirectory];
     for (Deliverables *expense in expenses) {
         if ([expense.expensed integerValue] == 0 && [expense.milage floatValue] == 0) {
             totalExpensed = totalExpensed + [expense.amount floatValue];
@@ -73,16 +71,16 @@
             [message appendString:CR_LF];
             itemCount++;
             
-            if (expense.receipt != nil) {
-                [workingReceipts addObject:expense.receipt];
+            if (expense.receiptPath != nil) {
+                // Read the receipt from the file path
+                NSString *fullPath = [NSString stringWithFormat:@"%@/%@", documentString,expense.receiptPath];
+                UIImage *image = [UIImage imageWithContentsOfFile:fullPath];
+                [workingReceipts addObject:image];
             }
-            
         }
     }
     
     self.receiptList = [NSArray arrayWithArray:workingReceipts];
-    
-    // NSLog(@"Receipt image count: %d", [self.receiptList count]);
     
     [message appendString:SCORE];
     NSString *expenseTotal = [NSString stringWithFormat:@"Items %d                     Total:", itemCount];
@@ -158,6 +156,12 @@
     return @"Not finished yet";
 }
 
+#pragma mark - Helpers
+- (NSString *)getDocumentsDirectory{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    return [paths objectAtIndex:0];
+}
 
 #pragma mark - Life Cycle
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -173,15 +177,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-	// Do any additional setup after loading the view.
-    self.currencyFormatter = nil;
-    self.dateFormatter =  nil;
-    self.receiptList = nil;
 }
 
 - (void)didReceiveMemoryWarning

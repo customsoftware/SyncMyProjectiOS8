@@ -103,7 +103,7 @@
         retValue = @"The project is completed. No worries man!";
         
     } else if( [project.hourBudget integerValue] == 0 ){
-        retValue = @"There are no hours projected. Can't tell until 'Hour Budget' is set.";
+        retValue = @"There are no hours projected. Can't tell until 'Duration' is set.";
         
     } else if( [project.dateFinish timeIntervalSinceNow] < 0 ){
         retValue = @"The project is overdue. You need to adjust the finish date";
@@ -118,7 +118,7 @@
         // Project is not complete
         // Project has hourly budget and remaining hours
         NSError *requestError = nil;
-        if (![self.controller performFetch:&requestError]) {
+        if ([self.controller performFetch:&requestError]) {
             // Include just projects that have a start date before the finish date of this project
             NSArray *projectList = self.controller.fetchedObjects;
             NSDate *comparisonDate;
@@ -181,6 +181,8 @@
             } else {
                 retValue = [[NSString alloc]initWithFormat:@"You can do it by: %@", [dateFormatter stringFromDate:project.dateFinish]];
             }
+        } else {
+            NSLog(@"There was a fetch error");
         }
     }
     return retValue;

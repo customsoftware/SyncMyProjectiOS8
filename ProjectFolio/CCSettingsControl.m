@@ -7,11 +7,12 @@
 //
 
 #import "CCSettingsControl.h"
+#import "CCIAPCards.h"
 
 @implementation CCSettingsControl
 
 -(BOOL)isICloudAuthorized{
-    return YES;
+    return YES; //[[CCIAPCards sharedInstance] featurePurchased];;
 }
 
 

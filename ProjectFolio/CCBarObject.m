@@ -10,6 +10,7 @@
 #define SWITCH_ON [[NSNumber alloc] initWithInt:1]
 #define SWITCH_OFF [[NSNumber alloc] initWithInt:0]
 #define DAYS (60*60*24)
+#define iOS7VerticalOffset 10
 
 @implementation CCBarObject
 
@@ -119,7 +120,7 @@
     CGFloat y = 0;
     CGFloat x = (([[NSDate date] timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay) +2;
     CGFloat barWidth = 1;
-    CGRect barRect = CGRectMake(x, y, barWidth, height );
+    CGRect barRect = CGRectMake(x, y + iOS7VerticalOffset, barWidth, height );
     CGContextAddRect(context, barRect);
     CGContextDrawPath(context, kCGPathFill);
     CGContextSetShadowWithColor(context, CGSizeMake(5.0f, 5.0f), 8.0f, [[UIColor lightGrayColor] CGColor]);
@@ -134,7 +135,7 @@
             CGFloat y = ([self.projectList indexOfObject:project] +1 )* (barHeight + 30);
 	        CGFloat x = (([project.dateStart timeIntervalSinceDate:baseDate]/DAYS) *pointsPerDay ) +2;
 	        CGFloat barWidth = ([project.dateFinish timeIntervalSinceDate:project.dateStart]/DAYS)*pointsPerDay;
-	        CGRect barRect = CGRectMake(x, y, barWidth, barHeight );
+	        CGRect barRect = CGRectMake(x, y + iOS7VerticalOffset, barWidth, barHeight );
             // NSLog(@"On Time Project: %@ x-pos %f y-pos %f Width %f Height %f", project.projectName, x, y, barWidth, barHeight);
 	        CGContextAddRect(context, barRect);
             CGContextDrawPath(context, kCGPathFillStroke);
@@ -147,7 +148,7 @@
 	        CGFloat y = ([self.projectList indexOfObject:project] +1 )* (barHeight + 30);
 	        CGFloat x = (([project.dateStart timeIntervalSinceDate:baseDate]/DAYS) *pointsPerDay ) +2;
 	        CGFloat barWidth = ([project.dateFinish timeIntervalSinceDate:project.dateStart]/DAYS)*pointsPerDay;
-	        CGRect barRect = CGRectMake(x, y, barWidth, barHeight );
+	        CGRect barRect = CGRectMake(x, y + iOS7VerticalOffset, barWidth, barHeight );
             // NSLog(@"Late Project: %@ x-pos %f y-pos %f Width %f Height %f", project.projectName, x, y, barWidth, barHeight);
 	        CGContextAddRect(context, barRect);
             CGContextDrawPath(context, kCGPathFillStroke);
@@ -160,7 +161,7 @@
 	        CGFloat y = ([self.projectList indexOfObject:project] +1 )* (barHeight + 30);
 	        CGFloat x = (([project.dateStart timeIntervalSinceDate:baseDate]/DAYS) *pointsPerDay ) +2;
 	        CGFloat barWidth = ([project.dateFinish timeIntervalSinceDate:project.dateStart]/DAYS)* pointsPerDay;
-	        CGRect barRect = CGRectMake(x, y, barWidth, barHeight );
+	        CGRect barRect = CGRectMake(x, y + iOS7VerticalOffset, barWidth, barHeight );
 	        // NSLog(@"Early Project: %@ x-pos %f y-pos %f Width %f Height %f", project.projectName, x, y, barWidth, barHeight);
 	        CGContextAddRect(context, barRect);
             CGContextDrawPath(context, kCGPathFillStroke);
@@ -177,9 +178,11 @@
         NSString *label = project.projectName;
         UIFont *helveticaBold = [UIFont boldSystemFontOfSize:18];
         CGContextSetShadowWithColor(context, CGSizeMake(5.0f, 5.0f), 5.0f, [[UIColor lightGrayColor] CGColor]);
-        CGRect textRect = CGRectMake(x, y - 25.0f, 250.0f, 25.0);
+        CGRect textRect = CGRectMake(x, y - 25.0f + iOS7VerticalOffset, 250.0f, 25.0);
         // NSLog(@"Project Label: %@ x-pos %f y-pos %f", project.projectName, x, y);
-        [label drawInRect:textRect withFont:helveticaBold];
+        NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+        attributes[NSFontAttributeName] = helveticaBold;
+        [label drawInRect:textRect withAttributes:attributes];
     }
     
 }

@@ -15,6 +15,8 @@
 #define barDrop 20
 #define barIndent 15
 #define barThickness 7
+#define runningOnIPad    UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
+
 @interface CCChart ()
 
 @property (strong, nonatomic) NSUserDefaults *defaults;
@@ -22,24 +24,17 @@
 @property (strong, nonatomic) NSString *projectUUID;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedProjectsController;
 @property (strong, nonatomic) NSFetchedResultsController *taskFRC;
+@property (nonatomic) int iOS7Extra;
 
 @end
 
 @implementation CCChart
-
-@synthesize controllingProject = _controllingProject;
-@synthesize saySomething = _saySomething;
-@synthesize taskChartDelegate = _taskChartDelegate;
-@synthesize defaults = _defaults;
-@synthesize projectName = _projectName;
-@synthesize taskFRC = _taskFRC;
 
 #pragma  mark - Init
 -(CCChart *)initWithProject:(Project *)controllingProject andFrame:(CGRect)frame;{
     self = [super init];
     return self;
 }
-
 
 - (id)initWithFrame:(CGRect)frame
 {
@@ -90,17 +85,23 @@
     } else {
         [normalColor setFill];
     }
+    NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+    attributes[NSFontAttributeName] = labelBoldFont;
     
     if ([sourceTask.subTasks count] > 0) {
-        [label drawInRect:rect withFont:labelBoldFont];
+        attributes[NSFontAttributeName] = labelBoldFont;
     } else {
-        [label drawInRect:rect withFont:labelNormalFont];
+        attributes[NSFontAttributeName] = labelNormalFont;
     }
+    [label drawInRect:rect withAttributes:attributes];
 }
 
 #pragma  mark - API
 -(void)drawRect:(CGRect)rect{
     self.projectUUID = [[NSString alloc] initWithFormat:@"%@",[self.defaults objectForKey:kActiveProject]];
+    if (!runningOnIPad) {
+        self.iOS7Extra = 10;
+    } else { self.iOS7Extra = 0; }
     
     if (self.projectUUID == nil) {
         // NSLog(@"Bailing: No Project name");
@@ -110,105 +111,103 @@
     
         [self.fetchedProjectsController performFetch:&fetchError];
         
-        if (self.fetchedProjectsController.fetchedObjects.count == 0) {
-            return;
-        }
-        
-        self.controllingProject = [[self.fetchedProjectsController fetchedObjects] objectAtIndex:0];
-        [self.taskFRC performFetch:&fetchError];
-        
-        CGFloat height = rect.size.height;
-        CGFloat width = rect.size.width;
-        
-        float pointsPerDay = [self getPointsPerDay:width];
-        NSDate *baseDate = self.controllingProject.dateStart;
-        CGContextRef context = UIGraphicsGetCurrentContext();
-        CGFloat y = 44;
-        CGFloat x = (([[NSDate date] timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay) + baseLine;
-        CGFloat barWidth = 1;
-        CGRect barRect = CGRectMake(x, y, barWidth, height );
-        //NSLog(@"Day dimensions - x:%f y:%f width:%f height:%f", barRect.origin.x, barRect.origin.y, barRect.size.width, barRect.size.height);
-        
-        // Set Start - a dark grey line
-        [[UIColor darkGrayColor] setStroke];
-        CGContextSetLineWidth(context, 1.5f);
-        CGContextMoveToPoint(context, baseLine - 1, barRect.origin.y);
-        CGContextAddLineToPoint(context, baseLine - 1, barRect.size.height);
-        CGContextStrokePath(context);
-        
-        // Set Today - a light grey line
-        [[UIColor lightGrayColor] setStroke];
-        CGContextSetLineWidth(context, 1.0f);
-        CGContextMoveToPoint(context, barRect.origin.x, barRect.origin.y);
-        CGContextAddLineToPoint(context, barRect.origin.x, barRect.size.height);
-        CGContextStrokePath(context);
-        
-        // Set End Date - a  doublered line
-        if (self.controllingProject.dateFinish != nil) {
-            [[UIColor redColor] setStroke];
-            CGContextMoveToPoint(context, (18 + ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay), barRect.origin.y);
-            CGContextAddLineToPoint(context, (18 + ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay), barRect.size.height);
-            CGContextStrokePath(context);
-            CGContextMoveToPoint(context, (21 + ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay), barRect.origin.y);
-            CGContextAddLineToPoint(context, (21 + ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay), barRect.size.height);
+        if (self.fetchedProjectsController.fetchedObjects.count > 0) {
+            self.controllingProject = [[self.fetchedProjectsController fetchedObjects] objectAtIndex:0];
+            [self.taskFRC performFetch:&fetchError];
+            
+            CGFloat height = rect.size.height;
+            CGFloat width = rect.size.width;
+            
+            float pointsPerDay = [self getPointsPerDay:width];
+            NSDate *baseDate = self.controllingProject.dateStart;
+            CGContextRef context = UIGraphicsGetCurrentContext();
+            CGFloat y = 44 + self.iOS7Extra;
+            CGFloat x = (([[NSDate date] timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay) + baseLine;
+            CGFloat barWidth = 1;
+            CGRect barRect = CGRectMake(x, y, barWidth, height );
+            //NSLog(@"Day dimensions - x:%f y:%f width:%f height:%f", barRect.origin.x, barRect.origin.y, barRect.size.width, barRect.size.height);
+            
+            // Set Start - a dark grey line
+            [[UIColor darkGrayColor] setStroke];
+            CGContextSetLineWidth(context, 1.5f);
+            CGContextMoveToPoint(context, baseLine - 1, barRect.origin.y);
+            CGContextAddLineToPoint(context, baseLine - 1, barRect.size.height);
             CGContextStrokePath(context);
             
-        }
-
-        
-        // Initialie the pointers
-        y = 54;
-        x = baseLine;
-        float x_delta;
-        CGContextSetShadowWithColor(context, CGSizeMake(5.0f, 5.0f), 5.0f, [[UIColor lightGrayColor] CGColor]);
-        
-        // [self testDrawBoundWithRect:rect inContext:context];
-        
-        for (Task *taskEntry in self.taskFRC.fetchedObjects) {
-            // We don't change Y since this moves down the chart
-            y = y + 25;
+            // Set Today - a light grey line
+            [[UIColor lightGrayColor] setStroke];
+            CGContextSetLineWidth(context, 1.0f);
+            CGContextMoveToPoint(context, barRect.origin.x, barRect.origin.y);
+            CGContextAddLineToPoint(context, barRect.origin.x, barRect.size.height);
+            CGContextStrokePath(context);
             
-            // We do change x depending on what's happening
-            rect = CGRectMake(x, y - 25.0f, 540.0f, 25.0);
-            // List the name of the task
-            [self drawLabelforTask:taskEntry withRect:rect];
-            if ([taskEntry.subTasks count] > 0){
-                if (taskEntry.latestDate == nil) {
-                    x_delta = ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay;
-                } else {
-                    x_delta = ([taskEntry.latestDate timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay;
-                }
-                if (isnan(x_delta)) {
-                    x_delta = 0;
-                }
-                [self drawBoundWithRect:rect andDuration:(baseLine + x_delta - x) inContext:context];
-                y = y + 10;
-            } else if ( [taskEntry.duration floatValue] > 0 ) {
-                // NSLog(@"Task: %@ has a duration of %f hours", taskEntry.title, [taskEntry.duration doubleValue]);
-                x_delta = ([taskEntry.duration floatValue]/8 ) *pointsPerDay;
-                if (isnan(x_delta)) {
-                    x_delta = 0;
-                }
-                [[UIColor darkGrayColor] setStroke];
-                CGContextSetLineWidth(context, 3.5f);
-                CGContextMoveToPoint(context, x, y);
-                CGContextAddLineToPoint(context, x + x_delta, y);
+            // Set End Date - a  doublered line
+            if (self.controllingProject.dateFinish != nil) {
+                [[UIColor redColor] setStroke];
+                CGContextMoveToPoint(context, (18 + ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay), barRect.origin.y);
+                CGContextAddLineToPoint(context, (18 + ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay), barRect.size.height);
                 CGContextStrokePath(context);
-            } else {
-                x_delta =  (([taskEntry.dueDate timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay);
-                if (isnan(x_delta)) {
-                    x_delta = 0;
+                CGContextMoveToPoint(context, (21 + ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay), barRect.origin.y);
+                CGContextAddLineToPoint(context, (21 + ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay), barRect.size.height);
+                CGContextStrokePath(context);
+                
+            }
+
+            
+            // Initialie the pointers
+            y = 54 + self.iOS7Extra;
+            x = baseLine;
+            float x_delta;
+            CGContextSetShadowWithColor(context, CGSizeMake(5.0f, 5.0f), 5.0f, [[UIColor lightGrayColor] CGColor]);
+            
+            // [self testDrawBoundWithRect:rect inContext:context];
+            
+            for (Task *taskEntry in self.taskFRC.fetchedObjects) {
+                // We don't change Y since this moves down the chart
+                y = y + 25;
+                
+                // We do change x depending on what's happening
+                rect = CGRectMake(x, y - 25.0f, 540.0f, 25.0);
+                // List the name of the task
+                [self drawLabelforTask:taskEntry withRect:rect];
+                if ([taskEntry.subTasks count] > 0){
+                    if (taskEntry.latestDate == nil) {
+                        x_delta = ([self.controllingProject.dateFinish timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay;
+                    } else {
+                        x_delta = ([taskEntry.latestDate timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay;
+                    }
+                    if (isnan(x_delta)) {
+                        x_delta = 0;
+                    }
+                    [self drawBoundWithRect:rect andDuration:(baseLine + x_delta - x) inContext:context];
+                    y = y + 10 + self.iOS7Extra;
+                } else if ( [taskEntry.duration floatValue] > 0 ) {
+                    // NSLog(@"Task: %@ has a duration of %f hours", taskEntry.title, [taskEntry.duration doubleValue]);
+                    x_delta = ([taskEntry.duration floatValue]/8 ) *pointsPerDay;
+                    if (isnan(x_delta)) {
+                        x_delta = 0;
+                    }
+                    [[UIColor darkGrayColor] setStroke];
+                    CGContextSetLineWidth(context, 3.5f);
+                    CGContextMoveToPoint(context, x, y);
+                    CGContextAddLineToPoint(context, x + x_delta, y);
+                    CGContextStrokePath(context);
+                } else {
+                    x_delta =  (([taskEntry.dueDate timeIntervalSinceDate:baseDate]/DAYS)*pointsPerDay);
+                    if (isnan(x_delta)) {
+                        x_delta = 0;
+                    }
+                }
+                
+                // Move the next set of tasks over to the left
+                if ((taskEntry.duration != nil || taskEntry.dueDate != nil )&& [taskEntry.subTasks count] == 0 && [taskEntry.virtualComplete boolValue] == NO) {
+                    x = x + x_delta;
                 }
             }
             
-            // Move the next set of tasks over to the left
-            if ((taskEntry.duration != nil || taskEntry.dueDate != nil )&& [taskEntry.subTasks count] == 0 && [taskEntry.virtualComplete boolValue] == NO) {
-                x = x + x_delta;
-            }
+            
+            UIGraphicsEndImageContext();
         }
-        
-        
-        UIGraphicsEndImageContext();
     }
 }
 

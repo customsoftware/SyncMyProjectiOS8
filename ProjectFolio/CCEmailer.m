@@ -17,8 +17,11 @@
 @implementation CCEmailer
 
 -(void)addImageAttachments:(NSArray *)images{
+    int x = 1;
     for (NSData * attachment in images) {
-        [self.mailComposer addAttachmentData:attachment mimeType:@"image/jpeg" fileName:@"Photo"];
+        NSString *fileNameString = [NSString stringWithFormat:@"Photo %d", x];
+        [self.mailComposer addAttachmentData:attachment mimeType:@"image/jpeg" fileName:fileNameString];
+        x++;
     }
 }
 

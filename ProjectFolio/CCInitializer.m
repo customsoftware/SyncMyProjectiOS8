@@ -83,24 +83,29 @@
 }
 
 -(void)loadTestData{
-    // Get Project
-    Project *mainProject = [self addProjectWithName:@"Sample Project"];
-    mainProject.projectNotes = [self getNotes];
-    
-    // Make a couple of tasks & sub tasks
-    Task *task = [self addTaskWithTitle:@"Super Task" andNotes:@"Enter notes here" toProject:mainProject];
-    [self addTaskWithTitle:@"Sub-task sample" andNotes:@"Please tap the sticky-notes button.\nSome more notes\nYou can also create sub-tasks by entering bullet actions in the task's notes form. Select them, then tap the 'Create Task' menu\nYou can re-arrange task in edit mode. Note that you can't re-arrange sub-tasks, they are sorted by due date and move with the top-level task when you re-arrange the tasks.\n\nYou can also set due dates for tasks by clicking on the Due Date cell. This will display a date picker. Tasks which have a due date will display, sorted in order of when they are due, in the 'Hot List'. You select the Hot List when the projects are displayed at the bottom of the list. The far right button, with the lightning bolt, is the 'Hot List' button." toAnotherTask:task inProject:mainProject];
-    [self addTaskWithTitle:@"Categories" andNotes:@"The category button, at the bottom of the Project list view and Hot List task view modifies the search functionality. The 'Category button' is the button with the wrench super imposed over a pencil. When this button is tapped, and you do a search, the category set for the project or the task is what the search runs against. For example, if you have a category of 'Medium' assigned to three of say ten projects and you tap the category button, then tap in the search bar and then type the letter 'M', just those three projects will remain in the list. If the button is not tapped, then just those projects that begin with the letter 'M' will appear in the result list." toProject:mainProject];
-    
-    // Enter a couple of expenses
-    NSNumber *purchaseAmount = [NSNumber numberWithDouble:499.00];
-    [self createAnExpense:@"iPad" forAmount:purchaseAmount boughtFrom:@"Apple Computer" forProject:mainProject];
-    Project *earlyProject = [self addProjectWithName:@"Early Project"];
-    earlyProject.dateStart = [NSDate dateWithTimeInterval:kInterval/2 sinceDate:[NSDate date]];
-    earlyProject.dateFinish = [NSDate dateWithTimeInterval:kInterval/2 sinceDate:earlyProject.dateStart];;
-    Project *lateProject = [self addProjectWithName:@"Late Project"];
-    lateProject.dateStart = [NSDate dateWithTimeInterval:-kInterval sinceDate:[NSDate date]];
-    lateProject.dateFinish = [NSDate dateWithTimeInterval:-24000 sinceDate:[NSDate date]];
-    [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
+    CoreData *model = [CoreData sharedModel:nil];
+    [model.projectFRC performFetch:nil];
+    int projectCount = model.projectFRC.fetchedObjects.count;
+    if ( projectCount == 0){
+        // Get Project
+        Project *mainProject = [self addProjectWithName:@"Sample Project"];
+        mainProject.projectNotes = [self getNotes];
+        
+        // Make a couple of tasks & sub tasks
+        Task *task = [self addTaskWithTitle:@"Super Task" andNotes:@"Enter notes here" toProject:mainProject];
+        [self addTaskWithTitle:@"Sub-task sample" andNotes:@"Please tap the sticky-notes button.\nSome more notes\nYou can also create sub-tasks by entering bullet actions in the task's notes form. Select them, then tap the 'Create Task' menu\nYou can re-arrange task in edit mode. Note that you can't re-arrange sub-tasks, they are sorted by due date and move with the top-level task when you re-arrange the tasks.\n\nYou can also set due dates for tasks by clicking on the Due Date cell. This will display a date picker. Tasks which have a due date will display, sorted in order of when they are due, in the 'Hot List'. You select the Hot List when the projects are displayed at the bottom of the list. The far right button, with the lightning bolt, is the 'Hot List' button." toAnotherTask:task inProject:mainProject];
+        [self addTaskWithTitle:@"Categories" andNotes:@"The category button, at the bottom of the Project list view and Hot List task view modifies the search functionality. The 'Category button' is the button with the wrench super imposed over a pencil. When this button is tapped, and you do a search, the category set for the project or the task is what the search runs against. For example, if you have a category of 'Medium' assigned to three of say ten projects and you tap the category button, then tap in the search bar and then type the letter 'M', just those three projects will remain in the list. If the button is not tapped, then just those projects that begin with the letter 'M' will appear in the result list." toProject:mainProject];
+        
+        // Enter a couple of expenses
+        NSNumber *purchaseAmount = [NSNumber numberWithDouble:499.00];
+        [self createAnExpense:@"iPad" forAmount:purchaseAmount boughtFrom:@"Apple Computer" forProject:mainProject];
+        Project *earlyProject = [self addProjectWithName:@"Early Project"];
+        earlyProject.dateStart = [NSDate dateWithTimeInterval:kInterval/2 sinceDate:[NSDate date]];
+        earlyProject.dateFinish = [NSDate dateWithTimeInterval:kInterval/2 sinceDate:earlyProject.dateStart];;
+        Project *lateProject = [self addProjectWithName:@"Late Project"];
+        lateProject.dateStart = [NSDate dateWithTimeInterval:-kInterval sinceDate:[NSDate date]];
+        lateProject.dateFinish = [NSDate dateWithTimeInterval:-24000 sinceDate:[NSDate date]];
+        [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
+    }
 }
 @end

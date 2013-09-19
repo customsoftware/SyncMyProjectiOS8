@@ -16,9 +16,6 @@
 
 @implementation CCLocationController
 
-@synthesize locationDelegate = _locationDelegate;
-@synthesize locationManager = _locationManager;
-
 -(double)degreeToRadian:(double)degree{
     return degree * M_PI / 180;
 }
@@ -78,10 +75,10 @@
 }
 
 -(void)getLocation{
-    self.locationManager = [[CLLocationManager alloc] init];
-    self.locationManager.delegate = self;
-    self.locationManager.distanceFilter = 500;
-   self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+//    self.locationManager = [[CLLocationManager alloc] init];
+//    self.locationManager.delegate = self;
+//    self.locationManager.distanceFilter = 500;
+//   self.locationManager.desiredAccuracy = kCLLocationAccuracyBest;
     if ([CLLocationManager locationServicesEnabled]) {
         switch ([CLLocationManager authorizationStatus]) {
             case kCLAuthorizationStatusAuthorized:
@@ -111,7 +108,7 @@
         switch ([CLLocationManager authorizationStatus]) {
             case kCLAuthorizationStatusAuthorized:
                 [self.locationDelegate locationUpdate:newLocation];
-                [self.locationManager stopUpdatingLocation];
+                [manager stopUpdatingLocation];
                 break;
                 
             case kCLAuthorizationStatusDenied:
@@ -159,6 +156,17 @@
 
 -(void)forceShutdownOfLocator{
     [self.locationManager stopUpdatingLocation];
+}
+
+#pragma mark - Accessors
+- (CLLocationManager *)locationManager {
+    if (!_locationManager) {
+        _locationManager = [[CLLocationManager alloc] init];
+        _locationManager.delegate = self;
+        _locationManager.distanceFilter = 500;
+        _locationManager.desiredAccuracy = kCLLocationAccuracyBest;
+    }
+    return _locationManager;
 }
 
 @end
