@@ -67,18 +67,6 @@
     [self.tableView selectRowAtIndexPath:projectIndex animated:YES scrollPosition:UITableViewScrollPositionMiddle];
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.fetchRequest = nil;
-    self.projectFRC = nil;
-    self.selectedProject = nil;
-    self.formatter = nil;
-    self.donorProject = nil;
-    self.driller = nil;
-}
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
@@ -123,13 +111,14 @@
         NSSet *newTasks = [[NSSet alloc] initWithArray:newTaskArray];
         [self.selectedProject addProjectTask:newTasks];
     }
-    [self.navigationController popViewControllerAnimated:YES];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 
 #pragma mark - Table view data source
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
     self.driller.projectDelegate = self;
+    self.driller.preferredContentSize = self.preferredContentSize;
     self.selectedIndex = indexPath;
     [self.navigationController pushViewController:self.driller animated:YES];
 }
@@ -172,7 +161,7 @@
     if (![currentProject.projectName isEqualToString:self.donorProject.projectName]){
         UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:[[NSString alloc] initWithFormat:@"Clone Tasks from %@ project. This overwrites %@'s existing tasks.", self.donorProject.projectName, currentProject.projectName] delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Clone Tasks" otherButtonTitles:nil];
         CGRect rect = CGRectMake(0, 0, 320, 150);
-        [actionSheet showFromRect:rect inView:self.parentViewController.view animated:YES];
+        [actionSheet showFromRect:rect inView:self.view animated:YES];
     }
 
 }

@@ -31,14 +31,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
-    self.latestNews.layer.cornerRadius = 5;
-    self.latestNews.layer.borderWidth = 2;
-    self.latestNews.layer.borderColor = [[UIColor darkGrayColor]CGColor];
-    self.latestNews.layer.shadowOffset = CGSizeMake(7, 7);
-    self.latestNews.layer.shadowColor = [[UIColor lightGrayColor]CGColor];
-    self.latestNews.layer.shadowOpacity = .8f;
-    NSString* path = [[NSBundle mainBundle] pathForResource:@"Latest" ofType:@"txt"];
+	NSString* path = [[NSBundle mainBundle] pathForResource:@"Latest" ofType:@"txt"];
 
     NSString* content = [NSString stringWithContentsOfFile:path
                                                   encoding:NSUTF8StringEncoding
@@ -56,7 +49,7 @@
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
         [self.popDelegate cancelPopover];
     } else {
-        
+        [self.navigationController popViewControllerAnimated:YES];
     }
 }
 

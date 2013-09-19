@@ -17,10 +17,9 @@
 @end
 
 @implementation CCAuxPriorityEditorViewController
-@synthesize priorityDelegate = _priorityDelegate;
 
 -(IBAction)updatePriority:(UITextField *)sender{
-    // [self.priorityDelegate saveUpdatedDetail:sender.text];
+     [self.priorityDelegate saveUpdatedDetail:sender.text];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -56,7 +55,6 @@
         view.layer.borderColor = [[UIColor darkGrayColor]CGColor];
     }
 }
-
 
 - (void)didReceiveMemoryWarning
 {
@@ -108,6 +106,11 @@
         self.textField.backgroundColor = viewColor;
         [self.priorityDelegate saveUpdatedColor:[self convertUIColorToString:viewColor]];
     }
+}
+
+#pragma mark - Delegates
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self.textField resignFirstResponder];
 }
 
 #pragma mark - Helpers

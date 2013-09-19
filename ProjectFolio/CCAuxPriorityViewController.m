@@ -28,7 +28,7 @@
                               inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     self.selectedPath = nil;
     self.theNewPriority = newPriority;
-    self.editor.contentSizeForViewInPopover = self.view.bounds.size;
+    self.editor.preferredContentSize = self.view.bounds.size;
     [self.navigationController pushViewController:self.editor animated:YES];
 }
 
@@ -50,14 +50,18 @@
 
 - (NSString *)getPriorityColor
 {
-Priority *priority = [self.priorityFRC objectAtIndexPath:self.selectedPath];
+    Priority *priority = [self.priorityFRC objectAtIndexPath:self.selectedPath];
    return priority.color;
 }
 
 - (void)saveUpdatedColor:(NSString *)newValue
 {
-    Priority *priority = [self.priorityFRC objectAtIndexPath:self.selectedPath];
-    priority.color = newValue;
+    if (self.selectedPath == nil) {
+        self.theNewPriority.color = newValue;
+    } else {
+        Priority *priority = [self.priorityFRC objectAtIndexPath:self.selectedPath];
+        priority.color = newValue;
+    }
 }
 
 #pragma mark - Life Cycle
@@ -149,7 +153,7 @@ Priority *priority = [self.priorityFRC objectAtIndexPath:self.selectedPath];
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     self.selectedPath = indexPath;
-    self.editor.contentSizeForViewInPopover = self.view.bounds.size;
+    self.editor.preferredContentSize = self.view.bounds.size;
     [self.navigationController pushViewController:self.editor animated:YES];
 }
 

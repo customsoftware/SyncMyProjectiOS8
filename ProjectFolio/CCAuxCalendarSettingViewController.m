@@ -41,7 +41,7 @@
     [super viewDidLoad];
     self.calendarTypes = @[@"Local", @"iCloud/CalDAV", @"Exchange", @"Subscription", @"Birthday"];
     NSMutableArray *workingList = [[NSMutableArray alloc] init];
-    for (EKCalendar *thisCalendar in self.eventStore.calendars) {
+    for (EKCalendar *thisCalendar in [self.eventStore calendarsForEntityType:EKEntityTypeEvent]) {
         [workingList addObject:thisCalendar];
     }
     self.calendarList = [NSArray arrayWithArray:workingList];

@@ -7,6 +7,7 @@
 //
 
 #import "CCAuxSettingsViewController.h"
+#import <QuartzCore/QuartzCore.h>
 
 #define kFontNameKey @"font"
 #define kFontSize @"fontSize"
@@ -20,7 +21,7 @@
 #define kHomeLocation @"homeLocation"
 #define kDefaultCalendar @"defaultCalendar"
 
-@interface CCAuxSettingsViewController ()
+@interface CCAuxSettingsViewController () <UIScrollViewDelegate>
 
 @property (strong, nonatomic) CCLocationController *locationManager;
 @property (strong, nonatomic) NSUserDefaults *defaults;
@@ -38,15 +39,6 @@
 @end
 
 @implementation CCAuxSettingsViewController
-@synthesize changeFontSize = _changeFontSize;
-@synthesize tableView = _tableView;
-@synthesize defaults = _defaults;
-@synthesize colorPad = _colorPad;
-@synthesize locationManager = _locationManager;
-@synthesize email = _email;
-@synthesize logger = _logger;
-@synthesize priorityController = _priorityController;
-@synthesize calendarController = _calendarController;
 
 #pragma mark - Life Cycle
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -91,7 +83,11 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTimer) name:kAppString object:nil];
+}
+
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     self.colorPad.layer.borderWidth = 1.25f;
     self.colorPad.layer.cornerRadius = 5;
     self.colorPad.layer.borderColor = [[UIColor darkGrayColor] CGColor];
@@ -100,11 +96,6 @@
         view.layer.cornerRadius = 3;
         view.layer.borderColor = [[UIColor darkGrayColor]CGColor];
     }
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTimer) name:kAppString object:nil];
-}
-
--(void)viewWillAppear:(BOOL)animated{
-    [super viewWillAppear:animated];
     [self.tableView reloadData];
     self.email.text = [self.defaults objectForKey:kDefaultEmail];
     NSString * homeLocation = [self.defaults objectForKey:kHomeLocation];
@@ -145,10 +136,14 @@
 	return YES;
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView{
+    [self.email resignFirstResponder];
+}
 
 #pragma mark - IBActions
 -(IBAction)setTimer:(UISwitch *)sender{
     BOOL keyStatus = [sender isOn];
+    [self.email resignFirstResponder];
     if (keyStatus == YES) {
         NSString *deviceGUID = (NSString *)[[NSUserDefaults standardUserDefaults] objectForKey:kAppString];
         [[[CoreData sharedModel:nil] iCloudKey] setString:deviceGUID forKey:kAppString];
@@ -156,16 +151,17 @@
     [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
 }
 
-
--(IBAction)email:(UITextField *)sender{
+-(IBAction)email:(UITextField *)sender {
     [self.defaults setObject:sender.text forKey:kDefaultEmail];
 }
 
 -(IBAction)openFAQ:(UIButton *)sender{
+    [self.email resignFirstResponder];
     [self performSegueWithIdentifier:@"pushPurchases" sender:self];
 }
 
 -(IBAction)setHomeLocation:(UIButton *)sender{
+    [self.email resignFirstResponder];
     [self.locationManager getLocation];
 }
 
@@ -187,7 +183,19 @@
     self.logger = nil;
 }
 
+-(void)setDisplayBackGroundColor{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    CGFloat alpha = [defaults floatForKey:kSaturation];
+    CGFloat red = [defaults floatForKey:kRedNameKey];
+    CGFloat blue = [defaults floatForKey:kBlueNameKey];
+    CGFloat green = [defaults floatForKey:kGreenNameKey];
+    UIColor *newColor = [[UIColor alloc] initWithRed:red green:green blue:blue alpha:alpha];
+    //self.projectNotes.backgroundColor = newColor;
+    self.view.backgroundColor = newColor;
+}
+
 -(IBAction)tapHandler:(UITapGestureRecognizer *)sender{
+    [self.email resignFirstResponder];
     CGPoint currentTouch = [sender locationInView:self.colorPad];
     int x = currentTouch.x;
     int y = currentTouch.y;
@@ -234,6 +242,10 @@
         NSString *colorChangeNotification = [[NSString alloc] initWithFormat:@"%@", @"BackGroundColorChangeNotification"];
         NSNotification *colorChange = [NSNotification notificationWithName:colorChangeNotification object:nil];
         [[NSNotificationCenter defaultCenter] postNotification:colorChange];
+        
+        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad)  {
+            [self setDisplayBackGroundColor];
+        }
     }
 }
 
@@ -244,13 +256,10 @@
     [[NSNotificationCenter defaultCenter] postNotification:fontChange];
 }
 
-
-
 #pragma mark - Table view data source
 -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
     return 1;
 }
-
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSInteger returnValue = 0;
@@ -295,14 +304,15 @@
 #pragma mark - Table view delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    [self.email resignFirstResponder];
     // Navigation logic may go here. Create and push another view controller.
     if (indexPath.row == 0 && indexPath.section == 0) {
         [self performSegueWithIdentifier:@"showFonts" sender:self];
     } else  if ( indexPath.row == 1 && indexPath.section == 0 ) {
-        self.calendarController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+        self.calendarController.preferredContentSize = self.preferredContentSize;
         [self.navigationController pushViewController:self.calendarController animated:YES];
     } else {
-        self.priorityController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+        self.priorityController.preferredContentSize = self.preferredContentSize;
         [self.navigationController pushViewController:self.priorityController animated:YES];
     }
 }
@@ -310,10 +320,10 @@
 -(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
     if ([[segue identifier] isEqualToString:@"showFonts"]) {
         UIViewController *destinationView = [segue destinationViewController];
-        destinationView.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+        destinationView.preferredContentSize = self.preferredContentSize;
     } else if ( [segue.identifier isEqualToString:@"pushPurchases"]) {
         UIViewController *destinationView = [segue destinationViewController];
-        destinationView.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+        destinationView.preferredContentSize = self.view.frame.size;
     }
 }
 
