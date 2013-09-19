@@ -10,6 +10,7 @@
 #import <TargetConditionals.h>
 #import "Priority.h"
 #import "CCInitializer.h"
+#import "CCIAPCards.h"
 
 @interface CoreData()
 
@@ -29,8 +30,6 @@ static CoreData *sharedModel = nil;
 @synthesize projectFRC = _projectFRC;
 
 //iCloud
-@synthesize iCloudAvailable = _iCloudAvailable;
-
 #pragma mark - Singleton Creation
 + (id)sharedModel:(id<CoreDataDelegate>)delegate{
     static CoreData *sharedModel = nil;
@@ -175,10 +174,10 @@ static CoreData *sharedModel = nil;
 			[_delegates addObject:newDelegate];
 		
         //Test for iCloud availability
-#if TARGET_IPHONE_SIMULATOR
+/*#if TARGET_IPHONE_SIMULATOR
         NSLog(@"Running in simulator");
         self.iCloudAvailable = NO;
-#else
+#else*/
         CCSettingsControl *settings = [[CCSettingsControl alloc] init];
         if([settings isICloudAuthorized]){
             _iCloudKey = [NSUbiquitousKeyValueStore defaultStore];
@@ -192,7 +191,7 @@ static CoreData *sharedModel = nil;
         } else {
             self.iCloudAvailable = NO;
         }
-#endif
+//#endif
         __managedObjectContext = [self managedObjectContext];
 	}
 	return self;
@@ -347,26 +346,8 @@ static CoreData *sharedModel = nil;
                 optionsDictionary = @{NSMigratePersistentStoresAutomaticallyOption:[NSNumber numberWithBool:YES],
                                       NSInferMappingModelAutomaticallyOption:[NSNumber numberWithBool:YES] };
             }
-               
-           @try {
-               
-               if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:optionsDictionary error:&error]){
-                   self.errorLogger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
-                   [self.errorLogger releaseLogger];
-                   UILocalNotification *notification = [[UILocalNotification alloc] init];
-                   notification.fireDate = [NSDate date];
-                   notification.timeZone = [NSTimeZone defaultTimeZone];
-                   notification.alertAction = @"Database Creation Failure Alert";
-                   notification.alertBody = @"You didn't do anything wrong, but the app failed to create the database needed to operate. Please send a bug report to the developer. Thanks.";
-                   notification.soundName = UILocalNotificationDefaultSoundName;
-                   notification.applicationIconBadgeNumber = notification.applicationIconBadgeNumber + 1;
-                   [[UIApplication sharedApplication] scheduleLocalNotification:notification];
-                   
-                   UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Core Data Error" message:@"Creation of persistent store failed" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                   [alert show];
-               }
-           }
-           @catch (NSException *exception) {
+            
+           if (![__persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:optionsDictionary error:&error]){
                self.errorLogger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                [self.errorLogger releaseLogger];
                UILocalNotification *notification = [[UILocalNotification alloc] init];
@@ -377,12 +358,15 @@ static CoreData *sharedModel = nil;
                notification.soundName = UILocalNotificationDefaultSoundName;
                notification.applicationIconBadgeNumber = notification.applicationIconBadgeNumber + 1;
                [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+               
+               UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Core Data Error" message:@"Creation of persistent store failed" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+               [alert show];
+           } else {
+               dispatch_async(dispatch_get_main_queue(), ^{
+                   [[NSNotificationCenter defaultCenter] postNotificationName:kiCloudSyncNotification object:self userInfo:nil];
+                   self.iCloudAvailable = YES;
+               });
            }
-            
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [[NSNotificationCenter defaultCenter] postNotificationName:kiCloudSyncNotification object:self userInfo:nil];
-                [self testPriorityConfig];
-            });
        });
     }
     return __persistentStoreCoordinator;
@@ -401,7 +385,7 @@ static CoreData *sharedModel = nil;
                                                                                        cacheName:nil];
     NSError *fetchError;
     [pFRC performFetch:&fetchError];
-    if ([[pFRC fetchedObjects]count] == 0) {
+    if ([pFRC fetchedObjects].count == 0) {
         // This will happen only the first time the app starts up, unless the user deletes all of the settings
         Priority * newPriority = [NSEntityDescription
                                   insertNewObjectForEntityForName:@"Priority"
@@ -419,8 +403,6 @@ static CoreData *sharedModel = nil;
         newPriority.priority = @"High";
         [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
         [pFRC performFetch:&fetchError];
-        CCInitializer *initializer = [[CCInitializer alloc] init];
-        [initializer loadTestData];
     }
 }
 

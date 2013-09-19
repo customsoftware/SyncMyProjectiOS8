@@ -53,6 +53,7 @@
 - (id)saveLastModified:(id)recordObject;
 - (id)initWithDelegate:(id<CoreDataDelegate>)newDelegate;
 - (void)fixExistingData;
+- (void)testPriorityConfig;
 
 // Context Operations
 - (void)undo;

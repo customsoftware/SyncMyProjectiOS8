@@ -42,7 +42,7 @@
 -(IBAction)showTimePopover:(id)sender;
 -(IBAction)showCalendarPopover:(id)sender;
 -(IBAction)showChart:(UIBarButtonItem *)sender;
--(IBAction)sendNotes:(UIBarButtonItem *)sender;
+-(IBAction)sendNotes:(UIButton *)sender;
 -(IBAction)showSettings:(UIBarButtonItem *)sender;
 -(IBAction)showTaskChart:(UIBarButtonItem *)sender;
 

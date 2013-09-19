@@ -12,34 +12,104 @@
 #define END_INDEX [NSIndexPath indexPathForRow:1 inSection:0]
 #define SWITCH_ON [[NSNumber alloc] initWithInt:1]
 #define SWITCH_OFF [[NSNumber alloc] initWithInt:0]
+#define runningOnIPad    UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
 
 @interface CCDateSetterViewController ()
 
 @property (strong, nonatomic) CCAuxDurationViewController *durationController;
 @property (strong, nonatomic) CCCategoryTaskViewController *categoryController;
+@property (strong, nonatomic) UISwipeGestureRecognizer *hideSwipe;
+@property (weak, nonatomic) IBOutlet UILabel *costBudgetLabel;
+@property (weak, nonatomic) IBOutlet UILabel *rateBudgetLabel;
+@property (weak, nonatomic) IBOutlet UILabel *hourBudgetLabel;
+@property (weak, nonatomic) IBOutlet UITextField *hourBudgetField;
+@property (weak, nonatomic) IBOutlet UIButton *projectCategory;
+@property (weak, nonatomic) IBOutlet UIButton *completionDate;
+@property (weak, nonatomic) IBOutlet UIButton *startDate;
+@property (weak, nonatomic) IBOutlet UIButton *customerName;
+@property (weak, nonatomic) IBOutlet UITextView *helpText;
+
+- (IBAction)runCanDoAnalysis:(UIButton *)sender;
+- (IBAction)runProjectClonePopover:(UIButton *)sender;
+- (void)releaseForm:(UIButton *)sender;
+- (IBAction)changedBudget:(UITextField *)sender;
+- (IBAction)changeProjectCategory:(UIButton *)sender;
+- (IBAction)setExpectedCompletionDate:(UIButton *)sender;
+- (IBAction)setProjectStartDate:(UIButton *)sender;
+- (IBAction)setProjectCustomer:(UIButton *)sender;
 
 @end
 
 @implementation CCDateSetterViewController
 
 #pragma mark - Popover Controls
-- (void)runCanDoAnalysis
+- (IBAction)runCanDoAnalysis:(UIButton *)sender
 {
     [CCCanIDoIt runAnalysisForProject:self.project];
 }
 
-- (void)runProjectClonePopover
+- (IBAction)runProjectClonePopover:(UIButton *)sender
 {
-    [self performSegueWithIdentifier:@"projectClone" sender:self];
+    CCAuxTaskCloneViewController *cloner =  [self.storyboard instantiateViewControllerWithIdentifier:@"projectCloneControl"];
+    UINavigationController *nc = [[UINavigationController alloc] initWithRootViewController:cloner];
+    cloner.selectedProject = self.project;
+    if (runningOnIPad) {
+        cloner.preferredContentSize = CGSizeMake(400, 300);
+        self.popControll = [[UIPopoverController alloc] initWithContentViewController:nc];
+        [self.popControll presentPopoverFromRect:sender.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    } else {
+        [self.navigationController pushViewController:cloner animated:YES];
+    }
 }
 
--(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    UIViewController *destinationView = [segue destinationViewController];
-    if ([[segue identifier] isEqualToString:@"projectClone"]) {
-        CCAuxTaskCloneViewController *taskCloneController = (CCAuxTaskCloneViewController *)destinationView;
-        taskCloneController.selectedProject = self.project;
+- (void)releaseForm:(UIButton *)sender {
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)changedBudget:(UITextField *)sender {
+    NSNumberFormatter *numFormatter = [[NSNumberFormatter alloc] init];
+    self.project.hourBudget = [numFormatter numberFromString:sender.text];
+    [self updateBillableValues];
+}
+
+- (IBAction)changeProjectCategory:(UIButton *)sender {
+    [self callCategoryController];
+}
+
+- (IBAction)setExpectedCompletionDate:(UIButton *)sender {
+    self.dateController =  [self.storyboard instantiateViewControllerWithIdentifier:@"projectDateSetter"];
+    self.dateController.delegate = self;
+    self.dateController.dateValue = self.project.dateFinish;
+    self.dateController.minimumDate = self.project.dateStart;
+    self.dateController.maximumDate = nil;
+    self.dateController.barCaption = @"End Date";
+    if (runningOnIPad) {
+        self.dateController.preferredContentSize = self.preferredContentSize;
+        self.popControll = [[UIPopoverController alloc] initWithContentViewController:self.dateController];
+        [self.popControll presentPopoverFromRect:sender.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    } else {
+        [self.navigationController pushViewController:self.dateController animated:YES];
     }
-    destinationView.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+}
+
+- (IBAction)setProjectStartDate:(UIButton *)sender {
+    self.dateController =  [self.storyboard instantiateViewControllerWithIdentifier:@"projectDateSetter"];
+    self.dateController.delegate = self;
+    self.dateController.dateValue = self.project.dateStart;
+    self.dateController.minimumDate = nil;
+    self.dateController.maximumDate = self.project.dateFinish;
+    self.dateController.barCaption = @"Start Date";
+    if (runningOnIPad) {
+        self.dateController.preferredContentSize = self.preferredContentSize;
+        self.popControll = [[UIPopoverController alloc] initWithContentViewController:self.dateController];
+        [self.popControll presentPopoverFromRect:sender.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    } else {
+        [self.navigationController pushViewController:self.dateController animated:YES];
+    }
+}
+
+- (IBAction)setProjectCustomer:(UIButton *)sender {
+    [self callOwnerController];
 }
 
 -(IBAction)completeProject:(UISwitch *)sender{
@@ -54,11 +124,12 @@
 
 -(IBAction)billableProject:(UISwitch *)sender{
     self.project.billable = [NSNumber numberWithBool:[sender isOn]];
-    if ([sender isOn] && [self.project.hourlyRate floatValue] == 0 ){
+    if ([sender isOn] && [self.project.hourlyRate floatValue] == 0 && [self.project.costBudget floatValue] == 0 && [self.project.hourBudget floatValue] == 0 ){
         UIAlertView * alert = [[UIAlertView alloc]
-                               initWithTitle:@"Data Inconsistency Warning" message:@"You've declared the project to be billable without setting a billable rate" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                               initWithTitle:@"Billing Configuration Alert" message:@"You've declared the project to be billable. Remember to set the Hourly Rate, Cost Budget and Duration Values." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
     }
+    [self setVisibilityOfBillableControls:[sender isOn]];
     [self.view endEditing:YES];
 }
 
@@ -69,6 +140,7 @@
 -(IBAction)hourlyRate:(UITextField *)sender{
     NSNumberFormatter *numFormatter = [[NSNumberFormatter alloc] init];
     self.project.hourlyRate = [numFormatter numberFromString:sender.text];
+    [self updateBillableValues];
 }
 
 -(IBAction)projectCostBudget:(UITextField *)sender{
@@ -76,34 +148,33 @@
     [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
     NSDecimalNumber *targetValue = [[NSDecimalNumber alloc] initWithFloat:[[formatter numberFromString:sender.text] floatValue]];
     self.project.costBudget = targetValue;
+    [self updateBillableValues];
 }
 
 -(void)callOwnerController{
     self.ownerController.modalPresentationStyle = UIModalPresentationCurrentContext;
     self.ownerController.modalTransitionStyle = UIModalTransitionStyleCoverVertical;
     self.ownerController.peoplePickerDelegate = self;
-    self.ownerController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+    self.ownerController.preferredContentSize = self.preferredContentSize;
     [self presentViewController:self.ownerController animated:YES completion:nil];
-}
-
--(void)callIntervalController{
-    self.durationController.durationDelegate = self;
-    self.durationController.spinnerValue = self.project.hourBudget;
-    self.durationController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
-    [self.navigationController pushViewController:self.durationController animated:YES];
 }
 
 -(void)callCategoryController{
     self.categoryController.categoryDelegate = self;
-    self.categoryController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
-    [self.navigationController pushViewController:self.categoryController animated:YES];
+    if (runningOnIPad) {
+        self.categoryController.preferredContentSize = CGSizeMake(320, 300);
+        self.popControll = [[UIPopoverController alloc] initWithContentViewController:self.categoryController];
+        [self.popControll presentPopoverFromRect:self.projectCategory.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+    } else {
+        [self.navigationController pushViewController:self.categoryController animated:YES];
+    }
 }
 
 #pragma mark - Addressbook delegates
 -(void)peoplePickerNavigationControllerDidCancel:(ABPeoplePickerNavigationController *)peoplePicker{
     [self dismissViewControllerAnimated:YES completion:nil];
     self.project.assignedTo = nil;
-    [self.settingsController reloadData];
+    [self.customerName setTitle:@"Project Customer" forState:UIControlStateNormal];
 }
 
 -(BOOL)peoplePickerNavigationController:(ABPeoplePickerNavigationController *)peoplePicker shouldContinueAfterSelectingPerson:(ABRecordRef)person{
@@ -122,8 +193,10 @@
     self.project.assignedToFirst = name;
     self.project.assignedToLast = lastName;
     self.project.assignedTo = [[NSString alloc] initWithFormat:@"%@ %@", name, lastName];
-    [self.settingsController reloadData];
+    NSString *projectCustomer = [NSString stringWithFormat:@"Project Customer: %@", self.project.assignedTo];
+    [self.customerName setTitle:projectCustomer forState:UIControlStateNormal];
 }
+
 #pragma mark - Delegate
 -(void)saveDateValue:(NSDate *)dateValue{
     if ([self.dateController.barCaption isEqualToString:@"Start Date"]) {
@@ -131,6 +204,7 @@
     } else {
         self.project.dateFinish = dateValue;
     }
+    [self setViewControlValues];
 }
 
 -(void)cancelPopover{
@@ -139,7 +213,7 @@
 }
 
 -(void)savePopoverData{
-    self.project.hourBudget = self.durationController.spinnerValue;
+    [self setViewControlValues];
 }
 
 -(Priority *)getCurrentCategory{
@@ -147,112 +221,21 @@
 }
 
 -(void)saveSelectedCategory:(Priority *)newCategory{
-    // Need to add code when you can attach priorities to a project
     self.project.projectPriority = newCategory;
+    [self setViewControlValues];
 }
 
-
-#pragma mark - Table View Procedures
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.row < 2) {
-        self.dateController =  [self.storyboard instantiateViewControllerWithIdentifier:@"projectDateSetter"];
-        self.dateController.delegate = self;
-        if (indexPath.row == 0) {
-            self.dateController.dateValue = self.project.dateStart;
-            self.dateController.minimumDate = nil;
-            self.dateController.maximumDate = nil;
-            self.dateController.barCaption = @"Start Date";
-        } else {
-            self.dateController.dateValue = self.project.dateFinish;
-            self.dateController.minimumDate = self.project.dateStart;
-            self.dateController.maximumDate = nil;
-            self.dateController.barCaption = @"End Date";
-        }
-        self.dateController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
-        [self.navigationController pushViewController:self.dateController animated:YES];
-    } else if (indexPath.row == 2 ){
-        [self callIntervalController];
-    } else if (indexPath.row == 3 ){
-        [self callOwnerController];
-    } else if (indexPath.row == 4 ){
-        [self callCategoryController];
-    }
-}
-
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 1;
-}
-
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UITableViewCell *cell = nil;
-    static NSString *startCellID = @"startCell";
-    static NSString *endCellID = @"endCell";
-    static NSString *ownerCellID = @"ownerCell";
-    static NSString *durationCellID = @"durationCell";
-    static NSString *priorityCellID = @"priorityCell";
-    NSUInteger row = [indexPath row];
-    if (row == 0) {
-        cell = [tableView dequeueReusableCellWithIdentifier:startCellID];            
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc]
-                    initWithStyle:UITableViewCellStyleValue1
-                    reuseIdentifier:startCellID];
-        }
-        cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"%@", 
-                                     [self.dateFormatter stringFromDate:self.project.dateStart]];
-    } else if (row == 1 ){
-        cell = [tableView dequeueReusableCellWithIdentifier:endCellID];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc]
-                    initWithStyle:UITableViewCellStyleValue1
-                    reuseIdentifier:endCellID];
-        }
-        cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"%@",
-                                     [self.dateFormatter stringFromDate:self.project.dateFinish]];
-    } else if (row == 2) {
-        cell = [tableView dequeueReusableCellWithIdentifier:durationCellID];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc]
-                    initWithStyle:UITableViewCellStyleValue1
-                    reuseIdentifier:durationCellID];
-        }
-        
-        // Need to set this value....
-        int hourBudget = [self.project.hourBudget integerValue];
-        cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"%d hours", hourBudget];
-        
-    } else if (row == 3) {
-        cell = [tableView dequeueReusableCellWithIdentifier:ownerCellID];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc]
-                    initWithStyle:UITableViewCellStyleValue1
-                    reuseIdentifier:ownerCellID];
-        }
-        if (self.project.dueTo == nil) {
-            cell.detailTextLabel.text = @"Self";
-        } else {
-            cell.detailTextLabel.text = self.project.dueTo;
-        }
-    } else if (row == 4) {
-        cell = [tableView dequeueReusableCellWithIdentifier:priorityCellID];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc]
-                    initWithStyle:UITableViewCellStyleValue1
-                    reuseIdentifier:priorityCellID];
-        }
-        if (self.project.projectPriority == nil) {
-            cell.detailTextLabel.text = @"None selected";
-        } else {
-            cell.detailTextLabel.text = self.project.projectPriority.priority;
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    if (alertView.tag == 2) {
+        if (buttonIndex == 1) {
+            NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+            [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+            self.project.hourBudget = [NSNumber numberWithInt:0];
+            self.project.hourlyRate = [NSNumber numberWithInt:0];
+            self.project.costBudget = [[NSDecimalNumber alloc] initWithFloat:[[formatter numberFromString:0] floatValue]];
+            [self setViewControlValues];
         }
     }
-    
-    return cell;
-}
-
-- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    NSInteger result = 5;
-    return result;
 }
 
 #pragma mark - View lifecycle
@@ -277,29 +260,45 @@
 {
     [super viewDidLoad];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setViewControlValues) name:kiCloudSyncNotification object:nil];
-    // Do any additional setup after loading the view from its nib.
-    self.settingsController.delegate = self;
-    self.settingsController.dataSource = self;
     self.dateFormatter = [[NSDateFormatter alloc] init];
     [self.dateFormatter setTimeStyle:NSDateFormatterNoStyle];
     [self.dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-    
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *cloneButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"196-radiation.png"] style:UIBarButtonItemStylePlain target:self action:@selector(runCanDoAnalysis)];
-    [buttons addObject:cloneButton];
-    UIBarButtonItem *canDoButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"117-todo.png"] style:UIBarButtonItemStylePlain target:self action:@selector(runProjectClonePopover)];
-    [buttons addObject:canDoButton];
-    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
-    [tools setItems:buttons animated:NO];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        tools.barStyle = UIBarStyleBlackTranslucent;
+    if (runningOnIPad) {
+        UISwipeGestureRecognizer *hideSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(releaseForm:)];
+        [hideSwipe setDirection:UISwipeGestureRecognizerDirectionUp];
+        [self.view addGestureRecognizer:hideSwipe];
     }
-    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.rightBarButtonItem = twoButtons;
+    
+    UITapGestureRecognizer *resetTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(resetBudget)];
+    [resetTap setNumberOfTapsRequired:2];
+    [resetTap setNumberOfTouchesRequired:1];
+    [self.view addGestureRecognizer:resetTap];
+    
+    NSString* path = [[NSBundle mainBundle] pathForResource:@"ProjectDetails" ofType:@"txt"];
+    
+    NSString* content = [NSString stringWithContentsOfFile:path
+                                                  encoding:NSUTF8StringEncoding
+                                                     error:NULL];
+    self.helpText.text = content;
+    
+    NSString *fontChangeNotification = @"FontChangeNotification";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setFontForDisplay) name:fontChangeNotification object:nil];
+    NSString *colorChangeNotification = @"BackGroundColorChangeNotification";
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setDisplayBackGroundColor) name:colorChangeNotification object:nil];
+    [self setDisplayBackGroundColor];
+    
+    if (!runningOnIPad) {
+        UITapGestureRecognizer *singleTapper = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTaps)];
+        [singleTapper setNumberOfTapsRequired:1];
+        [singleTapper setNumberOfTouchesRequired:1];
+        [self.view addGestureRecognizer:singleTapper];
+    }
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [self setViewControlValues];
+    [self setFontForDisplay];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -317,18 +316,135 @@
 	return YES;
 }
 
+#pragma mark - Delegates
+- (void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
+    [self setViewControlValues];
+}
+
 #pragma mark - Helpers
+- (void)handleTaps {
+    [self.view endEditing:YES];
+}
+
+-(void)setFontForDisplay{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *fontFamily = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
+    // NSLog(@"Font: %@", fontFamily);
+    NSString *nullString = [[NSString alloc] initWithFormat:@"%@", nil];
+    if ([fontFamily isEqualToString:nullString]) {
+        fontFamily = @"Optima";
+    }
+    CGFloat fontSize = [defaults integerForKey:kFontSize];
+    if (fontSize < 16) {
+        fontSize = 16;
+    }
+    UIFont *displayFont = [UIFont fontWithName:fontFamily size:fontSize];
+    self.helpText.font = displayFont;
+}
+
+- (void)resetBudget {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Confirm Reseting Budget" message:@"Are you certain you want to reset the budget entries?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+    alert.tag = 2;
+    [alert show];
+}
+
+-(void)setDisplayBackGroundColor{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    CGFloat alpha = [defaults floatForKey:kSaturation];
+    CGFloat red = [defaults floatForKey:kRedNameKey];
+    CGFloat blue = [defaults floatForKey:kBlueNameKey];
+    CGFloat green = [defaults floatForKey:kGreenNameKey];
+    UIColor *newColor = [[UIColor alloc] initWithRed:red green:green blue:blue alpha:alpha];
+    //self.projectNotes.backgroundColor = newColor;
+    self.view.backgroundColor = newColor;
+}
+
+- (void)updateBillableValues {
+    // If we have all three values: duration, rate and cost budget, nothing will be done
+    // If we have Rate and Cost, we'll compute hours
+    // If we have Rate and hours, we'll compute cost
+    // If we have Cost and Hours, we'll compute rate
+    float rate = [self.project.hourlyRate floatValue];
+    float cost = [self.project.costBudget floatValue];
+    float hours = [self.project.hourBudget floatValue];
+    
+    if ( rate > 0 && cost > 0 && hours > 0 ) {
+        // We don't need to do anything
+    } else if ( rate > 0 && cost > 0 ){
+        // We compute hours
+        hours = cost / rate;
+        hours = roundf(hours);
+        self.project.hourBudget = [NSNumber numberWithFloat:hours];
+        self.hourBudgetField.text = [NSString stringWithFormat:@"%.2f", hours];
+        
+    } else if ( rate > 0 && hours > 0 ){
+        // We compute cost
+        cost = rate * hours;
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        NSDecimalNumber *targetValue = [[NSDecimalNumber alloc] initWithFloat:cost];
+        self.project.costBudget = targetValue;
+        self.projectCostBudget.text = [NSString stringWithFormat:@"%.2f", cost];
+        
+    } else if ( hours > 0 && cost > 0 ){
+        // We compute rate
+        rate = cost/hours;
+        self.project.hourlyRate = [NSNumber numberWithFloat:rate];
+        self.hourlyRateField.text = [NSString stringWithFormat:@"%.2f", rate];
+    }
+}
+
 - (void)setViewControlValues {
-    [self.settingsController reloadData];
+    NSString *projectCustomer = nil;
+    if (self.project.assignedTo) {
+        projectCustomer = [NSString stringWithFormat:@"Project Customer: %@", self.project.assignedTo];
+    } else { projectCustomer = [NSString stringWithFormat:@"Project Customer"]; }
+    [self.customerName setTitle:projectCustomer forState:UIControlStateNormal];
+    
+    NSString * startDate = nil;
+    if (self.project.dateStart) {
+        startDate = [NSString stringWithFormat:@"Start On: %@", [self.dateFormatter stringFromDate:self.project.dateStart]];
+    } else { startDate = @"Start Date"; }
+    [self.startDate setTitle:startDate forState:UIControlStateNormal];
+    
+    NSString * stopDate = nil;
+    if (self.project.dateFinish) {
+        stopDate = [NSString stringWithFormat:@"Due by: %@", [self.dateFormatter stringFromDate:self.project.dateFinish]];
+    } else { stopDate = @"Scheduled Completion Date"; }
+    [self.completionDate setTitle:stopDate forState:UIControlStateNormal];
+    
+    NSString *category = nil;
+    if (self.project.projectPriority.priority) {
+        category = [NSString stringWithFormat:@"Category: %@", self.project.projectPriority.priority];
+    } else { category = @"Project Category"; }
+    [self.projectCategory setTitle:category forState:UIControlStateNormal];
+    
     self.projectName.text = self.project.projectName;
-    self.hourlyRateField.text = [[NSString alloc] initWithFormat:@"%@", self.project.hourlyRate];
+    NSString *hourlyRate = nil;
+    if (self.project.hourlyRate) {
+        hourlyRate = [NSString stringWithFormat:@"%@", self.project.hourlyRate];
+    } else { hourlyRate = @""; }
+    self.hourlyRateField.text = hourlyRate;
+    
+    NSString *hourBudget = nil;
+    if (self.project.hourBudget) {
+        hourBudget = [NSString stringWithFormat:@"%@", self.project.hourBudget];
+    } else { hourBudget = @""; }
+    self.hourBudgetField.text = hourBudget;
+    
     self.projectCostBudget.text = [self.project.costBudget stringValue];
-    BOOL activeVal = [self.project.active boolValue];
-    [self.activeSwitch setOn:activeVal];
-    activeVal = [self.project.complete boolValue];
-    [self.completeSwitch setOn:activeVal];
-    activeVal = [self.project.billable boolValue];
-    [self.billableSwitch setOn:activeVal];
+    [self.activeSwitch setOn:[self.project.active boolValue]];
+    [self.completeSwitch setOn:[self.project.complete boolValue]];
+    [self.billableSwitch setOn:[self.project.billable boolValue]];
+    [self setVisibilityOfBillableControls:[self.project.billable boolValue]];
+    [self updateBillableValues];
+}
+
+- (void)setVisibilityOfBillableControls:(BOOL)enabled {
+    self.hourlyRateField.hidden = !enabled;
+    self.projectCostBudget.hidden = !enabled;
+    self.rateBudgetLabel.hidden = !enabled;
+    self.costBudgetLabel.hidden = !enabled;
 }
 
 #pragma mark - Accessors

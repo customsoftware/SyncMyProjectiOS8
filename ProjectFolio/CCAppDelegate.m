@@ -8,6 +8,7 @@
 
 #import "CCAppDelegate.h"
 #import "CCMasterViewController.h"
+#import "CCIAPCards.h"
 
 #define iCloudSynIfAvailable   YES
 
@@ -19,16 +20,12 @@
 
 @implementation CCAppDelegate
 
-@synthesize window = _window;
-@synthesize eventStore = _eventStore;
-@synthesize errorLogger = _errorLogger;
-@synthesize projectTimer = _projectTimer;
-
 #pragma mark - Application Life cycle
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self setAppID];
+    [CCIAPCards sharedInstance];
     // Override point for customization after application launch.
     [[NSNotificationCenter defaultCenter]
      addObserver:self
@@ -47,7 +44,6 @@
     application.applicationIconBadgeNumber = 0;
     CCVisibleFixer *fixer = [[CCVisibleFixer alloc] init];
     [fixer fixAllVisible];
-    
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
     NSString *storedVersion = [defaults objectForKey:(NSString *)kCFBundleVersionKey];
@@ -64,8 +60,9 @@
         [defaults setFloat:1.0f forKey:kSaturation];
         [defaults setInteger:18 forKey:kFontSize];
         [defaults setObject:@"Optima" forKey:kFontNameKey];
+        [defaults setInteger:2 forKey:kRatingCounterReferenceKey];
+        [defaults setInteger:0 forKey:kRatingCounterKey];
     }
-    
     [self setButtonStateWithShow:NO];
     return YES;
 }

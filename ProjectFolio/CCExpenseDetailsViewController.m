@@ -49,7 +49,16 @@
 
 #pragma mark - IBActions
 -(IBAction)removePicture:(UIButton *)sender{
-    self.expense.receipt = nil;
+    if (self.expense.receiptPath) {
+        NSString *fullPath = [NSString stringWithFormat:@"%@/%@", [self getDocumentsDirectory],self.expense.receiptPath];
+        // Delete the file
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        NSError *error;
+        BOOL success =[fileManager removeItemAtPath:fullPath error:&error];
+        if (success) {
+            self.expense.receiptPath = nil;
+        }
+    }
     self.receipt.image = nil;
 }
 
@@ -212,11 +221,11 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    if ([self isCameraAvailable] && [self doesCameraSupportTakingPhotos]) {
-        [self.utilityControll setEnabled:YES forSegmentAtIndex:2];
-    } else {
-        [self.utilityControll setEnabled:NO forSegmentAtIndex:2];
-    }
+//    if ([self isCameraAvailable] && [self doesCameraSupportTakingPhotos]) {
+//        [self.utilityControll setEnabled:YES forSegmentAtIndex:2];
+//    } else {
+//        [self.utilityControll setEnabled:NO forSegmentAtIndex:2];
+//    }
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.receipt.layer.borderWidth = 1.50f;
@@ -229,9 +238,6 @@
     self.expense.pmtDescription = self.itemPurchased.text;
     self.expense.amount = [self.numberFormatter numberFromString:self.amountPaid.text];
     [self.expense.managedObjectContext save:nil];
-    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-        self.expense.receipt = UIImagePNGRepresentation(self.receipt.image);
-    }
     [self.locationManager forceShutdownOfLocator];
 }
 
@@ -263,10 +269,37 @@
     self.amountPaid.text = [self.numberFormatter stringFromNumber:self.expense.amount];
     self.paidTo.text = self.expense.paidTo;
     self.milage.text = [self.numberFormatter stringFromNumber:self.expense.milage];
-    UIImage *image = [[UIImage alloc] initWithData:self.expense.receipt];
-    self.receipt.image = image;
+    if (self.expense.receiptPath) {
+        NSString *fullPath = [NSString stringWithFormat:@"%@/%@", [self getDocumentsDirectory],self.expense.receiptPath];
+        UIImage *image = [UIImage imageWithContentsOfFile:fullPath];
+        // Scale the image to fit in the place holder here
+        self.receipt.image = [self getThumbNailFromImage:image];
+    }
     BOOL activeVal = [self.expense.expensed boolValue];
     [self.billed setOn:activeVal];
+}
+
+#pragma mark - Helpers
+- (NSString *)getDocumentsDirectory{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    return [paths objectAtIndex:0];
+}
+
+- (UIImage *)getThumbNailFromImage:(UIImage *)image {
+    UIGraphicsBeginImageContext(self.receipt.frame.size);
+    [image drawInRect:CGRectMake(0, 0, self.receipt.frame.size.width, self.receipt.frame.size.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+- (UIImage *)getStorageImageFromImage:(UIImage *)image {
+    UIGraphicsBeginImageContext(CGSizeMake(480, 320));
+    [image drawInRect:CGRectMake(0, 0, 480, 320)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark - Image Capture
@@ -332,7 +365,7 @@
         self.dateController.dateValue = self.expense.dateExpensed;
         self.dateController.barCaption = @"Expense Date";
     }
-    self.dateController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+    self.dateController.preferredContentSize = self.preferredContentSize;
     [self.navigationController pushViewController:self.dateController animated:YES];
 }
 
@@ -352,20 +385,14 @@
 -(void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info{
     NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
     if ([mediaType isEqualToString:(__bridge NSString *)kUTTypeImage]) {
-        // NSDictionary *metaData = [info objectForKey:UIImagePickerControllerMediaType];
         UIImage *theImage = [info objectForKey:UIImagePickerControllerOriginalImage];
-        if (self.receipt == nil) {
-            // NSLog(@"The receipt went nil due to memory");
-        } else if ( theImage == nil){
-            // NSLog(@"The image went nil");
-        }
-        if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
-            self.receipt.image = theImage;
-            // NSLog(@"The receipt loaded: %f", self.receipt.image.size.height);
-        } else {
-            self.expense.receipt = UIImagePNGRepresentation(theImage);
-        }
-
+        theImage = [self getStorageImageFromImage:theImage];
+        self.expense.receiptPath = [NSString stringWithFormat:@"%@.jpg", [[CoreData sharedModel:nil] getUUID]];
+        NSString *fullPath = [NSString stringWithFormat:@"%@/%@", [self getDocumentsDirectory],self.expense.receiptPath];
+        NSData *imageData = UIImageJPEGRepresentation(theImage, 0.5);
+        [imageData writeToFile:fullPath atomically:NO];
+        self.receipt.image = [self getThumbNailFromImage:theImage];
+        theImage = nil;
     }
     [self dismissViewControllerAnimated:YES completion:nil];
     self.view.frame = self.currentSize;
@@ -375,7 +402,6 @@
     [self dismissViewControllerAnimated:YES completion:nil];
     self.view.frame = self.currentSize;
 }
-
 
 #pragma mark - Lazy getters
 -(UITableView *)tableView{

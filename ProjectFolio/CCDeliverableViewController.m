@@ -28,25 +28,6 @@
 
 @implementation CCDeliverableViewController
 
-@synthesize project = _project;
-@synthesize selectedIndexPath = _selectedIndexPath;
-@synthesize childController = _childController;
-@synthesize selectedCell = _selectedCell;
-@synthesize deliverable = _deliverable;
-@synthesize numberFormatter = _numberFormatter;
-@synthesize dateFormatter = _dateFormatter;
-@synthesize popController = _popController;
-@synthesize fetchRequest = _fetchRequest;
-@synthesize expenseFRC = _expenseFRC;
-@synthesize logger = _logger;
-@synthesize theIndex = _theIndex;
-@synthesize isNew = _isNew;
-@synthesize lastSelected = _lastSelected;
-@synthesize billedPredicate = _billedPredicate;
-@synthesize unbilledPredicate = _unbilledPredicate;
-@synthesize allPredicate = _allPredicate;
-@synthesize displayOptions = _displayOptions;
-
 #pragma mark - Delegate actions
 -(void)releaseLogger{
     self.logger = nil;
@@ -60,13 +41,8 @@
     if (result == MFMailComposeResultCancelled || result == MFMailComposeResultFailed) {
         // NSLog(@"Don't do anything");
     } else {
-        for ( Deliverables *expense in self.project.projectExpense) {
-            if ([expense.expensed integerValue] == 0 ) {
-                expense.expensed = [NSNumber numberWithInt:1];
-                expense.dateExpensed = [NSDate date];
-            }
-        }
-       
+        [self expenseOutDeliveredItems];
+        
         NSError *requestError = nil;
         if ([self.expenseFRC performFetch:&requestError]) {
             [self.tableView reloadData];
@@ -74,6 +50,10 @@
     }
     
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)printInteractionControllerDidFinishJob:(UIPrintInteractionController *)printInteractionController{
+    
 }
 
 #pragma mark - IBActions
@@ -119,6 +99,7 @@
     UIPrintInfo *printInfo = [UIPrintInfo printInfo];
     printInfo.outputType = UIPrintInfoOutputGrayscale;
     printInfo.jobName = self.project.projectName;
+    pic.printingItems = [self getReceiptsForProject:self.project];
     pic.printInfo = printInfo;
     
     UIMarkupTextPrintFormatter *notesFormatter = [[UIMarkupTextPrintFormatter alloc]
@@ -137,6 +118,8 @@
     ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
         if (!completed && error) {
             NSLog(@"Printing could not complete because of error: %@", error);
+        } else if ( completed && !error) {
+            [self expenseOutDeliveredItems];
         }
     };
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -175,7 +158,7 @@
     [self.expenseFRC performFetch:nil];
     [self.tableView reloadData];
     self.deliverable = nil;
-    [self.navigationController popToRootViewControllerAnimated:YES];
+    [self.navigationController popViewControllerAnimated:YES];
 }
 
 -(IBAction)savePopoverData{
@@ -194,8 +177,6 @@
         self.deliverable = newDeliverable;
         self.isNew = YES;
         [self showDeliverableDetails:self.tableView rowIndex:nil];
-    } else {
-        // NSLog(@"Failed to create new deliverable");
     }
 }
 
@@ -215,7 +196,7 @@
 -(void)showDeliverableDetails:(UITableView *)tableView rowIndex:(NSIndexPath *)indexPath{
     self.childController.expense = self.deliverable;
     CGRect rect = self.view.frame;
-    self.childController.contentSizeForViewInPopover = rect.size;
+    self.childController.preferredContentSize = rect.size;
     self.childController.popControll = self.popController;
     self.childController.popDelegate = self;
     self.childController.controllingIndex = indexPath;
@@ -282,7 +263,7 @@
         cell.imageView.image = [UIImage imageNamed:@"plane.png"];
         cell.description.text =  self.deliverable.pmtDescription;
         cell.amountPaid.text = nil;
-    } else if ( self.deliverable.receipt != nil) {
+    } else if ( self.deliverable.receiptPath != nil) {
         cell.imageView.image = [UIImage imageNamed:@"162-receipt.png"];
         cell.description.text =  self.deliverable.pmtDescription;
         cell.amountPaid.text = [self.numberFormatter stringFromNumber:self.deliverable.amount];
@@ -339,6 +320,16 @@
     // Test to see if the object exists...
     NSError *error = [[NSError alloc] init];
     @try {
+        
+        // Delete the image if there is one...
+        if (self.deliverable.receiptPath) {
+            NSString *fullPath = [NSString stringWithFormat:@"%@/%@", [self getDocumentsDirectory],self.deliverable.receiptPath];
+            // Delete the file
+            NSFileManager *fileManager = [NSFileManager defaultManager];
+            NSError *error;
+            [fileManager removeItemAtPath:fullPath error:&error];
+        }
+
         [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.deliverable];
         if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
             self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
@@ -379,22 +370,6 @@
      }
  }
 
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
- {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath
- {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
@@ -407,8 +382,39 @@
     [self showDeliverableDetails:tableView rowIndex:indexPath];
 }
 
-#pragma mark - Lazy Getter
+#pragma mark - Helpers
+- (NSString *)getDocumentsDirectory{
+    NSArray *paths = NSSearchPathForDirectoriesInDomains
+    (NSDocumentDirectory, NSUserDomainMask, YES);
+    return [paths objectAtIndex:0];
+}
 
+- (NSArray *)getReceiptsForProject:(Project *)project {
+    NSMutableArray *workingList = [[NSMutableArray alloc] init];
+    NSSortDescriptor *expenseDate = [[NSSortDescriptor alloc]initWithKey:@"datePaid" ascending:YES];
+    NSArray *sortList = [[NSArray alloc] initWithObjects:expenseDate, nil];
+    NSArray *expenses = [project.projectExpense sortedArrayUsingDescriptors:sortList];
+    NSString *documentString = [self getDocumentsDirectory];
+    for (Deliverables *expense in expenses) {
+        if (![expense.expensed boolValue] && expense.receiptPath) {
+            NSString *fullPath = [NSString stringWithFormat:@"%@/%@", documentString,expense.receiptPath];
+            UIImage *image = [UIImage imageWithContentsOfFile:fullPath];
+            [workingList addObject:image];
+        }
+    }
+    return workingList;
+}
+
+- (void)expenseOutDeliveredItems {
+    for ( Deliverables *expense in self.project.projectExpense) {
+        if ([expense.expensed integerValue] == 0 ) {
+            expense.expensed = [NSNumber numberWithInt:1];
+            expense.dateExpensed = [NSDate date];
+        }
+    }
+}
+
+#pragma mark - Accessors
 -(CCExpenseDetailsViewController *)childController{
     if (_childController == nil) {
         _childController = [self.storyboard instantiateViewControllerWithIdentifier:@"expenseDetails"];

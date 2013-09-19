@@ -8,11 +8,11 @@
 
 #import "CCLocalData.h"
 #define kCompanyID          @"4MAEKVPSTZ.com.customsoftware."
-#define kAppID              @"ProjectFolio"
 #define kUbiquityCtrName    @"com.customsoftware"
-#define kAppString @"deviceKey"
+//#define kAppString @"deviceKey"
 #define kAppStatus @"Status"
 #define kiCloudToken @"Token"
+#define kAppID @"ProjectFolio"
 #define kStartupFinished @"Startup Finished"
 
 @implementation CCLocalData
@@ -40,6 +40,7 @@
 }
 
 +(BOOL)isICloudAuthorized{
+    NSLog(@"Here is where we check to see if iCloud purchase has been made");
     return YES;
 }
 

@@ -129,7 +129,7 @@
         self.calendarController.delegate = self;
         self.calendarController.editing = YES;
         CGRect rect = self.view.frame;
-        self.calendarController.contentSizeForViewInPopover = rect.size;
+        self.calendarController.preferredContentSize = rect.size;
         [self.navigationController pushViewController:self.calendarController animated:YES];
     } else {
         UIAlertView *alert = [[UIAlertView alloc]
@@ -165,7 +165,7 @@
     self.childController.event = event;
     self.childController.editViewDelegate = self;
     self.childController.modalPresentationStyle = UIModalPresentationCurrentContext;
-    self.childController.contentSizeForViewInPopover = self.contentSizeForViewInPopover;
+    self.childController.preferredContentSize = self.preferredContentSize;
     [self.navigationController presentViewController:self.childController animated:YES completion:nil];
 }
 

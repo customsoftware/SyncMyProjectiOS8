@@ -15,9 +15,12 @@
 
 @interface CCMainTaskViewController ()
 
+-(IBAction)toggleEditMode:(UIButton *)sender;
+-(IBAction)insertTask:(UIButton *)sender;
 //-(IBAction)displayOptions:(UISegmentedControl *)sender;
 //-(IBAction)cancelPopover;
 //-(IBAction)savePopoverData;
+@property (weak, nonatomic) IBOutlet UIButton *editButton;
 
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) NSPredicate *incompletePredicate;
@@ -46,10 +49,15 @@
     return self.sourceProject;
 }
 
-- (void)toggleEditMode:(UIBarButtonItem *)sender
+- (IBAction)toggleEditMode:(UIButton *)sender
 {
     self.tableView.editing = !self.tableView.editing;
-    [self.barButtons removeAllObjects];
+    if (self.tableView.editing) {
+        [self.editButton setTitle:@"Done" forState:UIControlStateNormal];
+    } else {
+        [self.editButton setTitle:@"Edit" forState:UIControlStateNormal];
+    }
+    /*[self.barButtons removeAllObjects];
     UIBarButtonItem *newButton;
     if (self.tableView.editing) {
         newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleEditMode:)];
@@ -65,7 +73,7 @@
     
     [self.holderBar setItems:self.barButtons];
     UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:self.holderBar];
-    self.navigationItem.rightBarButtonItem = twoButtons;
+    self.navigationItem.rightBarButtonItem = twoButtons;*/
 }
 
 -(void)cancelSummaryChart{
@@ -77,7 +85,7 @@
     // Any config stuff goes here...
 }
 
--(IBAction)insertTask{
+-(IBAction)insertTask:(UIButton *)sender{
     // Show task detail form
     Task *newTask = [CoreData createTask:nil inProject:self.sourceProject];
     self.currentTask = newTask;
@@ -166,7 +174,7 @@
     
     // Set up the add button.
 //    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
+    /*NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
     UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
     searchButton.style = UIBarButtonItemStyleBordered;
     [buttons addObject:searchButton];
@@ -181,7 +189,7 @@
     self.holderBar = tools;
     self.barButtons = buttons;
     UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.rightBarButtonItem = twoButtons;
+    self.navigationItem.rightBarButtonItem = twoButtons;*/
     
     self.displayOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
     
@@ -532,6 +540,7 @@
                 [subTask setSubTaskVisible:[NSNumber numberWithBool:YES]];
             }
         }
+        [self.taskFRC.managedObjectContext save:nil];
         [self.taskFRC performFetch:nil];
         [self.tableView reloadData];
     } else {
@@ -541,7 +550,7 @@
 }
 
 #pragma mark - Helper
-- (void)doubleTap:(UISwipeGestureRecognizer*)tap
+- (void)doubleTap:(UITapGestureRecognizer*)tap
 {
     if (UIGestureRecognizerStateEnded == tap.state)
     {
@@ -560,7 +569,7 @@
 
 }
 
--(void)singleTap:(UISwipeGestureRecognizer*)tap
+-(void)singleTap:(UITapGestureRecognizer*)tap
 {
     if (UIGestureRecognizerStateEnded == tap.state)
     {

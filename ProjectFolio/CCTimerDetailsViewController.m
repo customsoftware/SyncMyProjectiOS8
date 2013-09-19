@@ -92,15 +92,19 @@
     
     if (indexPath.section == 0) {
         if (indexPath.row == 0){
+            self.changeDate.minimumDate = nil;
             self.changeDate.date = self.timer.start;
+            self.changeDate.maximumDate = self.timer.end;
             self.startTime = YES;
         } else {
+            self.changeDate.minimumDate = self.timer.start;
             self.changeDate.date = self.timer.end;
+            self.changeDate.maximumDate = nil;
             self.startTime = NO;
         }
     } else {
         CGRect rect = self.view.frame;
-        self.childController.contentSizeForViewInPopover = rect.size;
+        self.childController.preferredContentSize = rect.size;
         self.childController.selectedProject = self.timer.workProject;
         self.childController.currentTimer = self.timer;
         if (indexPath.row == 0) {
@@ -134,8 +138,7 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [self.tableView reloadData];
-    BOOL activeVal = (self.timer.billed == SWITCH_ON) ? YES:NO;
-    [self.billed setOn:activeVal];
+    [self.billed setOn:[self.timer.billed boolValue]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

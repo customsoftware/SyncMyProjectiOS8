@@ -10,9 +10,6 @@
 #import "CCPrintNotesRender.h"
 #define kFontNameKey @"font"
 #define kFontSize @"fontSize"
-
-#define SWITCH_ON [[NSNumber alloc] initWithInt:1]
-#define SWITCH_OFF [[NSNumber alloc] initWithInt:0]
 #define kDefaultEmail @"defaultEmail"
 
 
@@ -32,21 +29,6 @@
 @end
 
 @implementation CCTaskViewDetailsController
-
-@synthesize activeTask = _activeTask;
-@synthesize taskTitle = _taskTitle;
-@synthesize notes = _notes;
-@synthesize status = _status;
-@synthesize taskParameters = _taskParameters;
-@synthesize selectedCell = _selectedCell;
-@synthesize selectedIndexPath = _selectedIndexPath;
-@synthesize dueDateController = _dueDateController;
-@synthesize ownerController = _ownerController;
-@synthesize taskDelegate = _taskDelegate;
-@synthesize parentController = _parentController;
-@synthesize durationController = _durationController;
-@synthesize notesController = _notesController;
-@synthesize categoryController = _categoryController;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -126,7 +108,7 @@
 }
 
 -(IBAction)completeTask:(UISwitch *)sender{
-    self.activeTask.completed = ([sender isOn]) ? SWITCH_ON:SWITCH_OFF;
+    self.activeTask.completed = [NSNumber numberWithBool:[sender isOn]];
     [self.taskParameters reloadData];
     [self.view endEditing:YES];
 }
@@ -142,7 +124,8 @@
 -(NSString *)getMailingAddress{
     NSString *retvalue;
     BOOL foundName = NO;
-    ABAddressBookRef addressBook = ABAddressBookCreate();
+    CFErrorRef *error = nil;
+    ABAddressBookRef addressBook = ABAddressBookCreateWithOptions(NULL, error);
     if (addressBook == nil) {
         retvalue = [[NSString alloc] initWithFormat:@"self"];
     } else {
@@ -352,8 +335,8 @@
     }
     self.taskTitle.text = self.activeTask.title;
     self.notes = self.activeTask.notes;
-    self.activeTask.taskUUID = (self.activeTask.taskUUID != nil) ? self.activeTask.taskUUID : [[CoreData sharedModel:nil] getUUID];
-    BOOL activeVal = (self.activeTask.completed == SWITCH_ON) ? YES:NO;
+    self.activeTask.taskUUID = self.activeTask.taskUUID ? self.activeTask.taskUUID : [[CoreData sharedModel:nil] getUUID];
+    BOOL activeVal = [self.activeTask.completed boolValue];
     [self.status setOn:activeVal];
     UIBarButtonItem *newButton = nil;
     if ([self.taskDelegate shouldShowCancelButton]) {
@@ -378,12 +361,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     self.navigationItem.title = @"Task Details";
     self.taskParameters.delegate = self;
     self.taskParameters.dataSource = self;
-    // self.notes.layer.borderWidth = 1.50f;
-    // self.notes.layer.borderColor = [[UIColor darkGrayColor] CGColor];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -395,7 +375,7 @@
     if ([self checkIsDeviceVersionHigherThanRequiredVersion:@"6.0"]) {
         self.ownerController.modalPresentationStyle = UIModalPresentationCurrentContext;
         self.rect = self.view.frame;
-        self.ownerController.contentSizeForViewInPopover = self.rect.size;
+        self.ownerController.preferredContentSize = self.rect.size;
     } else {
         self.ownerController.modalPresentationStyle = UIModalPresentationFormSheet;
         self.ownerController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
@@ -410,8 +390,6 @@
 }
 
 -(void)callParentTaskController{
-    //self.rect = self.view.frame;
-    //self.parentController.contentSizeForViewInPopover = self.rect.size;
     self.parentController.popDelegate = self;
     self.parentController.activeTask = self.activeTask;
     self.parentController.parentTask = self.activeTask.superTask;
@@ -461,7 +439,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
     NSInteger result = 4;
     
-    if (self.activeTask.completed == SWITCH_OFF) {
+    if (![self.activeTask.completed boolValue]) {
         result = 5;
     }
     

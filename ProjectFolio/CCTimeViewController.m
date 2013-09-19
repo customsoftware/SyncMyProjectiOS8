@@ -20,18 +20,6 @@
 
 @implementation CCTimeViewController
 
-@synthesize project = _project;
-@synthesize time = _time;
-@synthesize selectedCell = _selectedCell;
-@synthesize selectedIndexPath = _selectedIndexPath;
-@synthesize dateFormatter = _dateFormatter;
-@synthesize endDateFormatter = _endDateFormatter;
-@synthesize numberFormatter = _numberFormatter;
-@synthesize childController = _childController;
-@synthesize startup = _startup;
-@synthesize logger = _logger;
-@synthesize timeSelectorDelegate = _timeSelectorDelegate;
-
 #pragma mark - IBActions
 -(void)setTimerList:(UISegmentedControl *)sender{
     NSArray *workingArray = [self.project.projectWork allObjects];
@@ -62,6 +50,17 @@
 
 -(void)releaseLogger{
     self.logger = nil;
+}
+
+- (IBAction)toggleEditing:(UIBarButtonItem *)sender{
+    self.tableView.editing = !self.tableView.editing;
+    if (self.tableView.editing) {
+        UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleEditing:)];
+        self.navigationItem.rightBarButtonItem = editButton;
+    } else {
+        UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditing:)];
+        self.navigationItem.rightBarButtonItem = editButton;
+    }
 }
 
 #pragma mark - Table View Tasks
@@ -133,7 +132,7 @@
     if (self.selectedCell.imageView.image == nil) {
         //self.childController.activeTask = self.task;
         CGRect rect = self.view.frame;
-        self.childController.contentSizeForViewInPopover = rect.size;
+        self.childController.preferredContentSize = rect.size;
         self.childController.timer = self.time;
         [self.navigationController pushViewController:self.childController animated:YES];
     }
@@ -182,29 +181,13 @@
     self.displayTimers = [[NSMutableArray alloc] init];
     self.startup = NO;
     
-    self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    UIBarButtonItem *editButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditing:)];
+    self.navigationItem.rightBarButtonItem = editButton;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     self.timeSelector.selectedSegmentIndex = [self.timeSelectorDelegate getSelectedSegment];
     [self timeTypeSelected:self.timeSelector];
-    /*[self setTimerList:self.timeSelector];
-    [self.tableView reloadData];*/
-}
-
-- (void)viewDidUnload
-{
-    // Release any retained subviews of the main view.
-    self.project = nil;
-    self.time = nil;
-    self.selectedIndexPath = nil;
-    self.selectedCell = nil;
-    self.dateFormatter = nil;
-    self.endDateFormatter = nil;
-    self.numberFormatter = nil;
-    self.childController = nil;
-    
-    [super viewDidUnload];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

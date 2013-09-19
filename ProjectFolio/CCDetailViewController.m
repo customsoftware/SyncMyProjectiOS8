@@ -12,8 +12,10 @@
 #import "CCTaskSummaryViewController.h"
 #import "CCAuxSettingsViewController.h"
 #import "CCPrintNotesRender.h"
+#import <StoreKit/StoreKit.h>
+#define kAppStore   @"https://itunes.apple.com/us/app/projectfolio/id572353940?mt=8&uo=4"
 
-@interface CCDetailViewController () <UITextViewDelegate>
+@interface CCDetailViewController () <UITextViewDelegate,CCPopoverControllerDelegate,SKStoreProductViewControllerDelegate>
 
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 - (void)configureView;
@@ -24,10 +26,14 @@
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) UIMenuItem *longPressMenu;
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *sendingNotes;
 @property NSInteger lastButton;
--(IBAction)showHelp:(UIBarButtonItem *)sender;
--(IBAction)sendNotes:(UIBarButtonItem *)sender;
+@property (strong, nonatomic) UISwipeGestureRecognizer *detailShow;
+@property (strong, nonatomic) SKStoreProductViewController *storeController;
+
+@property (weak, nonatomic) IBOutlet UIButton *anchorButton;
+
+@property (strong, nonatomic) IBOutlet UIBarButtonItem *sendingNotes;
+-(IBAction)showHelp:(UIButton *)sender;
 
 @end
 
@@ -101,6 +107,10 @@
 }
 
 #pragma mark - Popover Controls
+-(void)savePopoverData{
+    // Just to keep the compiler happy
+}
+
 -(void)cancelSummaryChart{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -193,13 +203,13 @@
     self.summaryController = [self.storyboard instantiateViewControllerWithIdentifier:@"taskTimeLine"];
     self.summaryController.summaryDelegate = self;
     self.summaryController.aProject = [self getActiveProject];
-    self.summaryController.modalPresentationStyle = UIModalPresentationPageSheet;
+    self.summaryController.modalPresentationStyle = UIModalPresentationFormSheet;
     self.summaryController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     [self.navigationController presentViewController:self.summaryController animated:YES completion:nil];
     self.summaryController.summaryDelegate = self;
 }
 
--(IBAction)sendNotes:(UIBarButtonItem *)sender{
+-(IBAction)sendNotes:(UIButton *)sender{
     UIActionSheet *actionSheet = [[ UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"OK" destructiveButtonTitle:nil otherButtonTitles:@"Email Notes", @"Send Error Report", @"Submit Feedback", @"Print Notes", nil];
     [actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
 }
@@ -256,6 +266,22 @@
 
 -(IBAction)showHelp:(UIButton *)sender{
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.ktcsoftware.com/pf/faq/faq.html"]];
+}
+
+- (void)showProjectDetails:(UIButton *)sender {
+    UINavigationController *navController = [self.storyboard instantiateViewControllerWithIdentifier:@"projectPopper"];
+    navController.modalPresentationStyle = UIModalPresentationFormSheet;
+    navController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+//    self.popover = [[UIPopoverController alloc] initWithContentViewController:navController];
+//    self.popover.delegate = self;
+    CCDateSetterViewController *dateController = (CCDateSetterViewController *)navController.visibleViewController;
+    dateController.project = self.project;
+    dateController.popControll = self.popover;
+    [self presentViewController:navController animated:YES completion:nil];
+    
+//
+//    // Show the popover
+//    [self.popover presentPopoverFromRect:self.anchorButton.frame inView:self.view permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 }
 
 #pragma mark - Custom Menu
@@ -381,6 +407,11 @@
     }
 }
 
+- (void)productViewControllerDidFinish:(SKStoreProductViewController *)viewController {
+    [self dismissModalView:viewController.view];
+}
+
+
 void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
 ^(UIPrintInteractionController *pic, BOOL completed, NSError *error) {
     if (!completed && error)
@@ -401,9 +432,13 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
     }
 }
 
+-(void)textViewDidChange:(UITextView *)textView{
+    self.project.projectNotes = textView.text;
+}
+
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
-    if (self.projectNotes.text.length == 0) {
+    if (self.project != nil && self.projectNotes.text.length == 0) {
         self.projectNotes.text = [NSString stringWithFormat:@"Enter notes for %@ project here", self.project.projectName];
     }
     [self.projectNotes resignFirstResponder];
@@ -461,21 +496,10 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
         [menu update];
     }
     
-    NSMutableArray *rightButtons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *helpButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"HelpAliased-26.png"] style:UIBarButtonItemStylePlain target:self action:@selector(showHelp:)];
-    [helpButton setStyle:UIBarButtonItemStyleBordered];
-    [rightButtons addObject:helpButton];
-    
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(sendNotes:)];
-    self.sendingNotes = addButton;
-    [addButton setStyle:UIBarButtonItemStyleBordered];
-    [rightButtons addObject:addButton];
-    UIToolbar *rightTools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 110, 45)];
-    [rightTools setItems:rightButtons animated:NO];
-    UIBarButtonItem *twoRightButtons = [[UIBarButtonItem alloc] initWithCustomView:rightTools];
-    self.navigationItem.rightBarButtonItem = twoRightButtons;
-    
-    
+    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showProjectDetails:)];
+    [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.navigationController.navigationBar addGestureRecognizer:swipeDown];
+   
     [self configureView];
 }
 
@@ -493,7 +517,7 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
      name:UIKeyboardWillShowNotification object:nil];
     
     [[NSNotificationCenter defaultCenter]
-     addObserver:self 
+     addObserver:self
      selector:@selector(handleKeyboardWillHide:) 
      name:UIKeyboardWillHideNotification object:nil];
 }
@@ -519,7 +543,11 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
 }
 
 -(IBAction)cancelPopover{
-    [self.popover dismissPopoverAnimated:YES];
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [self.popover dismissPopoverAnimated:YES];
+    } else {
+        [self dismissViewControllerAnimated:YES completion:nil];
+    }
 }
 
 #pragma mark - Split view

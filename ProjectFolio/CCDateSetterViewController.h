@@ -16,10 +16,11 @@
 #import "CCCanIDoIt.h"
 #import "CCAuxDurationViewController.h"
 #import "CCCategoryTaskViewController.h"
+#import "CCAuxTaskCloneViewController.h"
 
 @class CCMasterViewController;
 
-@interface CCDateSetterViewController : UIViewController<CCSaveDate,UITableViewDelegate,UITableViewDataSource,UIPickerViewDelegate,ABPeoplePickerNavigationControllerDelegate,CCPopoverControllerDelegate,CCCategoryTaskDelegate>{
+@interface CCDateSetterViewController : UIViewController<CCSaveDate,UIPickerViewDelegate,UIAlertViewDelegate,ABPeoplePickerNavigationControllerDelegate,UIPopoverControllerDelegate,CCPopoverControllerDelegate,CCCategoryTaskDelegate>{
     UISegmentedControl *segmentedControl;
     NSUInteger selectedDate;
 }
@@ -31,7 +32,6 @@
 @property (strong, nonatomic) IBOutlet UITextField *projectName;
 @property (strong, nonatomic) IBOutlet UITextField *hourlyRateField;
 @property (strong, nonatomic) IBOutlet UITextField *projectCostBudget;
-@property (strong, nonatomic) IBOutlet UITableView *settingsController;
 @property (strong, nonatomic) IBOutlet UISwitch *activeSwitch;
 @property (strong, nonatomic) IBOutlet UISwitch *completeSwitch;
 @property (strong, nonatomic) IBOutlet UISwitch *billableSwitch;

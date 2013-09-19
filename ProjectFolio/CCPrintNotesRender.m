@@ -36,21 +36,26 @@ static CGFloat HeaderFooterHeight(CGFloat imageableAreaMargin, CGFloat textHeigh
 
 - (void)drawHeaderForPageAtIndex:(NSInteger)pageIndex inRect:(CGRect)headerRect{
     UIFont *printFont = [UIFont fontWithName:self.fontName size:kFontPointSize];
-    CGSize titleSize = [self.headerString sizeWithFont:printFont];
+    NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+    attributes[NSFontAttributeName] = printFont;
+    CGSize titleSize = [self.headerString sizeWithAttributes:attributes];
     CGFloat drawX = CGRectGetMaxX(headerRect)/2 - titleSize.width/2;
     CGFloat drawY = CGRectGetMaxY(headerRect) - titleSize.height;
     CGPoint drawPoint = CGPointMake(drawX, drawY);
-    [self.headerString drawAtPoint:drawPoint withFont:printFont];
+    [self.headerString drawAtPoint:drawPoint withAttributes:attributes];
 }
 
 - (void)drawFooterForPageAtIndex:(NSInteger)pageIndex inRect:(CGRect)footerRect{
     UIFont *printFont = [UIFont fontWithName:self.fontName size:kFontPointSize];
+    NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+    attributes[NSFontAttributeName] = printFont;
+    
     NSString *pageNumber = [NSString stringWithFormat:@"Page: %d", pageIndex + 1];
-    CGSize pageNumSize = [pageNumber sizeWithFont:printFont];
+    CGSize pageNumSize = [pageNumber sizeWithAttributes:attributes];
     CGFloat drawX = CGRectGetMaxX(footerRect)/2 - pageNumSize.width - 1.0;
     CGFloat drawY = CGRectGetMaxY(footerRect) - pageNumSize.height;
     CGPoint drawPoint = CGPointMake(drawX, drawY);
-    [pageNumber drawAtPoint:drawPoint withFont:printFont];
+    [pageNumber drawAtPoint:drawPoint withAttributes:attributes];
 }
 
 - (NSInteger)numberOfPages{
@@ -60,7 +65,9 @@ static CGFloat HeaderFooterHeight(CGFloat imageableAreaMargin, CGFloat textHeigh
     formatter.contentInsets = UIEdgeInsetsMake(0, leftInset, 0, rightInset);
     
     UIFont *printFont = [UIFont fontWithName:self.fontName size:kFontPointSize];
-    CGFloat titleHeight = [self.headerString sizeWithFont:printFont].height;
+    NSMutableDictionary *attributes = [[NSMutableDictionary alloc] init];
+    attributes[NSFontAttributeName] = printFont;
+    CGFloat titleHeight = [self.headerString sizeWithAttributes:attributes].height;
     
     self.headerHeight = HeaderFooterHeight(CGRectGetMinY(self.printableRect), titleHeight);
     self.footerHeight = HeaderFooterHeight(self.paperRect.size.height - CGRectGetMaxY(self.printableRect), titleHeight);
