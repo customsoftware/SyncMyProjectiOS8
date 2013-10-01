@@ -22,6 +22,7 @@
 #import "CCPrintNotesRender.h"
 #import "CCNewProjectViewController.h"
 #import "CCInitializer.h"
+#import "iCloudStarterProtocol.h"
 
 typedef enum kfilterModes{
     allProjectsMode,
@@ -31,7 +32,7 @@ typedef enum kfilterModes{
     hotListMode
 } kFilterModes;
 
-@interface CCMasterViewController ()
+@interface CCMasterViewController () <iCloudStarterProtocol>
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
 - (IBAction)insertNewObject:(UIBarButtonItem *)sender;
 
@@ -47,7 +48,6 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
 @property (nonatomic) BOOL notInSearchMode;
-@property (nonatomic) BOOL inICloudMode;
 @property (strong, nonatomic) RatingReminder * reminder;
 
 @end
@@ -69,8 +69,7 @@ typedef enum kfilterModes{
     // Release any cached data, images, etc that aren't in use.
 }
 
-- (void)viewDidLoad
-{
+- (void)viewDidLoad {
     [super viewDidLoad];
 	
     self.detailViewController = (CCDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];    
@@ -79,8 +78,9 @@ typedef enum kfilterModes{
     // Set up the search controller
     self.searchDisplayController.delegate = self;
     self.projectTimer = [[CCProjectTimer alloc] init];
-    self.inICloudMode = NO;
-    int runCount = [[NSUserDefaults standardUserDefaults] integerForKey:kRatingCounterKey];
+    CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [application registeriCloudDelegate:self];
+//    int runCount = [[NSUserDefaults standardUserDefaults] integerForKey:kRatingCounterKey];
 //    self.reminder = [[RatingReminder alloc] initWithNumberOfRuns:runCount];
 //    [self.reminder startTimer];
 }
@@ -177,11 +177,16 @@ typedef enum kfilterModes{
         [self.fetchedProjectsController performFetch:&fetchError];
         [self.tableView reloadData];
         
+        NSIndexPath *indexPath = nil;
         for (Project *project in self.fetchedProjectsController.fetchedObjects ) {
             if (self.activeProject == project) {
-                NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
-                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+                indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
+                break;
            }
+        }
+        
+        if (indexPath) {
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
         }
     }
 }
@@ -217,6 +222,11 @@ typedef enum kfilterModes{
 -(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
     NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+}
+
+- (void)respondToiCloudUpdate {
+    [self.fetchedProjectsController performFetch:nil];
+    [self.tableView reloadData];
 }
 
 #pragma mark - Search Bar Functionality
@@ -375,7 +385,7 @@ typedef enum kfilterModes{
 }
 
 - (void)updateMinimumRecordSet {
-    self.inICloudMode = YES;
+//    self.inICloudMode = YES;
 }
 
 #pragma mark - Public functionality
@@ -502,9 +512,7 @@ typedef enum kfilterModes{
         project = [self.filteredProjects objectAtIndex:indexPath.row];
         // NSLog(@"Project name: %@", project.projectName);
     }
-    
-    
-    
+
     if ([project.isOverDue boolValue] == YES) {
         cell = [tableView dequeueReusableCellWithIdentifier:lateCellIdentifier];
         if (cell == nil) {
@@ -567,23 +575,23 @@ typedef enum kfilterModes{
     return NO;
 }
 
--(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (tableView == self.tableView) {
-        // NSLog(@"Project name: %@", self.activeProject.projectName);
-        self.detailViewController.project.projectNotes = self.detailViewController.projectNotes.text;
-        self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
-        [self.activeProject.managedObjectContext save:nil];
-        [self sendTimerStopNotification];
-    }
-}
+//-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
+//    if (tableView == self.tableView) {
+//        // NSLog(@"Project name: %@", self.activeProject.projectName);
+//        self.detailViewController.project.projectNotes = self.detailViewController.projectNotes.text;
+//        self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
+//        [self.activeProject.managedObjectContext save:nil];
+//        [self sendTimerStopNotification];
+//    }
+//}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self resignFirstResponder];
-    [self enableControls];
+//    [self resignFirstResponder];
+//    [self enableControls];
 //    [self showProjectDatePicker:indexPath];
+//    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
     [self updateDetailControllerForIndexPath:indexPath inTable:tableView];
-    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
 }
 
 #pragma mark - Fetched results controller
@@ -773,34 +781,6 @@ typedef enum kfilterModes{
     [self.projectPopover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 }
 
-//- (void)toggleSearchBar
-//{
-//    self.notInSearchMode = !self.notInSearchMode;
-//    if (self.notInSearchMode) {
-//        [UIView animateWithDuration:kSwipeDuration
-//                              delay:kSwipeDelay
-//                            options:UIViewAnimationOptionCurveEaseIn
-//                         animations:^{
-//                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-//                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
-//                         completion:^(BOOL finished){
-//                             [self.tableView beginUpdates];
-//                             [self.tableView endUpdates];
-//                         }];
-//    } else {
-//        [UIView animateWithDuration:kSwipeDuration
-//                              delay:kSwipeDelay
-//                            options:UIViewAnimationOptionCurveEaseIn
-//                         animations:^{
-//                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-//                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
-//                         completion:^(BOOL finished){
-//                             [self.tableView beginUpdates];
-//                             [self.tableView endUpdates];
-//                         }];
-//    }
-//}
-
 #pragma mark - <CCPopoverControllerDelegate>
 - (void)cancelPopover{
     [self.detailViewController.view endEditing:YES];
@@ -816,16 +796,23 @@ typedef enum kfilterModes{
     newProject.dateStart = newProject.dateCreated;
     newProject.active = [NSNumber numberWithBool:YES];
     
-    [[CoreData sharedModel:self] saveContext];
+    [newProject.managedObjectContext save:nil];
+//    [self.fetchedProjectsController performFetch:nil];
+    NSIndexPath *indexPath = nil;
+    
     // Position the active cell on the new project
     for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
         if ([project.projectUUID isEqualToString:newProject.projectUUID]) {
-            NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
-            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-            [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
+            indexPath = [self.fetchedProjectsController indexPathForObject:project];
             break;
         }
     }
+    
+    if (indexPath) {
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
+    }
+    
     [self.projectPopover dismissPopoverAnimated:YES];
 }
 
@@ -833,7 +820,6 @@ typedef enum kfilterModes{
 -(CCMainTaskViewController *)mainTaskController{
     if (_mainTaskController == nil) {
         _mainTaskController = [self.storyboard instantiateViewControllerWithIdentifier:@"mainTaskList"];
-        
     }
     return _mainTaskController;
 }

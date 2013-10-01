@@ -12,7 +12,8 @@
 @implementation CCSettingsControl
 
 -(BOOL)isICloudAuthorized{
-    return YES; //[[CCIAPCards sharedInstance] featurePurchased];;
+    return [[CCIAPCards sharedInstance] featurePurchased];
+//    return YES;
 }
 
 

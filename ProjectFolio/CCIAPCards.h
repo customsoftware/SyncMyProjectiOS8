@@ -7,7 +7,7 @@
 //
 
 #import "CCIAPcontainer.h"
-#define kiCloudSyncKey @"heros_GTBB_UKZZ"
+#define kiCloudSyncKey @"com.customsoftware.ProjectFolio.iCloudSync"
 
 @interface CCIAPCards : CCIAPcontainer
 

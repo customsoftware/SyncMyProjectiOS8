@@ -27,6 +27,9 @@
 @property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) UITableViewCell *controllingCell;
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;
+@property (strong, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+
 -(Project *)getActiveProject;
 -(void)releaseLogger;
 -(void)persistentStoreDidChange;

@@ -281,8 +281,6 @@
                                                      error:NULL];
     self.helpText.text = content;
     
-    NSString *fontChangeNotification = @"FontChangeNotification";
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setFontForDisplay) name:fontChangeNotification object:nil];
     NSString *colorChangeNotification = @"BackGroundColorChangeNotification";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setDisplayBackGroundColor) name:colorChangeNotification object:nil];
     [self setDisplayBackGroundColor];
@@ -293,12 +291,10 @@
         [singleTapper setNumberOfTouchesRequired:1];
         [self.view addGestureRecognizer:singleTapper];
     }
-    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [self setViewControlValues];
-    [self setFontForDisplay];
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
@@ -324,22 +320,6 @@
 #pragma mark - Helpers
 - (void)handleTaps {
     [self.view endEditing:YES];
-}
-
--(void)setFontForDisplay{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *fontFamily = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
-    // NSLog(@"Font: %@", fontFamily);
-    NSString *nullString = [[NSString alloc] initWithFormat:@"%@", nil];
-    if ([fontFamily isEqualToString:nullString]) {
-        fontFamily = @"Optima";
-    }
-    CGFloat fontSize = [defaults integerForKey:kFontSize];
-    if (fontSize < 16) {
-        fontSize = 16;
-    }
-    UIFont *displayFont = [UIFont fontWithName:fontFamily size:fontSize];
-    self.helpText.font = displayFont;
 }
 
 - (void)resetBudget {

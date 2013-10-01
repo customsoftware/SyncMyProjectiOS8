@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12E55" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="EDM-8f-gvH">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4510" systemVersion="12F37" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" initialViewController="EDM-8f-gvH">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3742"/>
     </dependencies>
@@ -79,6 +79,10 @@
                                     <outlet property="delegate" destination="1F8-jI-Trh" id="cEw-c1-BGn"/>
                                 </connections>
                             </tableView>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" id="Nd0-R4-pVz">
+                                <rect key="frame" x="150" y="274" width="20" height="20"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </activityIndicatorView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="ijK-Eb-wAd">
                                 <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -165,6 +169,7 @@
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <connections>
                         <outlet property="filterSegmentControl" destination="yJy-sV-NAh" id="uBb-vX-sfO"/>
+                        <outlet property="indicator" destination="Nd0-R4-pVz" id="iUK-3t-cUf"/>
                         <outlet property="projectActionsButton" destination="a7l-Pc-KfO" id="obw-8l-yz1"/>
                         <outlet property="searchBar" destination="9Il-Sf-qJI" id="kCo-BR-NQV"/>
                         <outlet property="searchDisplayController" destination="6aa-SH-9wD" id="shn-hx-y4d"/>
@@ -2441,7 +2446,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <!--Upgrades View Controller - Upgrades-->
         <scene sceneID="aFh-7v-Bff">
             <objects>
-                <viewController useStoryboardIdentifierAsRestorationIdentifier="YES" id="YKD-Jj-42N" customClass="CCUpgradesViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="upgrades" useStoryboardIdentifierAsRestorationIdentifier="YES" id="YKD-Jj-42N" customClass="CCUpgradesViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="aLt-c3-ql3">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -2457,10 +2462,21 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <action selector="iCloudSync:" destination="YKD-Jj-42N" eventType="touchUpInside" id="lbo-6j-J70"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="nW5-wN-dmh">
+                                <rect key="frame" x="15" y="283" width="280" height="44"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="Refresh Upgrade">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="restorePurchase:" destination="YKD-Jj-42N" eventType="touchUpInside" id="LWK-vQ-SWo"/>
+                                </connections>
+                            </button>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" editable="NO" id="028-gV-Y8L">
                                 <rect key="frame" x="20" y="120" width="275" height="160"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <string key="text">This upgrade gives the app the ability to sync data with other devices on the same Apple ID.
 
 The feature requires an active iCloud account and that iCloud is enabled on your device.</string>
@@ -2468,12 +2484,13 @@ The feature requires an active iCloud account and that iCloud is enabled on your
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
-                        <color key="backgroundColor" red="0.91283118206521741" green="0.83552362836466409" blue="0.6860039411586567" alpha="1" colorSpace="calibratedRGB"/>
+                        <color key="backgroundColor" red="0.66993759139999998" green="0.91432298010000002" blue="0.91508152170000001" alpha="1" colorSpace="calibratedRGB"/>
                     </view>
                     <navigationItem key="navigationItem" title="Upgrades" id="5kG-FI-yKO"/>
                     <connections>
                         <outlet property="iCloudButton" destination="WKS-gN-U3o" id="o1q-AR-X3U"/>
                         <outlet property="iCloudText" destination="028-gV-Y8L" id="z2p-aa-Y0a"/>
+                        <outlet property="refreshButton" destination="nW5-wN-dmh" id="ck6-bD-NYr"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SQm-38-hJM" userLabel="First Responder" sceneMemberID="firstResponder"/>

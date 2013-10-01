@@ -13,9 +13,10 @@
 #import "CCAuxSettingsViewController.h"
 #import "CCPrintNotesRender.h"
 #import <StoreKit/StoreKit.h>
+#import "iCloudStarterProtocol.h"
 #define kAppStore   @"https://itunes.apple.com/us/app/projectfolio/id572353940?mt=8&uo=4"
 
-@interface CCDetailViewController () <UITextViewDelegate,CCPopoverControllerDelegate,SKStoreProductViewControllerDelegate>
+@interface CCDetailViewController () <UITextViewDelegate,CCPopoverControllerDelegate,SKStoreProductViewControllerDelegate,iCloudStarterProtocol>
 
 @property (strong, nonatomic) UIPopoverController *masterPopoverController;
 - (void)configureView;
@@ -29,7 +30,7 @@
 @property NSInteger lastButton;
 @property (strong, nonatomic) UISwipeGestureRecognizer *detailShow;
 @property (strong, nonatomic) SKStoreProductViewController *storeController;
-
+@property (nonatomic) BOOL inICloudMode;
 @property (weak, nonatomic) IBOutlet UIButton *anchorButton;
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *sendingNotes;
@@ -480,6 +481,7 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.inICloudMode = NO;
     // Do any additional setup after loading the view, typically from a nib.
     BOOL menuExists = NO;
     self.longPressMenu = [[UIMenuItem alloc] initWithTitle:@"Create Task" action:@selector(handleCustomMenu)];
@@ -499,8 +501,9 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
     UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showProjectDetails:)];
     [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
     [self.navigationController.navigationBar addGestureRecognizer:swipeDown];
-   
     [self configureView];
+    CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [application registeriCloudDelegate:self];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -524,6 +527,11 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+//    self.inICloudMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"iCloudStarted"];
+//    if (self.inICloudMode) {
+//        self.projectNotes.text = @"Enabling iCloud data";
+//        [self.indicator startAnimating];
+//    }
     BOOL showNews = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontShowNewsAgain"];
     if (!showNews) {
         [self performSegueWithIdentifier:@"popLatest" sender:nil];
@@ -548,6 +556,13 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
     } else {
         [self dismissViewControllerAnimated:YES completion:nil];
     }
+}
+
+- (void)respondToiCloudUpdate {
+    self.projectNotes.text = @"";
+    [self.indicator stopAnimating];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"iCloudStarted"];
+    self.inICloudMode = NO;
 }
 
 #pragma mark - Split view

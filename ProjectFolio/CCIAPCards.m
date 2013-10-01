@@ -16,7 +16,9 @@
     static CCIAPCards *sharedInstance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        NSSet *productIdentifiers = [NSSet setWithObject:@"com.customsoftware.ProjectFolio"];
+        NSSet *productIdentifiers = [NSSet setWithObjects:
+                                     @"com.customsoftware.ProjectFolio.iCloudSync",
+                                     @"com.customsoftware.ProjectFolio.test", nil];
         sharedInstance = [[self alloc] initWithProductIdentifiers:productIdentifiers];
     });
     return sharedInstance;

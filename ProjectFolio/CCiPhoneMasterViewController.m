@@ -20,6 +20,8 @@
 #import "CCHotListViewController.h"
 #import "CCiPhoneDetailViewController.h"
 #import "CCLatestNewsViewController.h"
+#import "iCloudStarterProtocol.h"
+#import "CCAppDelegate.h"
 
 typedef enum kfilterModes{
     allProjectsMode,
@@ -29,7 +31,7 @@ typedef enum kfilterModes{
     hotListMode
 } kFilterModes;
 
-@interface CCiPhoneMasterViewController () <CCPopoverControllerDelegate>
+@interface CCiPhoneMasterViewController () <CCPopoverControllerDelegate, iCloudStarterProtocol>
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
 
@@ -47,8 +49,8 @@ typedef enum kfilterModes{
 @property (nonatomic) BOOL notInSearchMode;
 @property (strong, nonatomic) CCiPhoneDetailViewController *detailController;
 @property (weak, nonatomic) CCAuxSettingsViewController *settings;
+@property (nonatomic) BOOL inICloudMode;
 
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *projectActionsButton;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *filterSegmentControl;
@@ -269,11 +271,14 @@ typedef enum kfilterModes{
     CCLatestNewsViewController *latestController = [self.storyboard instantiateViewControllerWithIdentifier:@"latestNews"];
     latestController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
     latestController.popDelegate = self;
-    
     BOOL showNews = [[NSUserDefaults standardUserDefaults] boolForKey:@"dontShowNewsAgain"];
     if (!showNews) {
         [self.navigationController pushViewController:latestController animated:YES];
     }
+    
+    self.inICloudMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"iCloudStarted"];
+    CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
+    [application registeriCloudDelegate:self];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -282,7 +287,6 @@ typedef enum kfilterModes{
         [self.hotListController.projectTimer releaseTimer];
         self.hotListController.selectedIndex = nil;
     }
-    
     self.lastSelected = [[NSUserDefaults standardUserDefaults] integerForKey:kProjectFilterStatus];
     self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
     [self filterActions:self.filterSegmentControl];
@@ -290,6 +294,10 @@ typedef enum kfilterModes{
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
+//    if (self.inICloudMode) {
+//        [self.indicator startAnimating];
+//    }
+    
     if (self.activeProject != nil ){
         [self sendTimerStartNotificationForProject];
     } else {
@@ -332,6 +340,13 @@ typedef enum kfilterModes{
 
 -(IBAction)openFAQ:(UIButton *)sender{
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.ktcsoftware.com/pf/faq/faq.html"]];
+}
+
+- (void)respondToiCloudUpdate {
+    [self.fetchedProjectsController performFetch:nil];
+    [self.tableView reloadData];
+    [self.indicator stopAnimating];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"iCloudStarted"];
 }
 
 #pragma mark - Helper and Delegates

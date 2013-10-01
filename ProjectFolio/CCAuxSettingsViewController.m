@@ -120,13 +120,15 @@
     NSDictionary *cloudDictionary = [[CoreData sharedModel:nil] cloudDictionary];
     if (cloudDictionary != nil && [cloudDictionary valueForKey:kAppString]) {
         controllingAppID = [cloudDictionary valueForKey:kAppString];
+        if ([localDeviceGUID isEqualToString:controllingAppID]){
+            keyStatus = YES;
+        } else {
+            keyStatus = NO;
+        }
+    } else {
+        keyStatus = YES;
     }
     
-    if ([localDeviceGUID isEqualToString:controllingAppID]){
-        keyStatus = YES;
-    } else {
-        keyStatus = NO;
-    }
     [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
     [self.timerOffOn setOn:keyStatus];
 }

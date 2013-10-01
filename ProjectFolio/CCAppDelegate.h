@@ -17,6 +17,7 @@
 #import "CCSettingsControl.h"
 #import "CoreData.h"
 #import "CCLocalData.h"
+#import "iCloudStarterProtocol.h"
 
 @interface CCAppDelegate : UIResponder <UIApplicationDelegate,UIAlertViewDelegate,CCLoggerDelegate>
 
@@ -30,5 +31,6 @@
 - (void)releaseLogger;
 - (BOOL)iCloudIsAvailableNow;
 - (BOOL)checkIsDeviceVersionHigherThanRequiredVersion:(NSString *)requiredVersion;
+- (void)registeriCloudDelegate:(id<iCloudStarterProtocol>)delegate;
 
 @end

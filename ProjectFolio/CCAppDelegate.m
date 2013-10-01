@@ -8,6 +8,8 @@
 
 #import "CCAppDelegate.h"
 #import "CCMasterViewController.h"
+#import "CCDetailViewController.h"
+#import "CCiPhoneMasterViewController.h"
 #import "CCIAPCards.h"
 
 #define iCloudSynIfAvailable   YES
@@ -15,6 +17,7 @@
 @interface CCAppDelegate ()
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
 @property (nonatomic) BOOL iCloudAvailable;
+@property (strong, nonatomic) NSArray *delegateList;
 
 @end
 
@@ -26,6 +29,7 @@
 {
     [self setAppID];
     [CCIAPCards sharedInstance];
+    self.delegateList = [[NSArray alloc] init];
     // Override point for customization after application launch.
     [[NSNotificationCenter defaultCenter]
      addObserver:self
@@ -33,6 +37,9 @@
      name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification
      object:[NSUbiquitousKeyValueStore defaultStore]];
     [[NSUbiquitousKeyValueStore defaultStore] synchronize];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kvStoreWillChange:) name:NSPersistentStoreCoordinatorStoresWillChangeNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kvContainerDidChange:) name:NSUbiquityIdentityDidChangeNotification object:nil];
     
     // Override point for customization after application launch.
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
@@ -172,6 +179,45 @@
 -(void)kvStoreDidChange:(NSNotification *)notification{
     CCLocalData *localData = [[CCLocalData alloc] init];
     [localData kvStoreDidChange:notification];
+}
+
+-(void)kvContainerDidChange:(NSNotification *)notification{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"iCloud Remote Storage Status Changed" message:@"The state of the remote iCloud storage has changed" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+    [alert show];
+}
+
+-(void)kvStoreWillChange:(NSNotification *)notification{
+    // Need to make certain this happens on the main thread since we're updating UI
+    dispatch_async(dispatch_get_main_queue(), ^{
+//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"iCloud Remote Storage Ready" message:@"The app now has full access to iCloud syncing of data. Enjoy" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+//        [alert show];
+
+        [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
+        
+        for (id<iCloudStarterProtocol> delegate in self.delegateList) {
+            [delegate respondToiCloudUpdate];
+        }
+    });
+    
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"iCloudPaidFor"];
+}
+
+#pragma mark - API
+- (void)registeriCloudDelegate:(id<iCloudStarterProtocol>)delegate {
+    BOOL isInArray = NO;
+    
+    for (id<iCloudStarterProtocol> storedDelegate in self.delegateList) {
+        if (storedDelegate == delegate) {
+            isInArray = YES;
+            break;
+        }
+    }
+    
+    if (!isInArray) {
+        NSMutableArray *newArray = [self.delegateList mutableCopy];
+        [newArray addObject:delegate];
+        self.delegateList = [newArray copy];
+    }
 }
 
 #pragma mark - Calendar components
