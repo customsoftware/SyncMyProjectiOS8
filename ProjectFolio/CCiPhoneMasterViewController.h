@@ -24,7 +24,6 @@
 @property (strong, nonatomic) CCTextEntryPopoverController *projectNameView;
 @property (strong, nonatomic) CCDateSetterViewController *projectPopover;
 @property (strong, nonatomic) NSFetchedResultsController *fetchedProjectsController;
-@property (strong, nonatomic) NSManagedObjectContext *managedObjectContext;
 @property (strong, nonatomic) UITableViewCell *controllingCell;
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *indicator;

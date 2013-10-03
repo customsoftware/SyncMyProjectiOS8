@@ -208,9 +208,10 @@ typedef enum kfilterModes{
     if([buttonTitle isEqualToString:[self yesButtonTitle]]){
         if ([[alertView textFieldAtIndex:0].text isEqualToString:@""]) {
         } else {
-            Project *newProject = [NSEntityDescription
-                                   insertNewObjectForEntityForName:@"Project"
-                                   inManagedObjectContext:self.managedObjectContext];
+            Project *newProject = [CoreData createProjectWithName:[alertView textFieldAtIndex:0].text];
+//            Project *newProject = [NSEntityDescription
+//                                   insertNewObjectForEntityForName:@"Project"
+//                                   inManagedObjectContext:self.managedObjectContext];
             if (newProject == nil) {
                 self.logger = [[CCErrorLogger alloc] initWithErrorString:@"Failed to create a new project" andDelegate:self];
                 [self.logger releaseLogger];
@@ -219,11 +220,9 @@ typedef enum kfilterModes{
                 newProject.dateCreated = [NSDate date];
                 newProject.dateStart = newProject.dateCreated;
                 newProject.active = [NSNumber numberWithBool:YES];
-//                newProject.projectNotes = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", newProject.projectName];
-                
                 NSError *error = [[NSError alloc] init];
                 @try {
-                    if (![self.managedObjectContext save:&error]){
+                    if (![newProject.managedObjectContext save:&error]){
                         self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                         [self.logger releaseLogger];
                     }
@@ -294,25 +293,22 @@ typedef enum kfilterModes{
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-//    if (self.inICloudMode) {
-//        [self.indicator startAnimating];
-//    }
-    
+
     if (self.activeProject != nil ){
         [self sendTimerStartNotificationForProject];
     } else {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *tempProject = [defaults objectForKey:kSelectedProject];
-        
-        if (tempProject == nil) {
-            tempProject = [[NSString alloc]initWithFormat:@"Sample Project"];
-        }
-        for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
-            if ([project.projectUUID isEqualToString:tempProject]) {
-                NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
-                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-                break;
+        if (tempProject){
+            for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
+                if ([project.projectUUID isEqualToString:tempProject]) {
+                    NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
+                    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+                    break;
+                }
             }
+        } else {
+            // Do something???
         }
     }
 
@@ -379,6 +375,12 @@ typedef enum kfilterModes{
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
     // Need to invoke popover from here
+    if (tableView == self.tableView) {
+        self.activeProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
+    } else {
+        self.activeProject = [self.filteredProjects objectAtIndex:indexPath.row];
+    }
+    
     [self resignFirstResponder];
     [self showProjectDatePicker:indexPath];
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
@@ -423,8 +425,6 @@ typedef enum kfilterModes{
         // NSLog(@"Project name: %@", project.projectName);
     }
     
-    
-    
     if ([project.isOverDue boolValue] == YES) {
         cell = [tableView dequeueReusableCellWithIdentifier:lateCellIdentifier];
         if (cell == nil) {
@@ -463,12 +463,13 @@ typedef enum kfilterModes{
             [self sendTimerStopNotification];
             self.activeProject = nil;
             self.controllingCellIndex = nil;
-            [self.managedObjectContext deleteObject:[self.fetchedProjectsController objectAtIndexPath:indexPath]];
+            NSManagedObjectContext *context = [[CoreData sharedModel:self] managedObjectContext];
+            [context deleteObject:[self.fetchedProjectsController objectAtIndexPath:indexPath]];
             
             // Save the context.
             NSError *error = [[NSError alloc] init];
             @try {
-                if (![self.managedObjectContext save:&error]){
+                if (![context save:&error]){
                     self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                     [self.logger releaseLogger];
                 }
@@ -515,35 +516,25 @@ typedef enum kfilterModes{
     [self.tableView reloadData];
 }
 
-
-- (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
-{
-    [self.tableView beginUpdates];
-}
-
-- (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    [self.tableView endUpdates];
-}
-
 -(NSFetchedResultsController *)fetchedProjectsController{
     NSFetchedResultsController *retvalue;
     if (_fetchedProjectsController != nil) {
         retvalue = _fetchedProjectsController;
     } else {
-        
+        NSManagedObjectContext *context = [[CoreData sharedModel:self] managedObjectContext];
         NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project"
-                                                  inManagedObjectContext:self.managedObjectContext];
+                                                  inManagedObjectContext:context];
         [self.request setEntity:entity];
         [self.request setFetchBatchSize:20];
         
         NSSortDescriptor *activeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"active" ascending:NO];
         NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"complete" ascending:YES];
         NSSortDescriptor *endDateDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dateFinish" ascending:YES];
-        NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, completeDescriptor, endDateDescriptor, nil];
+        NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"projectName" ascending:YES];
+        NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, completeDescriptor, endDateDescriptor, nameDescriptor, nil];
         [self.request setSortDescriptors:sortDescriptors];
         
-        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+        NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
         aFetchedResultsController.delegate = self;
         
         self.fetchedProjectsController = aFetchedResultsController;
@@ -695,45 +686,7 @@ typedef enum kfilterModes{
     [alertViewProjectName show];
 }
 
-//- (void)toggleSearchBar
-//{
-//    self.notInSearchMode = !self.notInSearchMode;
-//    [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kSearchState];
-//    if (self.notInSearchMode) {
-//        [UIView animateWithDuration:kSwipeDuration
-//                              delay:kSwipeDelay
-//                            options:UIViewAnimationOptionCurveEaseIn
-//                         animations:^{
-//                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-//                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
-//                         completion:^(BOOL finished){
-//                             [self.tableView beginUpdates];
-//                             [self.tableView endUpdates];
-//                         }];
-//    } else {
-//        [UIView animateWithDuration:kSwipeDuration
-//                              delay:kSwipeDelay
-//                            options:UIViewAnimationOptionCurveEaseIn
-//                         animations:^{
-//                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-//                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
-//                         completion:^(BOOL finished){
-//                             [self.tableView beginUpdates];
-//                             [self.tableView endUpdates];
-//                         }];
-//    }
-//}
-
 #pragma mark - Lazy getters
--(NSManagedObjectContext *)managedObjectContext{
-    if (_managedObjectContext == nil) {
-        CoreData *sharedModel = [CoreData sharedModel:self];
-        _managedObjectContext = sharedModel.managedObjectContext;
-        
-    }
-    return _managedObjectContext;
-}
-
 -(CCiPhoneTaskViewController *)mainTaskController{
     if (_mainTaskController == nil) {
         _mainTaskController = [self.storyboard instantiateViewControllerWithIdentifier:@"mainTaskList"];

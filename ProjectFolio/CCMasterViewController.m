@@ -442,6 +442,7 @@ typedef enum kfilterModes{
     NSString *noteText = nil;
     NSString *titleText = nil;
     if (self.activeProject) {
+        [self.activeProject.managedObjectContext save:nil];
         titleText = [NSString stringWithFormat:@"%@: Notes", self.activeProject.projectName];
         if (self.activeProject.projectNotes) {
             noteText = self.activeProject.projectNotes;
@@ -578,10 +579,10 @@ typedef enum kfilterModes{
 //-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
 //    if (tableView == self.tableView) {
 //        // NSLog(@"Project name: %@", self.activeProject.projectName);
-//        self.detailViewController.project.projectNotes = self.detailViewController.projectNotes.text;
-//        self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
+////        self.detailViewController.project.projectNotes = self.detailViewController.projectNotes.text;
+////        self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
 //        [self.activeProject.managedObjectContext save:nil];
-//        [self sendTimerStopNotification];
+////        [self sendTimerStopNotification];
 //    }
 //}
 
@@ -626,7 +627,8 @@ typedef enum kfilterModes{
         NSSortDescriptor *activeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"active" ascending:NO];
         NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"complete" ascending:YES];
         NSSortDescriptor *endDateDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dateFinish" ascending:YES];
-        NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, completeDescriptor, endDateDescriptor, nil];
+        NSSortDescriptor *nameDescriptor = [[NSSortDescriptor alloc] initWithKey:@"projectName" ascending:YES];
+        NSArray *sortDescriptors = [NSArray arrayWithObjects: activeDescriptor, completeDescriptor, endDateDescriptor, nameDescriptor, nil];
         [self.request setSortDescriptors:sortDescriptors];
         
         NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext] sectionNameKeyPath:nil cacheName:nil];
@@ -792,12 +794,13 @@ typedef enum kfilterModes{
     [self.detailViewController.view endEditing:YES];
     [self.view endEditing:YES];
     CCNewProjectViewController *newProjectController = (CCNewProjectViewController *)self.projectPopover.contentViewController;
+
     Project *newProject = [CoreData createProjectWithName:newProjectController.projectName.text];
+    newProject.projectName = newProjectController.projectName.text;
     newProject.dateStart = newProject.dateCreated;
     newProject.active = [NSNumber numberWithBool:YES];
     
     [newProject.managedObjectContext save:nil];
-//    [self.fetchedProjectsController performFetch:nil];
     NSIndexPath *indexPath = nil;
     
     // Position the active cell on the new project
@@ -812,7 +815,6 @@ typedef enum kfilterModes{
         [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
         [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
     }
-    
     [self.projectPopover dismissPopoverAnimated:YES];
 }
 
