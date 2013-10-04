@@ -14,8 +14,7 @@
 
 @interface CCAuxPriorityViewController : UIViewController<UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate,CCPriorityDetailDelegate>
 
--(IBAction)insertPriority:(UIBarButtonItem * )sender;
-
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) UISwipeGestureRecognizer *swiper;
 
 @end

@@ -29,10 +29,10 @@
 @property (strong, nonatomic) NSNumberFormatter *numberFormatter;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
 @property (strong, nonatomic) UIPopoverController *popController;
+@property (strong, nonatomic) UISwipeGestureRecognizer *swiper;
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *displayOptions;
--(IBAction)insertDeliverable;
 -(IBAction)cancelPopover;
 -(IBAction)savePopoverData;
 -(IBAction)clickSummaryButton:(UIBarButtonItem *)sender;

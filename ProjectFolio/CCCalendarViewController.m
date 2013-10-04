@@ -15,16 +15,6 @@
 
 @implementation CCCalendarViewController
 
-@synthesize project = _project;
-@synthesize meeting = _meeting;
-@synthesize selectedIndexPath = _selectedIndexPath;
-@synthesize childController = _childController;
-@synthesize calendarController = _calendarController;
-@synthesize selectedCell = _selectedCell;
-@synthesize endDateFormatter = _endDateFormatter;
-@synthesize dateFormatter = _dateFormatter;
-@synthesize logger = _logger;
-
 #pragma mark - IBActions
 
 -(IBAction)insertEvent{
@@ -63,6 +53,27 @@
     return self;
 }
 
+- (void)viewDidLoad
+{
+    [super viewDidLoad];
+	// Do any additional setup after loading the view.
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    
+    self.dateFormatter = [[NSDateFormatter alloc] init];
+    [self.dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
+    [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    
+    self.endDateFormatter = [[NSDateFormatter alloc] init];
+    [self.endDateFormatter setTimeStyle:NSDateFormatterLongStyle];
+    [self.endDateFormatter setDateStyle:NSDateFormatterNoStyle];
+    
+    // Add swipe gesture recognizer to add expenses
+    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertEvent)];
+    [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
+}
+
 -(void)viewWillAppear:(BOOL)animated{
     if ([self.meeting.event isEqualToString:@"Delete me"]) {
         [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
@@ -80,37 +91,13 @@
             [self.logger releaseLogger];
         }
     }
+    self.swiper.enabled = YES;
     [self.tableView reloadData];
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-    self.tableView.delegate = self;
-    self.tableView.dataSource = self;
-    
-    self.dateFormatter = [[NSDateFormatter alloc] init];
-    [self.dateFormatter setTimeStyle:NSDateFormatterMediumStyle];
-    [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];
-    
-    self.endDateFormatter = [[NSDateFormatter alloc] init];
-    [self.endDateFormatter setTimeStyle:NSDateFormatterLongStyle];
-    [self.endDateFormatter setDateStyle:NSDateFormatterNoStyle];
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.project = nil;
-    self.selectedIndexPath = nil;
-    self.childController = nil;
-    self.selectedCell = nil;
-    self.meeting = nil;
-    self.dateFormatter = nil;
-    self.endDateFormatter = nil;
-    self.logger = nil;
+- (void)viewWillDisappear:(BOOL)animated {
+    self.swiper.enabled = NO;
+    [super viewWillDisappear:animated];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

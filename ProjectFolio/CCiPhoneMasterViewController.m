@@ -59,7 +59,7 @@ typedef enum kfilterModes{
 -(IBAction)actionButton:(UIButton *)sender;
 -(IBAction)insertNewObject:(UIButton *)sender;
 -(IBAction)showSettings:(UIButton *)sender;
--(IBAction)openFAQ:(UIButton *)sender;
+-(IBAction)openFAQ:(UIBarButtonItem *)sender;
 
 @end
 
@@ -274,6 +274,10 @@ typedef enum kfilterModes{
     if (!showNews) {
         [self.navigationController pushViewController:latestController animated:YES];
     }
+    // Add swipe gesture recognizer to add projects
+    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertNewObject:)];
+    [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
     
     self.inICloudMode = [[NSUserDefaults standardUserDefaults] boolForKey:@"iCloudStarted"];
     CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -289,6 +293,7 @@ typedef enum kfilterModes{
     self.lastSelected = [[NSUserDefaults standardUserDefaults] integerForKey:kProjectFilterStatus];
     self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
     [self filterActions:self.filterSegmentControl];
+    self.swiper.enabled = YES;
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -311,11 +316,11 @@ typedef enum kfilterModes{
             // Do something???
         }
     }
-
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    self.swiper.enabled = NO;
     [super viewWillDisappear:animated];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
@@ -589,10 +594,10 @@ typedef enum kfilterModes{
             [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath inTable:tableView];
             break;
             
-        case NSFetchedResultsChangeMove:
-            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
-            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
-            break;
+//        case NSFetchedResultsChangeMove:
+//            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
+//            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
+//            break;
     }
 }
 

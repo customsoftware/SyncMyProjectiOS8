@@ -77,7 +77,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+	
+    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertPriority:)];
+    [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
+
+    // Do any additional setup after loading the view.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Priority" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *purchaseDescriptor = [[NSSortDescriptor alloc] initWithKey:@"priority" ascending:YES];
     NSArray *sortDescriptors = [NSArray arrayWithObjects: purchaseDescriptor, nil];
@@ -96,6 +101,12 @@
     [self.priorityFRC performFetch:&fetchError];
     self.priorityList = [self.priorityFRC fetchedObjects];
     [self.tableView reloadData];
+    self.swiper.enabled = YES;
+}
+
+- (void)viewWillDisappear:(BOOL)animated {
+    self.swiper.enabled = NO;
+    [super viewWillDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning

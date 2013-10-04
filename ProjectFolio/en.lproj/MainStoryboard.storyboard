@@ -77,12 +77,12 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
-                            <button opaque="NO" alpha="0.40000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1QW-ue-Fg5">
-                                <rect key="frame" x="328" y="-2" width="50" height="20"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="1QW-ue-Fg5">
+                                <rect key="frame" x="328" y="-22" width="50" height="20"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="20" id="8Ha-Qr-s6a"/>
-                                    <constraint firstAttribute="width" constant="50" id="iLu-Ei-6jZ"/>
+                                    <constraint firstAttribute="width" constant="50" id="IwN-TC-70z"/>
+                                    <constraint firstAttribute="height" constant="20" id="lU0-Fa-eEZ"/>
                                 </constraints>
                                 <state key="normal" backgroundImage="DownArrow.png">
                                     <color key="titleColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -96,17 +96,17 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="RbV-Le-4mN" firstAttribute="leading" secondItem="Uue-Qw-yoN" secondAttribute="leading" constant="20" symbolic="YES" id="8yu-7a-RZS"/>
-                            <constraint firstAttribute="trailing" secondItem="RbV-Le-4mN" secondAttribute="trailing" constant="20" symbolic="YES" id="M6i-AN-Nw2"/>
-                            <constraint firstAttribute="bottom" secondItem="qIj-nc-Fvj" secondAttribute="bottom" id="Wg8-iq-5Bw"/>
-                            <constraint firstItem="RbV-Le-4mN" firstAttribute="centerX" secondItem="qIj-nc-Fvj" secondAttribute="centerX" id="XHv-QS-azh"/>
-                            <constraint firstItem="bTq-Fj-yHD" firstAttribute="centerX" secondItem="1QW-ue-Fg5" secondAttribute="centerX" id="Zly-6T-z1p"/>
-                            <constraint firstItem="qIj-nc-Fvj" firstAttribute="top" secondItem="RbV-Le-4mN" secondAttribute="bottom" id="dAg-nF-Bxf"/>
-                            <constraint firstItem="1QW-ue-Fg5" firstAttribute="leading" secondItem="Uue-Qw-yoN" secondAttribute="leading" constant="328" id="f3b-Lm-haJ"/>
-                            <constraint firstItem="qIj-nc-Fvj" firstAttribute="leading" secondItem="Uue-Qw-yoN" secondAttribute="leading" id="jko-RZ-hgv"/>
-                            <constraint firstItem="RbV-Le-4mN" firstAttribute="top" secondItem="1QW-ue-Fg5" secondAttribute="bottom" constant="7" id="lZ3-di-cgb"/>
-                            <constraint firstItem="1QW-ue-Fg5" firstAttribute="top" secondItem="Uue-Qw-yoN" secondAttribute="top" constant="-2" id="wQo-vh-JYZ"/>
-                            <constraint firstItem="bTq-Fj-yHD" firstAttribute="top" secondItem="1QW-ue-Fg5" secondAttribute="bottom" constant="32" id="zDE-bq-5fk"/>
+                            <constraint firstItem="qIj-nc-Fvj" firstAttribute="top" secondItem="RbV-Le-4mN" secondAttribute="bottom" id="RSd-HN-MuB"/>
+                            <constraint firstItem="1QW-ue-Fg5" firstAttribute="top" secondItem="Uue-Qw-yoN" secondAttribute="top" constant="-22" id="Vex-9O-dcp"/>
+                            <constraint firstItem="bTq-Fj-yHD" firstAttribute="top" secondItem="1QW-ue-Fg5" secondAttribute="bottom" constant="52" id="Zam-n5-ide"/>
+                            <constraint firstAttribute="bottom" secondItem="qIj-nc-Fvj" secondAttribute="bottom" id="dHJ-mc-Geb"/>
+                            <constraint firstItem="bTq-Fj-yHD" firstAttribute="centerX" secondItem="1QW-ue-Fg5" secondAttribute="centerX" id="nfM-88-bQp"/>
+                            <constraint firstItem="qIj-nc-Fvj" firstAttribute="leading" secondItem="Uue-Qw-yoN" secondAttribute="leading" id="nlJ-uq-T8Q"/>
+                            <constraint firstItem="1QW-ue-Fg5" firstAttribute="leading" secondItem="Uue-Qw-yoN" secondAttribute="leading" constant="328" id="o19-4U-zJl"/>
+                            <constraint firstItem="RbV-Le-4mN" firstAttribute="centerX" secondItem="qIj-nc-Fvj" secondAttribute="centerX" id="oYw-kw-xtA"/>
+                            <constraint firstItem="RbV-Le-4mN" firstAttribute="top" secondItem="1QW-ue-Fg5" secondAttribute="bottom" constant="27" id="sgB-9i-bmf"/>
+                            <constraint firstAttribute="trailing" secondItem="RbV-Le-4mN" secondAttribute="trailing" constant="20" symbolic="YES" id="vwe-43-Knu"/>
+                            <constraint firstItem="RbV-Le-4mN" firstAttribute="leading" secondItem="Uue-Qw-yoN" secondAttribute="leading" constant="20" symbolic="YES" id="xiT-Kr-Ml4"/>
                         </constraints>
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
@@ -212,13 +212,7 @@
                             <outlet property="delegate" destination="cxs-4u-b9a" id="4Tv-7V-U2G"/>
                         </connections>
                     </tableView>
-                    <navigationItem key="navigationItem" title="Meetings" id="r0Q-hM-mm7">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="CO8-X5-sT5">
-                            <connections>
-                                <action selector="insertEvent" destination="cxs-4u-b9a" id="Dhe-GU-wqD"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Meetings" id="r0Q-hM-mm7"/>
                     <value key="contentSizeForViewInPopover" type="size" width="320" height="570"/>
                     <splitViewMasterSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                 </tableViewController>
@@ -761,11 +755,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <viewControllerLayoutGuide type="bottom" id="nAk-iT-acE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8KM-79-KkV">
-                        <rect key="frame" x="0.0" y="44" width="620" height="2740"/>
+                        <rect key="frame" x="0.0" y="44" width="3004" height="708"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IRB-5p-vRn">
-                                <rect key="frame" x="20" y="8" width="580" height="2732"/>
+                                <rect key="frame" x="20" y="8" width="2964" height="700"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Lborum. Nam liber te conscient to factor tum poen legum odioque civiuda.">
@@ -785,6 +779,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <constraint firstItem="IRB-5p-vRn" firstAttribute="leading" secondItem="8KM-79-KkV" secondAttribute="leading" constant="20" symbolic="YES" id="jFi-qP-pm8"/>
                             <constraint firstAttribute="trailing" secondItem="IRB-5p-vRn" secondAttribute="trailing" constant="20" symbolic="YES" id="zAi-ab-eQw"/>
                         </constraints>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <toolbarItems/>
@@ -814,11 +809,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <viewControllerLayoutGuide type="bottom" id="Zct-Gk-itS"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="vD4-ZJ-qNz">
-                        <rect key="frame" x="0.0" y="0.0" width="320" height="344"/>
+                        <rect key="frame" x="0.0" y="0.0" width="344" height="320"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <pickerView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Ln-ly-bty">
-                                <rect key="frame" x="0.0" y="75" width="320" height="216"/>
+                                <rect key="frame" x="0.0" y="75" width="344" height="216"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <outlet property="dataSource" destination="waG-JU-kes" id="SJY-dd-umG"/>
@@ -826,6 +821,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </pickerView>
                         </subviews>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" title="Duration" id="fq9-rE-gSe">
                         <barButtonItem key="leftBarButtonItem" systemItem="save" id="kbC-Ax-S6v">
@@ -1452,11 +1448,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <action selector="clickSummaryButton:" destination="q1Q-uQ-TYC" id="Dpm-YN-ZtQ"/>
                             </connections>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="Epc-uf-2T9">
-                            <connections>
-                                <action selector="insertDeliverable" destination="q1Q-uQ-TYC" id="wTL-Wa-fvc"/>
-                            </connections>
-                        </barButtonItem>
                     </navigationItem>
                     <value key="contentSizeForViewInPopover" type="size" width="320" height="570"/>
                     <connections>
@@ -1917,11 +1908,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <barButtonItem key="leftBarButtonItem" systemItem="action" id="RFt-Df-Xrp">
                             <connections>
                                 <action selector="actionButton:" destination="KPg-Bm-uWY" id="lFS-71-h8n"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="m9B-GM-Fo1">
-                            <connections>
-                                <action selector="insertNewObject:" destination="KPg-Bm-uWY" id="BsY-Yf-qDC"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -2776,13 +2762,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
-                    <navigationItem key="navigationItem" title="Categories" id="N7E-xC-eN4">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="dDy-SQ-dKF">
-                            <connections>
-                                <action selector="insertPriority:" destination="fG9-py-iw3" id="V3c-Iv-GR5"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Categories" id="N7E-xC-eN4"/>
                     <value key="contentSizeForViewInPopover" type="size" width="320" height="570"/>
                     <connections>
                         <outlet property="tableView" destination="CRr-mW-jXF" id="ZcF-dp-6eL"/>
@@ -3304,37 +3284,15 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" title="Tasks" id="TdO-YP-7zP">
-                        <barButtonItem key="rightBarButtonItem" id="H0E-V6-3MW">
-                            <view key="customView" contentMode="scaleToFill" id="dbL-AD-tFv">
-                                <rect key="frame" x="228" y="5" width="76" height="33"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="g6K-Zx-fG7">
-                                        <rect key="frame" x="48" y="4" width="22" height="22"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <connections>
-                                            <action selector="insertTask:" destination="JM5-Z9-f4D" eventType="touchUpInside" id="GSC-Dk-c6k"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fYu-Hj-cto">
-                                        <rect key="frame" x="0.0" y="0.0" width="46" height="30"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal" title="Edit">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="toggleEditMode:" destination="JM5-Z9-f4D" eventType="touchUpInside" id="V1q-Kd-qDh"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </view>
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="Dmb-iq-vWw">
+                            <connections>
+                                <action selector="toggleEditMode:" destination="JM5-Z9-f4D" id="s35-ON-NSx"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <connections>
                         <outlet property="displayOptions" destination="3Mh-bP-1Lp" id="htH-ZH-F7b"/>
-                        <outlet property="editButton" destination="fYu-Hj-cto" id="oau-Yc-5co"/>
+                        <outlet property="editButton" destination="Dmb-iq-vWw" id="MmD-UX-18b"/>
                         <outlet property="searchDisplayController" destination="Tc1-JP-R4h" id="Xhx-Eb-1jX"/>
                         <outlet property="tableView" destination="sfe-WH-0At" id="eXL-9v-blc"/>
                         <segue destination="Upk-cn-M3f" kind="push" identifier="taskDetails" id="rgk-BB-67C"/>
@@ -3593,7 +3551,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
-                    <navigationItem key="navigationItem" title="Details" id="5w6-iQ-TmG">
+                    <navigationItem key="navigationItem" title="Task Details" id="5w6-iQ-TmG">
                         <barButtonItem key="backBarButtonItem" title="Details" id="57Z-K5-bOP"/>
                         <barButtonItem key="rightBarButtonItem" systemItem="action" id="LiW-Yh-zp7"/>
                     </navigationItem>
@@ -3934,8 +3892,8 @@ The feature requires an active iCloud account and that iCloud is enabled on your
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
-        <segue reference="C7B-Gs-zUt"/>
+        <segue reference="gY0-Ur-f3q"/>
+        <segue reference="CAW-5q-vHi"/>
         <segue reference="sNg-Mf-0gY"/>
-        <segue reference="XQ6-5D-tBj"/>
     </inferredMetricsTieBreakers>
 </document>

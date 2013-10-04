@@ -28,6 +28,7 @@
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (strong, nonatomic) UISwipeGestureRecognizer *swiper;
 
 -(Project *)getActiveProject;
 -(void)releaseLogger;

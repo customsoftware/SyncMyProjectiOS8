@@ -15,12 +15,9 @@
 
 @interface CCMainTaskViewController ()
 
--(IBAction)toggleEditMode:(UIButton *)sender;
--(IBAction)insertTask:(UIButton *)sender;
-//-(IBAction)displayOptions:(UISegmentedControl *)sender;
-//-(IBAction)cancelPopover;
-//-(IBAction)savePopoverData;
-@property (weak, nonatomic) IBOutlet UIButton *editButton;
+-(IBAction)toggleEditMode:(UIBarButtonItem *)sender;
+
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
 
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) NSPredicate *incompletePredicate;
@@ -52,28 +49,15 @@
 - (IBAction)toggleEditMode:(UIButton *)sender
 {
     self.tableView.editing = !self.tableView.editing;
-    if (self.tableView.editing) {
-        [self.editButton setTitle:@"Done" forState:UIControlStateNormal];
-    } else {
-        [self.editButton setTitle:@"Edit" forState:UIControlStateNormal];
-    }
-    /*[self.barButtons removeAllObjects];
-    UIBarButtonItem *newButton;
+    
+    UIBarButtonItem *newButton = nil;
     if (self.tableView.editing) {
         newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleEditMode:)];
-        newButton.style = UIBarButtonItemStyleBordered;
     } else {
         newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
-        newButton.style = UIBarButtonItemStyleBordered;
     }
-    [self.barButtons addObject:newButton];
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertTask)];
-    addButton.style = UIBarButtonItemStyleBordered;
-    [self.barButtons addObject:addButton];
     
-    [self.holderBar setItems:self.barButtons];
-    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:self.holderBar];
-    self.navigationItem.rightBarButtonItem = twoButtons;*/
+    self.navigationItem.rightBarButtonItem = newButton;
 }
 
 -(void)cancelSummaryChart{
@@ -172,24 +156,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:kiCloudSyncNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:addTaskNotification object:nil];
     
-    // Set up the add button.
-//    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-    /*NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
-    searchButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:searchButton];
-    
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertTask)];
-    addButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:addButton];
-    
-    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 44)];
-//    tools.barStyle = UIBarStyleBlackTranslucent;
-    [tools setItems:buttons animated:NO];
-    self.holderBar = tools;
-    self.barButtons = buttons;
-    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.rightBarButtonItem = twoButtons;*/
+    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertTask:)];
+    [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
     
     self.displayOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
     
@@ -215,6 +184,7 @@
     } else {
         [self displayOptions:self.displayOptions];
     }
+    self.swiper.enabled = YES;
     NSMutableArray *things = [[self.taskFRC fetchedObjects] mutableCopy];
     [self reSortSubTasksWithTasks:things];
 }
@@ -225,6 +195,7 @@
     self.allPredicate = nil;
     self.incompletePredicate = nil;
     self.assignedPredicate = nil;
+    self.swiper.enabled = NO;
 }
 
 - (void)dealloc

@@ -25,8 +25,8 @@
 @property (strong, nonatomic) EKEventViewController *calendarController;
 @property (strong, nonatomic) NSDateFormatter *endDateFormatter;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
+@property (strong, nonatomic) UISwipeGestureRecognizer *swiper;
 
--(IBAction)insertEvent;
 -(void)releaseLogger;
 
 @end

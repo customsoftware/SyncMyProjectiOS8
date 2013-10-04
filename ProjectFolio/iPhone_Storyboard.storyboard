@@ -136,34 +136,10 @@
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
                         </barButtonItem>
-                        <barButtonItem key="rightBarButtonItem" style="plain" id="cql-Ib-1qQ">
-                            <view key="customView" contentMode="scaleToFill" id="xs1-SQ-EyZ">
-                                <rect key="frame" x="226" y="5" width="78" height="33"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="cJs-GK-k2m">
-                                        <rect key="frame" x="0.0" y="6" width="40" height="24"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
-                                        <state key="normal" title="?"/>
-                                        <connections>
-                                            <action selector="openFAQ:" destination="1F8-jI-Trh" eventType="touchUpInside" id="KjT-ji-iiy"/>
-                                        </connections>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="contactAdd" lineBreakMode="middleTruncation" id="fgd-ow-g5M">
-                                        <rect key="frame" x="46" y="7" width="22" height="22"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                        <state key="normal">
-                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                        </state>
-                                        <connections>
-                                            <action selector="insertNewObject:" destination="1F8-jI-Trh" eventType="touchUpInside" id="aAu-lI-4lA"/>
-                                        </connections>
-                                    </button>
-                                </subviews>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
-                            </view>
+                        <barButtonItem key="rightBarButtonItem" title="?" id="ldk-LD-Nxy">
+                            <connections>
+                                <action selector="openFAQ:" destination="1F8-jI-Trh" id="4Fe-3f-PCn"/>
+                            </connections>
                         </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
@@ -373,7 +349,7 @@
             </objects>
             <point key="canvasLocation" x="1655" y="1020"/>
         </scene>
-        <!--Ci Phone Task View Controller - Task-->
+        <!--Ci Phone Task View Controller - Tasks-->
         <scene sceneID="9yv-zz-Q5k">
             <objects>
                 <viewController storyboardIdentifier="mainTaskList" id="cDW-BX-JNo" customClass="CCiPhoneTaskViewController" sceneMemberID="viewController">
@@ -549,7 +525,13 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Task" id="IYf-Dw-FZ4"/>
+                    <navigationItem key="navigationItem" title="Tasks" id="IYf-Dw-FZ4">
+                        <barButtonItem key="rightBarButtonItem" systemItem="edit" id="X5x-5p-8Nz">
+                            <connections>
+                                <action selector="toggleEditMode:" destination="cDW-BX-JNo" id="ZyA-r1-OAE"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="displayOptions" destination="yME-4b-0wy" id="Uno-3U-c5s"/>
                         <outlet property="tableView" destination="lv1-93-mxN" id="7AJ-eN-D41"/>
@@ -862,7 +844,7 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zFJ-T4-iF7" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2614" y="673"/>
+            <point key="canvasLocation" x="2626" y="1169"/>
         </scene>
         <!--Aux Task Clone Drill Controller - Clone Tasks-->
         <scene sceneID="E6w-mH-SUH">
@@ -936,12 +918,12 @@
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eaH-oT-XNr" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3428" y="997"/>
+            <point key="canvasLocation" x="3148" y="1169"/>
         </scene>
         <!--Aux Date View Controller - Set Date-->
         <scene sceneID="mR7-ey-dZx">
             <objects>
-                <viewController storyboardIdentifier="projectDateSetter" id="MGU-Hs-6ZA" customClass="CCAuxDateViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="projectDateSetter" useStoryboardIdentifierAsRestorationIdentifier="YES" id="MGU-Hs-6ZA" customClass="CCAuxDateViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="ERS-Vj-Flo">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -975,7 +957,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
 </data>
                                 </timeZone>
                                 <connections>
-                                    <action selector="newDate:" destination="MGU-Hs-6ZA" eventType="valueChanged" id="CIF-vs-za2"/>
+                                    <action selector="newDate:" destination="MGU-Hs-6ZA" eventType="valueChanged" id="Tku-gh-gac"/>
                                 </connections>
                             </datePicker>
                         </subviews>
@@ -984,12 +966,12 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                     <navigationItem key="navigationItem" title="Set Date" id="oT9-rV-S10"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <connections>
-                        <outlet property="projectDate" destination="aTb-df-eUV" id="lIu-a0-dez"/>
+                        <outlet property="projectDate" destination="aTb-df-eUV" id="ib0-1U-3Le"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lqn-sv-aFx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2614" y="1394"/>
+            <point key="canvasLocation" x="2614" y="2010"/>
         </scene>
         <!--Aux Duration View Controller - Duration-->
         <scene sceneID="LxK-hk-rY2">
@@ -1629,7 +1611,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EEW-rQ-FeY" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3984" y="869"/>
+            <point key="canvasLocation" x="3965" y="872"/>
         </scene>
         <!--Timer Details View Controller - Timer Details-->
         <scene sceneID="KMh-3N-xrY">
@@ -2556,9 +2538,10 @@ The feature requires an active iCloud account and that iCloud is enabled on your
                                 <rect key="frame" x="0.0" y="524" width="320" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Sjx-gI-zcn"/>
                                     <barButtonItem style="plain" id="fyJ-iY-G26">
                                         <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="Btz-VS-OBN">
-                                            <rect key="frame" x="6" y="7" width="220" height="30"/>
+                                            <rect key="frame" x="50" y="7" width="220" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segments>
                                                 <segment title="Open"/>
@@ -2571,20 +2554,15 @@ The feature requires an active iCloud account and that iCloud is enabled on your
                                         </segmentedControl>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="fkj-42-TyV"/>
-                                    <barButtonItem systemItem="action" id="blL-or-sJ3">
-                                        <connections>
-                                            <action selector="clickSummaryButton:" destination="b6W-x5-cuE" id="ZHr-a9-x1u"/>
-                                        </connections>
-                                    </barButtonItem>
                                 </items>
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
                     <navigationItem key="navigationItem" title="Expenses" id="kKR-Iq-hSr">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="uRq-P1-6WJ">
+                        <barButtonItem key="rightBarButtonItem" systemItem="action" id="blL-or-sJ3">
                             <connections>
-                                <action selector="insertDeliverable" destination="b6W-x5-cuE" id="fLM-GI-8Mq"/>
+                                <action selector="clickSummaryButton:" destination="b6W-x5-cuE" id="ZHr-a9-x1u"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
@@ -2811,7 +2789,7 @@ The feature requires an active iCloud account and that iCloud is enabled on your
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="priorityCell" textLabel="aQa-C1-49H" style="IBUITableViewCellStyleDefault" id="6n9-MB-LKi" customClass="CategoryCell">
+                                    <tableViewCell contentMode="scaleToFill" restorationIdentifier="" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="priorityCell" textLabel="aQa-C1-49H" style="IBUITableViewCellStyleDefault" id="6n9-MB-LKi">
                                         <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="6n9-MB-LKi" id="De2-Mc-dsG">
@@ -2837,13 +2815,7 @@ The feature requires an active iCloud account and that iCloud is enabled on your
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" title="Categories" id="ffi-iu-kqv">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="s4A-aK-hn1">
-                            <connections>
-                                <action selector="insertPriority:" destination="ZXB-nn-YMZ" id="iiP-Vg-K3a"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Categories" id="ffi-iu-kqv"/>
                     <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
                     <connections>
                         <outlet property="tableView" destination="BBY-xb-BuJ" id="0Nd-tP-iS7"/>

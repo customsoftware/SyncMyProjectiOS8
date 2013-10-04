@@ -215,12 +215,24 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    self.swiper.enabled = YES;
     [self clickTableDisplayOptions:self.displayOptions];
+}
+
+-(void)viewWillDisappear:(BOOL)animated{
+    self.swiper.enabled = NO;
+    [super viewWillDisappear:animated];
 }
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    // Add swipe gesture recognizer to add expenses
+    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertDeliverable)];
+    [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resetTableView) name:kiCloudSyncNotification object:nil];
 	// Do any additional setup after loading the view.
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Expense" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];

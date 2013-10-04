@@ -24,6 +24,7 @@
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *displayOptions;
 @property (weak, nonatomic) id<CCProjectTaskDelegate> projectDelegate;
+@property (strong, nonatomic) UISwipeGestureRecognizer *swiper;
 //@property (strong, nonatomic) IBOutlet UISegmentedControl *navButton;
 
 

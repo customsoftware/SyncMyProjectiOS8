@@ -35,7 +35,8 @@
 @property BOOL  isNew;
 @property NSInteger lastSegment;
 @property (strong, nonatomic) UIToolbar *holderBar;
-@property (strong, nonatomic) NSMutableArray *barButtons;
+
+- (IBAction)toggleEditMode:(UIBarButtonItem *)sender;
 
 @end
 
@@ -56,26 +57,18 @@
     // Any config stuff goes here...
 }
 
-- (void)toggleEditMode:(UIBarButtonItem *)sender
+- (IBAction)toggleEditMode:(UIBarButtonItem *)sender
 {
     self.tableView.editing = !self.tableView.editing;
-    [self.barButtons removeAllObjects];
-    UIBarButtonItem *newButton;
+    
+    UIBarButtonItem *newButton = nil;
     if (self.tableView.editing) {
         newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleEditMode:)];
-        newButton.style = UIBarButtonItemStyleBordered;
     } else {
         newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
-        newButton.style = UIBarButtonItemStyleBordered;
     }
-    [self.barButtons addObject:newButton];
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertTask)];
-    addButton.style = UIBarButtonItemStyleBordered;
-    [self.barButtons addObject:addButton];
     
-    [self.holderBar setItems:self.barButtons];
-    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:self.holderBar];
-    self.navigationItem.rightBarButtonItem = twoButtons;
+    self.navigationItem.rightBarButtonItem = newButton;
 }
 
 -(IBAction)insertTask{
@@ -179,7 +172,11 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:addTaskNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:kiCloudSyncNotification object:nil];
     
-    // Set up the add button.
+    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertTask)];
+    [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
+    
+/*/ Set up the add button.
 //    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
     NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
     UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
@@ -196,7 +193,8 @@
     self.holderBar = tools;
     self.barButtons = buttons;
     UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.rightBarButtonItem = twoButtons;
+    self.navigationItem.rightBarButtonItem = twoButtons;*/
+    
     self.displayOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
     self.lastSegment = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
 }
@@ -209,7 +207,7 @@
         self.displayOptions.selectedSegmentIndex = self.lastSegment;
     }
     [self displayOptions:self.displayOptions];
-
+    self.swiper.enabled = YES;
     NSMutableArray *things = [[self.taskFRC fetchedObjects] mutableCopy];
     [self reSortSubTasksWithTasks:things];
 }
@@ -219,6 +217,7 @@
     self.allPredicate = nil;
     self.incompletePredicate = nil;
     self.assignedPredicate = nil;
+    self.swiper.enabled = NO;
 }
 
 - (void)dealloc

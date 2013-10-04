@@ -34,7 +34,6 @@ typedef enum kfilterModes{
 
 @interface CCMasterViewController () <iCloudStarterProtocol>
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
-- (IBAction)insertNewObject:(UIBarButtonItem *)sender;
 
 @property (strong, nonatomic) CCGeneralCloser *closer;
 @property (strong, nonatomic) CCMainTaskViewController *mainTaskController;
@@ -80,6 +79,10 @@ typedef enum kfilterModes{
     self.projectTimer = [[CCProjectTimer alloc] init];
     CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
     [application registeriCloudDelegate:self];
+    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertNewObject:)];
+    [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
+    
 //    int runCount = [[NSUserDefaults standardUserDefaults] integerForKey:kRatingCounterKey];
 //    self.reminder = [[RatingReminder alloc] initWithNumberOfRuns:runCount];
 //    [self.reminder startTimer];
@@ -92,18 +95,6 @@ typedef enum kfilterModes{
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSString *tempProject = [defaults objectForKey:kSelectedProject];
         
-//        if (tempProject == nil) {
-//            // Lets query to see if someone is there
-//            if (self.inICloudMode || [[CoreData sharedModel:nil] iCloudAvailable] ) {
-//                [self.fetchedProjectsController performFetch:nil];
-//                [[CoreData sharedModel:nil] testPriorityConfig];
-//                CCInitializer *init = [[CCInitializer alloc] init];
-//                [init loadTestData];
-//            }
-//            
-//            tempProject = [[NSString alloc]initWithFormat:@"Sample Project"];
-//            [defaults setObject:tempProject forKey:kSelectedProject];
-//        }
         for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
             if ([project.projectUUID isEqualToString:tempProject]) {
                 NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
@@ -139,6 +130,7 @@ typedef enum kfilterModes{
         self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
         [self filterActions:self.filterSegmentControl];
     }
+    self.swiper.enabled = YES;
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -146,6 +138,7 @@ typedef enum kfilterModes{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kSearchState];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    self.swiper.enabled = NO;
     [super viewWillDisappear:animated];
 }
 
