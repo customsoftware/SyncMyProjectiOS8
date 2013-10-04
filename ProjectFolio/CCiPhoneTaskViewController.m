@@ -176,25 +176,6 @@
     [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
     [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
     
-/*/ Set up the add button.
-//    self.navigationController.navigationBar.barStyle = UIBarStyleBlackOpaque;
-    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
-    searchButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:searchButton];
-    
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertTask)];
-    addButton.style = UIBarButtonItemStyleBordered;
-    [buttons addObject:addButton];
-    
-    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
-//    tools.barStyle = UIBarStyleBlackTranslucent;
-    [tools setItems:buttons animated:NO];
-    self.holderBar = tools;
-    self.barButtons = buttons;
-    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-    self.navigationItem.rightBarButtonItem = twoButtons;*/
-    
     self.displayOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
     self.lastSegment = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
 }
