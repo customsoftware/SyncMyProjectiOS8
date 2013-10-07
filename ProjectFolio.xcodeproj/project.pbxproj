@@ -1006,6 +1006,11 @@
 				TargetAttributes = {
 					24A98B1B15B275B000ABBB85 = {
 						DevelopmentTeam = 4MAEKVPSTZ;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};

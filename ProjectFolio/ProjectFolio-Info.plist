@@ -37,6 +37,10 @@
 	<true/>
 	<key>NSLocationUsageDescription</key>
 	<string>Project Folio needs to know where you are so it can compute milage for you when you want to record milage traveled for business purposes.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+	</array>
 	<key>UIMainStoryboardFile</key>
 	<string>iPhone_Storyboard</string>
 	<key>UIMainStoryboardFile~ipad</key>

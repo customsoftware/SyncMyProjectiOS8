@@ -71,6 +71,7 @@
         [defaults setInteger:0 forKey:kRatingCounterKey];
     }
     [self setButtonStateWithShow:NO];
+    [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     return YES;
 }
 
@@ -159,6 +160,10 @@
      */
     [[NSUbiquitousKeyValueStore defaultStore] synchronize];
     [self setButtonStateWithShow:YES];
+}
+
+- (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
+    
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application
