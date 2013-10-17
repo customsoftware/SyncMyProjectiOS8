@@ -25,7 +25,7 @@
 #import "iCloudStarterProtocol.h"
 
 typedef enum kfilterModes{
-    allProjectsMode,
+    allProjectsMode = 0,
     activeProjectsMode,
     openProjectsMode,
     recentListMode,
@@ -81,6 +81,10 @@ typedef enum kfilterModes{
     CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
     [application registeriCloudDelegate:self];
     
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    self.lastSelected = [defaults integerForKey:kProjectFilterStatus];
+    self.lastProjectID = [defaults objectForKey:kSelectedProject];
+    
     // Set up swipe to see tasks
     // Add swipe gesture recognizer to default, unfiltered table view
     UISwipeGestureRecognizer *showExtrasSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
@@ -104,19 +108,17 @@ typedef enum kfilterModes{
     }
     
     if (self.activeProject != nil ){
-        [self sendTimerStartNotificationForProject];
         if (self.activeProject == self.detailViewController.project) {
             self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
             [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.tableView];
         } else {
             [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.tableView];
         }
-    } else {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        self.lastSelected = [defaults integerForKey:kProjectFilterStatus];
-        self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
-        [self filterActions:self.filterSegmentControl];
     }
+
+    self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
+    [self filterActions:self.filterSegmentControl];
+    
     self.swiper.enabled = YES;
     [self cleanCheckMarks:self.tableView];
 }
@@ -127,27 +129,17 @@ typedef enum kfilterModes{
     if (self.activeProject != nil) {
         [self enableControls];
         [self sendTimerStartNotificationForProject];
-    } else {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        self.lastProjectID = [defaults objectForKey:kSelectedProject];
-//        [self.tableView reloadData];
     }
-//        for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
-//            if ([project.projectUUID isEqualToString:tempProject]) {
-//                NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
-//                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-//                [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
-//                break;
-//            }
-//        }
-//    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kSearchState];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:self.notInSearchMode forKey:kSearchState];
+    [defaults setObject:self.lastProjectID forKey:kSelectedProject];
+    [defaults synchronize];
+    
     self.swiper.enabled = NO;
     [super viewWillDisappear:animated];
 }
@@ -166,12 +158,9 @@ typedef enum kfilterModes{
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];
     } else if (sender.selectedSegmentIndex == recentListMode){
-//        [self.navigationController pushViewController:self.recentListController animated:YES];
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];
     } else {
-        self.lastSelected = sender.selectedSegmentIndex;
-        [[NSUserDefaults standardUserDefaults] setInteger:self.lastSelected forKey:kProjectFilterStatus];
         if (sender.selectedSegmentIndex == allProjectsMode) {
             [self.request setPredicate:nil];
         } else if ( sender.selectedSegmentIndex == activeProjectsMode ) {
@@ -180,19 +169,28 @@ typedef enum kfilterModes{
             [self.request setPredicate:self.openPredicate];
         }
         
+        self.lastSelected = sender.selectedSegmentIndex;
+        
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        [defaults setInteger:self.lastSelected forKey:kProjectFilterStatus];
+    
         NSError *fetchError = [[NSError alloc] init];
         [self.fetchedProjectsController performFetch:&fetchError];
-        [self.tableView reloadData];
         
         NSIndexPath *indexPath = nil;
         for (Project *project in self.fetchedProjectsController.fetchedObjects ) {
             if (self.activeProject == project) {
                 indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
                 break;
-           }
+            } else if ([self.lastProjectID isEqualToString:project.projectUUID]) {
+                self.activeProject = project;
+                indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
+            }
         }
         
+        [self.tableView reloadData];
         if (indexPath) {
+            [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
             [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
         }
     }
