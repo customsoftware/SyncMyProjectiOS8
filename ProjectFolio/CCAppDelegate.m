@@ -72,6 +72,11 @@
     }
     [self setButtonStateWithShow:NO];
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
+    
+    // Reinstate the timer. Find the latest timer event. If it has a null end time
+    //  then make it the active timer
+    
+    
     return YES;
 }
 

@@ -42,6 +42,8 @@
         self.timer.start = [NSDate date];
         self.parentProject.projectUUID = (self.parentProject.projectUUID != nil) ? self.parentProject.projectUUID : [[CoreData sharedModel:nil] getUUID];
         [self.defaults saveString:self.parentProject.projectUUID atKey:kSelectedProject];
+    } else if ( !self.parentProject ) {
+        // No project selected yet, so no point to start a timer yet.
     } else {
         BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
         if (keyStatus == YES) {

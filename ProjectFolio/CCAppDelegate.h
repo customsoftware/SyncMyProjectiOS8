@@ -18,6 +18,7 @@
 #import "CoreData.h"
 #import "CCLocalData.h"
 #import "iCloudStarterProtocol.h"
+#import "Deliverables.h"
 
 @interface CCAppDelegate : UIResponder <UIApplicationDelegate,UIAlertViewDelegate,CCLoggerDelegate>
 
