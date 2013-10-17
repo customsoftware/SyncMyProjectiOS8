@@ -107,14 +107,24 @@
         self.childController.preferredContentSize = rect.size;
         self.childController.selectedProject = self.timer.workProject;
         self.childController.currentTimer = self.timer;
+        BOOL showList = YES;
         if (indexPath.row == 0) {
             // This is a project
             self.childController.currentTask = nil;
         } else {
             // This is a task
-            self.childController.currentTask = self.timer.workTask != nil ? self.timer.workTask : [self.timer.workProject.projectTask allObjects][0];
+            if (self.timer.workProject.projectTask.allObjects.count > 0) {
+                self.childController.currentTask = self.timer.workTask != nil ? self.timer.workTask : [self.timer.workProject.projectTask allObjects][0];
+            } else {
+                self.childController.currentTask = nil;
+                showList = NO;
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"No Tasks to Show" message:@"Since there are no tasks in this project, there are none to assign to this time slice" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
         }
-        [self.navigationController pushViewController:self.childController animated:YES];
+        if (showList) {
+            [self.navigationController pushViewController:self.childController animated:YES];
+        }
     }
 }
 
