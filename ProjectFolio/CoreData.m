@@ -109,13 +109,20 @@ static CoreData *sharedModel = nil;
 + (WorkTime *)createNewTimerForProject:(Project *)owningProject{
     WorkTime *time = nil;
     BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
-    if (keyStatus == YES) {
-        time = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
-        [owningProject addProjectWorkObject:time];
-        time.workProject = owningProject;
-        time.dateCreated = [NSDate date];
-        time.dateModified = time.dateCreated;
-        time.timerUUID = [[CoreData sharedModel:nil] getUUID];
+    if (keyStatus == YES && owningProject ) {
+        // If the last timer has a null end date, just use it.
+        NSArray *result = [[owningProject.projectWork allObjects] sortedArrayUsingDescriptors:[NSArray arrayWithObject:[NSSortDescriptor sortDescriptorWithKey:@"start" ascending:NO]]];
+        WorkTime *timer = (WorkTime *)result.firstObject;
+        if (timer.end || result.count == 0 ) {
+            time = [NSEntityDescription insertNewObjectForEntityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+            [owningProject addProjectWorkObject:time];
+            time.workProject = owningProject;
+            time.dateCreated = [NSDate date];
+            time.dateModified = time.dateCreated;
+            time.timerUUID = [[CoreData sharedModel:nil] getUUID];
+        } else {
+            time = timer;
+        }
     }
     return time;
 }
@@ -401,6 +408,59 @@ static CoreData *sharedModel = nil;
                        insertNewObjectForEntityForName:@"Priority"
                        inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
         newPriority.priority = @"High";
+        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
+        [pFRC performFetch:&fetchError];
+    }
+}
+-(void)testProjectCount{
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+    NSSortDescriptor *defaultDescriptor = [[NSSortDescriptor alloc] initWithKey:@"projectName" ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects: defaultDescriptor, nil];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    [fetchRequest setEntity:entity];
+    NSFetchedResultsController * pFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
+                                                                            managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
+                                                                              sectionNameKeyPath:nil
+                                                                                       cacheName:nil];
+    NSError *fetchError;
+    [pFRC performFetch:&fetchError];
+    if ([pFRC fetchedObjects].count == 0) {
+        // This will happen only the first time the app starts up, unless the user deletes all of the settings
+        
+        NSString* path = [[NSBundle mainBundle] pathForResource:@"HowTo" ofType:@"txt"];
+        
+        NSString* content = [NSString stringWithContentsOfFile:path
+                                                      encoding:NSUTF8StringEncoding
+                                                         error:NULL];
+        Project * newProject = [NSEntityDescription
+                                  insertNewObjectForEntityForName:@"Project"
+                                  inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+        newProject.projectName = @"Basic Instructions";
+        newProject.projectNotes = content;
+        newProject.dateCreated = [NSDate date];
+        newProject.dateStart = [NSDate date];
+        newProject.dateFinish = [NSDate date];
+        newProject.complete = [NSNumber numberWithBool:YES];
+        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
+        // How to add
+        newProject = [NSEntityDescription
+                                insertNewObjectForEntityForName:@"Project"
+                                inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+        newProject.projectName = @"Swipe down to add";
+        newProject.projectNotes = @"Swipe down from navigation bar to add a new record";
+        newProject.dateCreated = [NSDate date];
+        newProject.dateStart = [NSDate date];
+        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
+        // How to delete
+        newProject = [NSEntityDescription
+                      insertNewObjectForEntityForName:@"Project"
+                      inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+        newProject.projectName = @"Swipe left to delete";
+        newProject.projectNotes = @"Swipe left on record to delete it";
+        newProject.dateCreated = [NSDate date];
+        newProject.dateStart = [NSDate date];
+        newProject.dateFinish = [NSDate date];
         [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
         [pFRC performFetch:&fetchError];
     }

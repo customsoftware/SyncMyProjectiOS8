@@ -7,7 +7,7 @@
 //
 
 #import "Project.h"
-#import "Deliverables.h"
+// #import "Deliverables.h"
 #import "WorkTime.h"
 #import "Task.h"
 #import "Calendar.h"
@@ -54,6 +54,7 @@
 - (id)initWithDelegate:(id<CoreDataDelegate>)newDelegate;
 - (void)fixExistingData;
 - (void)testPriorityConfig;
+- (void)testProjectCount;
 
 // Context Operations
 - (void)undo;
