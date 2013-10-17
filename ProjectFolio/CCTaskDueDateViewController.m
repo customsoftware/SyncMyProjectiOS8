@@ -9,17 +9,17 @@
 #import "CCTaskDueDateViewController.h"
 #import "Project.h"
 #import "CCCalendarControlViewController.h"
+#import <EventKit/EventKit.h>
 
 @interface CCTaskDueDateViewController ()
 
 @property (strong, nonatomic) CCCalendarControlViewController *calendarControl;
+@property (strong, nonatomic) EKEventStore *store;
+@property (nonatomic) BOOL storeReminders;
 
 @end
 
 @implementation CCTaskDueDateViewController
-
-@synthesize dueDate = _dueDate;
-@synthesize activeTask = _activeTask;
 
 #pragma mark - IBAction
 
@@ -78,11 +78,34 @@
     }
     notification.fireDate = [self.dueDate.date dateByAddingTimeInterval:interval];
     notification.timeZone = [NSTimeZone defaultTimeZone];
-    notification.alertBody = [[NSString alloc] initWithFormat:@"%@ is due now", self.activeTask.title];
+    notification.alertBody = [NSString stringWithFormat:@"Project: %@'s task: %@ is due soon", self.activeTask.taskProject.projectName, self.activeTask.title];
     notification.alertAction = @"Alert";
     notification.soundName = UILocalNotificationDefaultSoundName;
     notification.applicationIconBadgeNumber = 1;
-    [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+    
+    if (self.storeReminders) {
+        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        NSDateComponents *dueDate = [gregorian components:(NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit) fromDate:self.dueDate.date];
+        NSDateComponents *startDate = [gregorian components:(NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit|NSHourCalendarUnit|NSMinuteCalendarUnit) fromDate:self.activeTask.taskProject.dateStart];
+        
+        EKReminder *reminder = [EKReminder reminderWithEventStore:self.store];
+        [reminder setTitle:notification.alertBody];
+        EKCalendar *defaultReminderList = [self.store defaultCalendarForNewReminders];
+        [reminder setCalendar:defaultReminderList];
+        EKAlarm *alarm = [EKAlarm alarmWithAbsoluteDate:notification.fireDate];
+        [reminder addAlarm:alarm];
+        [reminder setStartDateComponents:startDate];
+        [reminder setDueDateComponents:dueDate];
+        
+        NSError *error = nil;
+        BOOL success = [self.store saveReminder:reminder commit:YES error:&error];
+        if (!success) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Reminder Failed to Save" message:[NSString stringWithFormat:@"The reminder to %@", notification.alertBody] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
+        }
+    } else {
+        [[UIApplication sharedApplication] scheduleLocalNotification:notification];
+    }
     [self.navigationController popViewControllerAnimated:YES];
 }
 
@@ -110,6 +133,11 @@
     self.calendarControl = [[CCCalendarControlViewController alloc] init];
     [self.calendarControl.view setFrame:(CGRectMake(0, 300, 320, 300))];
     [self.calendarControl.view setHidden:FALSE];
+    self.storeReminders = YES;
+    self.store = [[EKEventStore alloc] init];
+    [self.store requestAccessToEntityType:EKEntityTypeReminder completion:^(BOOL granted, NSError *error) {
+        self.storeReminders = granted;
+    }];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
