@@ -201,16 +201,13 @@ typedef enum khotlistfilterModes{
         cell.imageView.image = nil;
     }
     
-    if (self.selectedSegment == categoryMode) {
-        UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(230, 5, 44, 34)];
-        catColor.backgroundColor = [self.task.taskPriority getCategoryColor];
-        catColor.layer.cornerRadius = 3;
-        catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
-        catColor.layer.borderWidth = 1;
-        cell.accessoryView = catColor;
-    } else {
-        cell.accessoryView = nil;
-    }
+    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 44)];
+    catColor.backgroundColor = [self.task.taskPriority getCategoryColor];
+    catColor.layer.cornerRadius = 0;
+    catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    catColor.layer.borderWidth = .5;
+    [cell addSubview:catColor];
+
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
