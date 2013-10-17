@@ -760,8 +760,10 @@ typedef enum kfilterModes{
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     }
     
+    UIColor *projectColor = [newProject.projectPriority getCategoryColor];
+    if (!projectColor) projectColor = [UIColor whiteColor];
     UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 44)];
-    catColor.backgroundColor = [newProject.projectPriority getCategoryColor];
+    catColor.backgroundColor = projectColor;
     catColor.layer.cornerRadius = 0;
     catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
     catColor.layer.borderWidth = .5;

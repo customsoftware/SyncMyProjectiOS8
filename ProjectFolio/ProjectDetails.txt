@@ -1,6 +1,6 @@
 This explains some of the features/controls accessible from this form.
 
-Project Customer - this is who you are going it for. The list that displays is from your address book.
+Project Customer - this is your customer. The list that displays is your contacts data.
 
 Cost Budget - Total available budget for project. As you work and bill time and make purchases, the funds are deducted from this amount. This amount is auto-computed for you based upon the Hour budget and Hourly Rate entries. You can edit this computed amount. 
 

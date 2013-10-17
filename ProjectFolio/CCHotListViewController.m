@@ -27,7 +27,7 @@ typedef enum khotlistfilterModes{
     lateMode
 } kHotListFilterModes;
 
-@interface CCHotListViewController ()
+@interface CCHotListViewController ()  <CCNotesDelegate>
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *filterOptions;
@@ -49,6 +49,7 @@ typedef enum khotlistfilterModes{
 @property NSInteger selectedFilter;
 @property NSInteger selectedSegment;
 @property (nonatomic) BOOL notInSearchMode;
+@property (strong, nonatomic) CCExpenseNotesViewController *notesController;
 
 @end
 
@@ -95,6 +96,12 @@ typedef enum khotlistfilterModes{
                                                                   cacheName:nil];
     
     self.taskFRC.delegate = self;
+    
+    // Add swipe to show notes
+    UISwipeGestureRecognizer *showExtrasSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
+    showExtrasSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.tableView addGestureRecognizer:showExtrasSwipe];
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -341,35 +348,40 @@ typedef enum khotlistfilterModes{
     [self.navigationController pushViewController:detailViewController animated:YES];
 }
 
+#pragma mark - <CCNotesDeleage>
+-(void)releaseNotes {
+    self.task.notes = self.notesController.notes.text;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(NSString *)getNotes {
+    return self.task.notes;
+}
+
+-(BOOL)isTaskClass{
+    return YES;
+}
+
+-(Task *)getParentTask {
+    return self.task;
+}
+
 #pragma mark - Helper
-//- (void)toggleSearchBar
-//{
-//    self.notInSearchMode = !self.notInSearchMode;
-//
-//    if (self.notInSearchMode) {
-//        [UIView animateWithDuration:kSwipeDuration
-//                              delay:kSwipeDelay
-//                            options:UIViewAnimationOptionCurveEaseIn
-//                         animations:^{
-//                             self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-//                             self.tableView.frame = CGRectMake(0, 0, 320, self.tableView.frame.size.height + 44); }
-//                         completion:^(BOOL finished){
-//                             [self.tableView beginUpdates];
-//                             [self.tableView endUpdates];
-//                         }];
-//    } else {
-//        [UIView animateWithDuration:kSwipeDuration
-//                              delay:kSwipeDelay
-//                            options:UIViewAnimationOptionCurveEaseIn
-//                         animations:^{
-//                             self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-//                             self.tableView.frame = CGRectMake(0, 44, 320, self.tableView.frame.size.height - 44); }
-//                         completion:^(BOOL finished){
-//                             [self.tableView beginUpdates];
-//                             [self.tableView endUpdates];
-//                         }];
-//    }
-//}
+- (void)swipeRight:(UISwipeGestureRecognizer *)gesture
+{
+    CGPoint location = [gesture locationInView:self.tableView];
+    NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
+    self.task = [self.taskFRC objectAtIndexPath:swipedIndexPath];
+    
+    // Show notes here
+    self.notesController = [self.storyboard instantiateViewControllerWithIdentifier:@"expenseNotes"];
+    self.notesController.modalPresentationStyle = UIModalPresentationFormSheet;
+    self.notesController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    
+    self.notesController.notesDelegate = self;
+    [self presentViewController:self.notesController animated:YES completion:nil];
+    
+}
 
 - (void)updateDisplayedItemsInHotList {
     self.filterOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kHotListFilterStatus];

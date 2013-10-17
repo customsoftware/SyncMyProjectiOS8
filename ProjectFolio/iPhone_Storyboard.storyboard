@@ -29,11 +29,11 @@
                                     </connections>
                                 </searchBar>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="Cell" editingAccessoryType="checkmark" textLabel="O5G-zs-6mR" detailTextLabel="aei-hk-MG4" style="IBUITableViewCellStyleSubtitle" id="YnH-gx-Gy3">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="Cell" editingAccessoryType="checkmark" textLabel="O5G-zs-6mR" detailTextLabel="aei-hk-MG4" style="IBUITableViewCellStyleSubtitle" id="YnH-gx-Gy3">
                                         <rect key="frame" x="0.0" y="130" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YnH-gx-Gy3" id="fhN-cU-H9e">
-                                            <rect key="frame" x="0.0" y="0.0" width="253" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="O5G-zs-6mR">
@@ -53,11 +53,11 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="lateCell" editingAccessoryType="checkmark" textLabel="Xac-Bt-jgm" detailTextLabel="EED-Vt-wcK" style="IBUITableViewCellStyleSubtitle" id="rGS-IP-3PA">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="none" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="lateCell" editingAccessoryType="checkmark" textLabel="Xac-Bt-jgm" detailTextLabel="EED-Vt-wcK" style="IBUITableViewCellStyleSubtitle" id="rGS-IP-3PA">
                                         <rect key="frame" x="0.0" y="174" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="rGS-IP-3PA" id="jEw-NE-trV">
-                                            <rect key="frame" x="0.0" y="0.0" width="253" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Xac-Bt-jgm">
@@ -491,7 +491,7 @@
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="childCellLate" textLabel="WJy-vN-dqc" detailTextLabel="fJm-pv-f7i" style="IBUITableViewCellStyleSubtitle" id="goJ-54-GG0">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="childCellLate" textLabel="WJy-vN-dqc" detailTextLabel="fJm-pv-f7i" style="IBUITableViewCellStyleSubtitle" id="goJ-54-GG0">
                                         <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="goJ-54-GG0" id="kmr-ya-Gev">
@@ -515,7 +515,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="childCellOnTime" textLabel="xHs-L5-XqT" detailTextLabel="IdG-Hu-VEu" style="IBUITableViewCellStyleSubtitle" id="aeL-SG-RuW">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="childCellOnTime" textLabel="xHs-L5-XqT" detailTextLabel="IdG-Hu-VEu" style="IBUITableViewCellStyleSubtitle" id="aeL-SG-RuW">
                                         <rect key="frame" x="0.0" y="130" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="aeL-SG-RuW" id="yYH-pq-0DR">
@@ -539,11 +539,11 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="lateParentCell" textLabel="Q8N-e1-BMn" detailTextLabel="iX5-Au-p29" imageView="Uc9-XO-uhH" style="IBUITableViewCellStyleSubtitle" id="Hsb-3s-J84">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="lateParentCell" textLabel="Q8N-e1-BMn" detailTextLabel="iX5-Au-p29" imageView="Uc9-XO-uhH" style="IBUITableViewCellStyleSubtitle" id="Hsb-3s-J84">
                                         <rect key="frame" x="0.0" y="174" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Hsb-3s-J84" id="ZYd-n1-GN8">
-                                            <rect key="frame" x="0.0" y="0.0" width="253" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Q8N-e1-BMn">
@@ -567,11 +567,11 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="groupCell" editingAccessoryType="detailDisclosureButton" textLabel="QFe-8R-H5d" detailTextLabel="6BT-yw-Zc1" imageView="pZH-bO-X0v" style="IBUITableViewCellStyleSubtitle" id="kPI-Ng-yMt">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="groupCell" editingAccessoryType="detailDisclosureButton" textLabel="QFe-8R-H5d" detailTextLabel="6BT-yw-Zc1" imageView="pZH-bO-X0v" style="IBUITableViewCellStyleSubtitle" id="kPI-Ng-yMt">
                                         <rect key="frame" x="0.0" y="218" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="kPI-Ng-yMt" id="jY7-xP-AQH">
-                                            <rect key="frame" x="0.0" y="0.0" width="253" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="QFe-8R-H5d">
@@ -595,11 +595,11 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="completedCell" textLabel="LUk-rX-ASC" detailTextLabel="red-UV-JRR" style="IBUITableViewCellStyleSubtitle" id="1Bi-9V-hDH">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="completedCell" textLabel="LUk-rX-ASC" detailTextLabel="red-UV-JRR" style="IBUITableViewCellStyleSubtitle" id="1Bi-9V-hDH">
                                         <rect key="frame" x="0.0" y="262" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="1Bi-9V-hDH" id="tEP-zt-PIu">
-                                            <rect key="frame" x="0.0" y="0.0" width="253" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="LUk-rX-ASC">

@@ -15,7 +15,7 @@
 #define kStartTaskNotification @"TaskTimerStartNotification"
 #define kStopNotification @"ProjectTimerStopNotification"
 
-@interface CCiPhoneTaskViewController ()
+@interface CCiPhoneTaskViewController () <CCNotesDelegate>
 
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) NSPredicate *incompletePredicate;
@@ -35,6 +35,7 @@
 @property BOOL  isNew;
 @property NSInteger lastSegment;
 @property (strong, nonatomic) UIToolbar *holderBar;
+@property (strong, nonatomic) CCExpenseNotesViewController *notesController;
 
 - (IBAction)toggleEditMode:(UIBarButtonItem *)sender;
 
@@ -172,6 +173,19 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:addTaskNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:kiCloudSyncNotification object:nil];
     
+    // Add long press to show/hide sub-tasks
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(toggleDisplayOfChildren:)];
+    [self.tableView addGestureRecognizer:longPress];
+    
+    longPress.numberOfTouchesRequired = 1;
+    longPress.minimumPressDuration = kLongPressDuration;
+    
+    // Add swipe to show notes
+    UISwipeGestureRecognizer *showExtrasSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
+    showExtrasSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.tableView addGestureRecognizer:showExtrasSwipe];
+    
+    // Add swipe to add records
     self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertTask)];
     [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
     [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
@@ -212,7 +226,72 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - <CCNotesDeleage>
+-(void)releaseNotes {
+    self.currentTask.notes = self.notesController.notes.text;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(NSString *)getNotes {
+    return self.currentTask.notes;
+}
+
+-(BOOL)isTaskClass{
+    return YES;
+}
+
+-(Task *)getParentTask {
+    return self.currentTask;
+}
+
 #pragma mark - Helpers
+- (void)toggleDisplayOfChildren:(UILongPressGestureRecognizer *)longPress {
+    CGPoint location = [longPress locationInView:self.tableView];
+    NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:swipedIndexPath];
+    self.currentTask = [self.taskFRC objectAtIndexPath:swipedIndexPath];
+    
+    if (UIGestureRecognizerStateEnded == longPress.state) {
+        if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
+            // What we do here is make the sub
+            if ([self.currentTask isExpanded] == YES) {
+                for (Task *subTask in self.currentTask.subTasks) {
+                    [subTask setSubTaskVisible:[NSNumber numberWithBool:NO]];
+                }
+            } else {
+                for (Task *subTask in self.currentTask.subTasks) {
+                    [subTask setSubTaskVisible:[NSNumber numberWithBool:YES]];
+                }
+            }
+            [self.taskFRC.managedObjectContext save:nil];
+            [self.taskFRC performFetch:nil];
+            [self.tableView reloadData];
+        } else {
+            self.isNew = NO;
+        }
+        cell.highlighted = NO;
+        
+    } else if (UIGestureRecognizerStateRecognized == longPress.state) {
+        cell.highlighted = YES;
+    }
+}
+
+- (void)swipeRight:(UISwipeGestureRecognizer *)gesture
+{
+    CGPoint location = [gesture locationInView:self.tableView];
+    NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
+    self.currentTask = [self.taskFRC objectAtIndexPath:swipedIndexPath];
+    
+    // Show notes here
+    self.notesController = [self.storyboard instantiateViewControllerWithIdentifier:@"expenseNotes"];
+    self.notesController.modalPresentationStyle = UIModalPresentationFormSheet;
+    self.notesController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    
+    self.notesController.notesDelegate = self;
+    [self presentViewController:self.notesController animated:YES completion:nil];
+    
+}
+
 -(void)sendTimerStartNotificationForTask{
     NSDictionary *projectDictionary = @{ @"Project" :self.currentTask.taskProject,
                                          @"Task" : self.currentTask };
@@ -229,9 +308,6 @@
     NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
 }
-
-
-
 
 #pragma mark - Table Support
 -(void)showTaskDetails:(UITableView *)tableView rowIndex:(NSIndexPath *)indexPath{
@@ -372,6 +448,15 @@
         }
         cell.detailTextLabel.text = detailMessage;
     }
+    
+    UIColor *taskColor = [taskItem.taskPriority getCategoryColor];
+    if (!taskColor) taskColor = [UIColor whiteColor];
+    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 44)];
+    catColor.backgroundColor = taskColor;
+    catColor.layer.cornerRadius = 0;
+    catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    catColor.layer.borderWidth = .5;
+    [cell addSubview:catColor];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -498,24 +583,8 @@
     self.currentTask = [self.taskFRC objectAtIndexPath:indexPath];
     [self sendTimerStopNotification];
     [self sendTimerStartNotificationForTask];
-    // Update the detail view contents
-    if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
-        // What we do here is make the sub
-        if ([self.currentTask isExpanded] == YES) {
-            for (Task *subTask in self.currentTask.subTasks) {
-                [subTask setSubTaskVisible:[NSNumber numberWithBool:NO]];
-            }
-        } else {
-            for (Task *subTask in self.currentTask.subTasks) {
-                [subTask setSubTaskVisible:[NSNumber numberWithBool:YES]];
-            }
-        }
-        [self.taskFRC performFetch:nil];
-        [self.tableView reloadData];
-    } else {
-        self.isNew = NO;
-        [self showTaskDetails:self.tableView rowIndex:indexPath];
-    }
+    self.isNew = NO;
+    [self showTaskDetails:self.tableView rowIndex:indexPath];
 }
 
 #pragma mark - Lazy Getters

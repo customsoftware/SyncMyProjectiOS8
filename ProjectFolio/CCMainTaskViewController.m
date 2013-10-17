@@ -7,13 +7,14 @@
 //
 
 #import "CCMainTaskViewController.h"
+#import "CCExpenseNotesViewController.h"
 #define TASK_COMPLETE [[NSNumber alloc] initWithInt:1]
 #define TASK_ACTIVE [[NSNumber alloc] initWithInt:0]
 #define kStartNotification @"ProjectTimerStartNotification"
 #define kStartTaskNotification @"TaskTimerStartNotification"
 #define kStopNotification @"ProjectTimerStopNotification"
 
-@interface CCMainTaskViewController ()
+@interface CCMainTaskViewController () <CCNotesDelegate>
 
 -(IBAction)toggleEditMode:(UIBarButtonItem *)sender;
 
@@ -36,6 +37,7 @@
 @property BOOL  isNew;
 @property (strong, nonatomic) NSMutableArray *barButtons;
 @property (strong, nonatomic) UIToolbar *holderBar;
+@property (strong, nonatomic) CCExpenseNotesViewController *notesController;
 @end
 
 @implementation CCMainTaskViewController
@@ -101,6 +103,24 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark - <CCNotesDeleage>
+-(void)releaseNotes {
+    self.currentTask.notes = self.notesController.notes.text;
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+-(NSString *)getNotes {
+    return self.currentTask.notes;
+}
+
+-(BOOL)isTaskClass{
+    return YES;
+}
+
+-(Task *)getParentTask {
+    return self.currentTask;
+}
+
 #pragma mark - Delegate actions
 -(BOOL)shouldShowCancelButton{
     return  self.isNew;
@@ -113,7 +133,6 @@
         self.currentTask = [[CoreData sharedModel:nil] saveLastModified:self.currentTask];
         [[CoreData sharedModel:self] saveContext];
     }
-    
 }
 
 -(void)releaseLogger{
@@ -156,23 +175,24 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:kiCloudSyncNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(refreshTableView) name:addTaskNotification object:nil];
     
+    // Add swipe to show notes
+    UISwipeGestureRecognizer *showExtrasSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
+    showExtrasSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.tableView addGestureRecognizer:showExtrasSwipe];
+    
+    // Add swipe to add new record
     self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertTask:)];
     [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
     [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
     
-    self.displayOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
+    // Add long press to show/hide sub-tasks
+    UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(toggleDisplayOfChildren:)];
+    [self.tableView addGestureRecognizer:longPress];
     
-    // Double Tapp on UITableViewCell
-//    UITapGestureRecognizer* doubleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(doubleTap:)];
-//    doubleTap.numberOfTapsRequired = 2;
-//    doubleTap.numberOfTouchesRequired = 1;
-//    [self.tableView addGestureRecognizer:doubleTap];
-//    
-//    UITapGestureRecognizer* singleTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(singleTap:)];
-//    singleTap.numberOfTapsRequired = 1;
-//    singleTap.numberOfTouchesRequired = 1;
-//    [singleTap requireGestureRecognizerToFail:doubleTap];
-//    [self.tableView addGestureRecognizer:singleTap];
+    longPress.numberOfTouchesRequired = 1;
+    longPress.minimumPressDuration = kLongPressDuration;
+    
+    self.displayOptions.selectedSegmentIndex = [[NSUserDefaults standardUserDefaults] integerForKey:kTaskFilterStatus];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -367,6 +387,14 @@
         }
         cell.detailTextLabel.text = detailMessage;
     }
+    UIColor *taskColor = [taskItem.taskPriority getCategoryColor];
+    if (!taskColor) taskColor = [UIColor whiteColor];
+    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 44)];
+    catColor.backgroundColor = taskColor;
+    catColor.layer.cornerRadius = 0;
+    catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    catColor.layer.borderWidth = .5;
+    [cell addSubview:catColor];
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -406,7 +434,7 @@
     
     // Configure the cell...
     [self configureCell:cell forTask:task];
-//    cell.userInteractionEnabled = tableView.editing;
+
     return cell;
 }
 
@@ -498,29 +526,76 @@
     self.currentTask = [self.taskFRC objectAtIndexPath:indexPath];
     [self sendTimerStopNotification];
     [self sendTimerStartNotificationForTask];
-#warning Need to handle creation of a new task. If task is new, title wont be set when this is called.
+
     // Update the detail view contents
-    if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
-        // What we do here is make the sub
-        if ([self.currentTask isExpanded] == YES) {
-            for (Task *subTask in self.currentTask.subTasks) {
-                [subTask setSubTaskVisible:[NSNumber numberWithBool:NO]];
-            }
-        } else {
-            for (Task *subTask in self.currentTask.subTasks) {
-                [subTask setSubTaskVisible:[NSNumber numberWithBool:YES]];
-            }
-        }
-        [self.taskFRC.managedObjectContext save:nil];
-        [self.taskFRC performFetch:nil];
-        [self.tableView reloadData];
-    } else {
+//    if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
+//        // What we do here is make the sub
+//        if ([self.currentTask isExpanded] == YES) {
+//            for (Task *subTask in self.currentTask.subTasks) {
+//                [subTask setSubTaskVisible:[NSNumber numberWithBool:NO]];
+//            }
+//        } else {
+//            for (Task *subTask in self.currentTask.subTasks) {
+//                [subTask setSubTaskVisible:[NSNumber numberWithBool:YES]];
+//            }
+//        }
+//        [self.taskFRC.managedObjectContext save:nil];
+//        [self.taskFRC performFetch:nil];
+//        [self.tableView reloadData];
+//    } else {
         self.isNew = NO;
         [self showTaskDetails:self.tableView rowIndex:indexPath];
-    }
+//    }
 }
 
 #pragma mark - Helper
+- (void)toggleDisplayOfChildren:(UILongPressGestureRecognizer *)longPress {
+    CGPoint location = [longPress locationInView:self.tableView];
+    NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
+    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:swipedIndexPath];
+    self.currentTask = [self.taskFRC objectAtIndexPath:swipedIndexPath];
+
+    if (UIGestureRecognizerStateEnded == longPress.state) {
+        if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
+            // What we do here is make the sub
+            if ([self.currentTask isExpanded] == YES) {
+                for (Task *subTask in self.currentTask.subTasks) {
+                    [subTask setSubTaskVisible:[NSNumber numberWithBool:NO]];
+                }
+            } else {
+                for (Task *subTask in self.currentTask.subTasks) {
+                    [subTask setSubTaskVisible:[NSNumber numberWithBool:YES]];
+                }
+            }
+            [self.taskFRC.managedObjectContext save:nil];
+            [self.taskFRC performFetch:nil];
+            [self.tableView reloadData];
+        } else {
+            self.isNew = NO;
+        }
+        cell.highlighted = NO;
+        
+    } else if (UIGestureRecognizerStateRecognized == longPress.state) {
+        cell.highlighted = YES;
+    }
+}
+
+- (void)swipeRight:(UISwipeGestureRecognizer *)gesture
+{
+    CGPoint location = [gesture locationInView:self.tableView];
+    NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
+    self.currentTask = [self.taskFRC objectAtIndexPath:swipedIndexPath];
+    
+    // Show notes here
+    self.notesController = [self.storyboard instantiateViewControllerWithIdentifier:@"expenseNotes"];
+    self.notesController.modalPresentationStyle = UIModalPresentationFormSheet;
+    self.notesController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+    
+    self.notesController.notesDelegate = self;
+    [self presentViewController:self.notesController animated:YES completion:nil];
+
+}
+
 - (void)doubleTap:(UITapGestureRecognizer*)tap
 {
     if (UIGestureRecognizerStateEnded == tap.state)

@@ -28,7 +28,7 @@
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) CCAuxPriorityViewController *priorityController;
 @property (strong, nonatomic) CCAuxCalendarSettingViewController *calendarController;
-
+@property (weak, nonatomic) IBOutlet UIScrollView *scroller;
 
 @property (weak, nonatomic) IBOutlet UIStepper *changeFontSize;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
@@ -84,6 +84,8 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTimer) name:kAppString object:nil];
+    [self.scroller setScrollEnabled:YES];
+    self.scroller.scrollsToTop = YES;
 }
 
 -(void)viewWillAppear:(BOOL)animated{

@@ -1,0 +1,16 @@
+Add a project, task, expense, category or meeting by swiping down from navigation bar over the respective table list.
+
+Update a project's data in iPhone app by tapping on detail disclosure button in project list.
+
+Update a project's data in iPad app by swiping down from navigation bar over detail view containing this information. Close the view by swiping up on the view.
+
+Add tasks:
+    1.  By swiping down from navigation bar over task list
+    2.  Select text in Project notes and tap "Create New Task" menu.
+    3.  Select text in Task notes and tap "Create New Task" menu. These tasks will be sub-tasks of the current task.
+
+Where a seach field is visible, swipe up on the list to hide it.
+
+Enable iCloud sync from settings. Go to settings in iPhone by tapping on "Gear" button in navigation bar over project list. Go to settings in ipad by tapping on "Gear" button in far right end of tool bar below Project notes. Once in settings, tap on "Purchase Upgrades" button and make In-App purchase.
+
+For additional and more indepth help, tap "?" icon. In iPhone it is in Project list navigation bar. In iPad, it is in Project Notes navigation bar.

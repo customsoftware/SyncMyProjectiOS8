@@ -773,11 +773,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <viewControllerLayoutGuide type="bottom" id="nAk-iT-acE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8KM-79-KkV">
-                        <rect key="frame" x="0.0" y="44" width="972" height="3884"/>
+                        <rect key="frame" x="0.0" y="44" width="3928" height="1104"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IRB-5p-vRn">
-                                <rect key="frame" x="20" y="8" width="932" height="3876"/>
+                                <rect key="frame" x="20" y="8" width="3888" height="1096"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Lborum. Nam liber te conscient to factor tum poen legum odioque civiuda.">
@@ -797,6 +797,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <constraint firstItem="IRB-5p-vRn" firstAttribute="leading" secondItem="8KM-79-KkV" secondAttribute="leading" constant="20" symbolic="YES" id="jFi-qP-pm8"/>
                             <constraint firstAttribute="trailing" secondItem="IRB-5p-vRn" secondAttribute="trailing" constant="20" symbolic="YES" id="zAi-ab-eQw"/>
                         </constraints>
+                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <extendedEdge key="edgesForExtendedLayout" bottom="YES"/>
                     <toolbarItems/>
@@ -3147,7 +3148,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="childCellLate" textLabel="q1T-0h-0cQ" detailTextLabel="9f0-Bh-qmK" style="IBUITableViewCellStyleSubtitle" id="2Vi-2T-cmf">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="childCellLate" editingAccessoryType="checkmark" textLabel="q1T-0h-0cQ" detailTextLabel="9f0-Bh-qmK" style="IBUITableViewCellStyleSubtitle" id="2Vi-2T-cmf">
                                         <rect key="frame" x="0.0" y="86" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="2Vi-2T-cmf" id="c9T-w6-0CK">
@@ -3171,7 +3172,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="childCellOnTime" textLabel="DDH-Jd-QFq" detailTextLabel="APt-AH-rhc" style="IBUITableViewCellStyleSubtitle" id="xF9-3d-HiC">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="childCellOnTime" editingAccessoryType="checkmark" textLabel="DDH-Jd-QFq" detailTextLabel="APt-AH-rhc" style="IBUITableViewCellStyleSubtitle" id="xF9-3d-HiC">
                                         <rect key="frame" x="0.0" y="130" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="xF9-3d-HiC" id="fGH-l3-Giq">
@@ -3195,11 +3196,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="lateParentCell" textLabel="suC-nE-hfw" detailTextLabel="1Mm-SU-pC4" imageView="pER-j2-LBa" style="IBUITableViewCellStyleSubtitle" id="y51-Rr-XUE">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="lateParentCell" editingAccessoryType="checkmark" textLabel="suC-nE-hfw" detailTextLabel="1Mm-SU-pC4" imageView="pER-j2-LBa" style="IBUITableViewCellStyleSubtitle" id="y51-Rr-XUE">
                                         <rect key="frame" x="0.0" y="174" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="y51-Rr-XUE" id="Ldc-ht-xcN">
-                                            <rect key="frame" x="0.0" y="0.0" width="253" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="suC-nE-hfw">
@@ -3223,11 +3224,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="groupCell" textLabel="FrF-lW-CCZ" detailTextLabel="FnI-yO-TP0" imageView="pYo-HV-Sii" style="IBUITableViewCellStyleSubtitle" id="8V7-cc-dA2">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="groupCell" editingAccessoryType="checkmark" textLabel="FrF-lW-CCZ" detailTextLabel="FnI-yO-TP0" imageView="pYo-HV-Sii" style="IBUITableViewCellStyleSubtitle" id="8V7-cc-dA2">
                                         <rect key="frame" x="0.0" y="218" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="8V7-cc-dA2" id="0kv-it-w6m">
-                                            <rect key="frame" x="0.0" y="0.0" width="253" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="FrF-lW-CCZ">
@@ -3251,11 +3252,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                             </subviews>
                                         </tableViewCellContentView>
                                     </tableViewCell>
-                                    <tableViewCell contentMode="scaleToFill" selectionStyle="blue" accessoryType="detailDisclosureButton" indentationWidth="10" reuseIdentifier="completedCell" textLabel="gSe-tV-p9d" detailTextLabel="UAj-5B-fov" style="IBUITableViewCellStyleSubtitle" id="4FR-sB-LGs">
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="gray" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="completedCell" editingAccessoryType="checkmark" textLabel="gSe-tV-p9d" detailTextLabel="UAj-5B-fov" style="IBUITableViewCellStyleSubtitle" id="4FR-sB-LGs">
                                         <rect key="frame" x="0.0" y="262" width="320" height="44"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4FR-sB-LGs" id="h3A-M7-lIw">
-                                            <rect key="frame" x="0.0" y="0.0" width="253" height="43"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="287" height="43"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="gSe-tV-p9d">
@@ -3749,9 +3750,9 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
         <!--Navigation Controller-->
         <scene sceneID="dgx-Gp-c0A">
             <objects>
-                <navigationController id="lex-D9-Gyz" sceneMemberID="viewController">
+                <navigationController storyboardIdentifier="modalNotes" useStoryboardIdentifierAsRestorationIdentifier="YES" id="lex-D9-Gyz" sceneMemberID="viewController">
                     <toolbarItems/>
-                    <modalFormSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <modalPageSheetSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="lN7-Kb-Rjx">
                         <rect key="frame" x="0.0" y="0.0" width="768" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -3927,7 +3928,7 @@ The feature requires an active iCloud account and that iCloud is enabled on your
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="gY0-Ur-f3q"/>
-        <segue reference="XQ6-5D-tBj"/>
+        <segue reference="CAW-5q-vHi"/>
         <segue reference="sNg-Mf-0gY"/>
     </inferredMetricsTieBreakers>
 </document>

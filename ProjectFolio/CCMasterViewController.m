@@ -532,7 +532,7 @@ typedef enum kfilterModes{
                                           reuseIdentifier:CellIdentifier];
         }
     }
-        
+    
     [self configureCell:cell atIndexPath:indexPath inTable:tableView];
     return cell;
 }
@@ -744,8 +744,10 @@ typedef enum kfilterModes{
         cell.imageView.image = nil;
     }
 
+    UIColor *projectColor = [newProject.projectPriority getCategoryColor];
+    if (!projectColor) projectColor = [UIColor whiteColor];
     UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 44)];
-    catColor.backgroundColor = [newProject.projectPriority getCategoryColor];
+    catColor.backgroundColor = projectColor;
     catColor.layer.cornerRadius = 0;
     catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
     catColor.layer.borderWidth = .5;

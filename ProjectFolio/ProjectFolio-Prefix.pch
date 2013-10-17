@@ -55,6 +55,7 @@
 
 #define kSwipeDelay 0.05f
 #define kSwipeDuration 0.25f
+#define kLongPressDuration 0.5f
 
 #define kAppString          @"deviceKey"
 #define kAppStatus          @"Status"

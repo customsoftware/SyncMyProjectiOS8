@@ -161,15 +161,11 @@
             [menu update];
         }
     }
+    
+    UISwipeGestureRecognizer *closer = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(closeNotes:)];
+    closer.direction = UISwipeGestureRecognizerDirectionLeft;
+    [self.notes addGestureRecognizer:closer];
 }
-
--(void)viewDidUnload{
-    self.notes = nil;
-    self.expense = nil;
-    self.longPressMenu = nil;
-    self.notesDelegate = nil;
-}
-
 
 - (void)didReceiveMemoryWarning
 {
