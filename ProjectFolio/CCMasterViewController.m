@@ -28,7 +28,7 @@ typedef enum kfilterModes{
     allProjectsMode,
     activeProjectsMode,
     openProjectsMode,
-    categoryMode,
+    recentListMode,
     hotListMode
 } kFilterModes;
 
@@ -48,6 +48,7 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
 @property (nonatomic) BOOL notInSearchMode;
 @property (strong, nonatomic) RatingReminder * reminder;
+@property (strong, nonatomic) NSString *lastProjectID;
 
 @end
 
@@ -79,31 +80,17 @@ typedef enum kfilterModes{
     self.projectTimer = [[CCProjectTimer alloc] init];
     CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
     [application registeriCloudDelegate:self];
+    
+    // Set up swipe to see tasks
+    // Add swipe gesture recognizer to default, unfiltered table view
+    UISwipeGestureRecognizer *showExtrasSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
+    showExtrasSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.tableView addGestureRecognizer:showExtrasSwipe];
+    
+    // Set up swipe to add projects
     self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertNewObject:)];
     [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
     [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
-    
-//    int runCount = [[NSUserDefaults standardUserDefaults] integerForKey:kRatingCounterKey];
-//    self.reminder = [[RatingReminder alloc] initWithNumberOfRuns:runCount];
-//    [self.reminder startTimer];
-}
-
--(void)viewDidAppear:(BOOL)animated{
-    if (self.activeProject != nil) {
-        [self enableControls];
-    } else {
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *tempProject = [defaults objectForKey:kSelectedProject];
-        
-        for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
-            if ([project.projectUUID isEqualToString:tempProject]) {
-                NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
-                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-                [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
-                break;
-            }
-        }
-    }
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -131,6 +118,29 @@ typedef enum kfilterModes{
         [self filterActions:self.filterSegmentControl];
     }
     self.swiper.enabled = YES;
+    [self cleanCheckMarks:self.tableView];
+}
+
+-(void)viewDidAppear:(BOOL)animated{
+    [super viewDidAppear:animated];
+    
+    if (self.activeProject != nil) {
+        [self enableControls];
+        [self sendTimerStartNotificationForProject];
+    } else {
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        self.lastProjectID = [defaults objectForKey:kSelectedProject];
+//        [self.tableView reloadData];
+    }
+//        for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
+//            if ([project.projectUUID isEqualToString:tempProject]) {
+//                NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
+//                [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+//                [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
+//                break;
+//            }
+//        }
+//    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -153,6 +163,10 @@ typedef enum kfilterModes{
     if (sender.selectedSegmentIndex == hotListMode){
         self.hotListController.projectDetailController = self.detailViewController;
         [self.navigationController pushViewController:self.hotListController animated:YES];
+        sender.selectedSegmentIndex = self.lastSelected;
+        [self sendTimerStopNotification];
+    } else if (sender.selectedSegmentIndex == recentListMode){
+//        [self.navigationController pushViewController:self.recentListController animated:YES];
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];
     } else {
@@ -191,27 +205,6 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - Popover Controls
-/*-(void)showProjectDatePicker:(NSIndexPath *)sender{
-    // Configure the popover view   
-    self.projectDateController =  [self.storyboard instantiateViewControllerWithIdentifier:@"projectPopper"];
-    self.projectPopover = [[UIPopoverController alloc] initWithContentViewController:self.projectDateController];
-    self.projectPopover.delegate = self;
-    self.controllingCellIndex = sender;
-    self.controllingCell = [self.tableView cellForRowAtIndexPath:sender];
-    Project *project = [self.fetchedProjectsController objectAtIndexPath:sender];
-    CCDateSetterViewController *dateController = (CCDateSetterViewController *)self.projectDateController.visibleViewController;
-    dateController.project = project;
-    dateController.popControll = self.projectPopover;
-    
-    // Show the popover
-    CGRect rect = self.controllingCell.frame;
-    [self.projectPopover 
-     presentPopoverFromRect:rect 
-     inView:self.controllingCell.superview 
-     permittedArrowDirections:UIPopoverArrowDirectionLeft 
-     animated:YES];
-}*/
-
 -(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
     NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
@@ -220,6 +213,7 @@ typedef enum kfilterModes{
 - (void)respondToiCloudUpdate {
     [self.fetchedProjectsController performFetch:nil];
     [self.tableView reloadData];
+    [self cleanCheckMarks:self.tableView];
 }
 
 #pragma mark - Search Bar Functionality
@@ -246,7 +240,6 @@ typedef enum kfilterModes{
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [self.searchBar resignFirstResponder];
-//    [self toggleSearchBar];
     [searchBar setShowsCancelButton:NO];
 }
 
@@ -381,6 +374,20 @@ typedef enum kfilterModes{
 //    self.inICloudMode = YES;
 }
 
+- (void)cleanCheckMarks:(UITableView *) tableView {
+    for (int row = 0; row < [tableView numberOfRowsInSection:0]; row++) {
+        NSIndexPath* cellPath = [NSIndexPath indexPathForRow:row inSection:0];
+        UITableViewCell* cell = [tableView cellForRowAtIndexPath:cellPath];
+        //do stuff with 'cell'
+        if (cell == self.controllingCell) {
+            [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+        } else {
+            [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        }
+    }
+}
+
+
 #pragma mark - Public functionality
 -(void)setFontForDisplay{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -448,6 +455,13 @@ typedef enum kfilterModes{
     }
     self.detailViewController.projectNotes.text = noteText;
     self.detailViewController.title = titleText;
+}
+
+- (void)swipeRight:(UISwipeGestureRecognizer *)gesture
+{
+    CGPoint location = [gesture locationInView:self.tableView];
+    NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
+    [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:swipedIndexPath];
 }
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
@@ -569,23 +583,18 @@ typedef enum kfilterModes{
     return NO;
 }
 
-//-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
-//    if (tableView == self.tableView) {
-//        // NSLog(@"Project name: %@", self.activeProject.projectName);
-////        self.detailViewController.project.projectNotes = self.detailViewController.projectNotes.text;
-////        self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
-//        [self.activeProject.managedObjectContext save:nil];
-////        [self sendTimerStopNotification];
-//    }
-//}
+-(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
+    if (tableView == self.tableView) {
+        UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+    }
+}
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    [self resignFirstResponder];
-//    [self enableControls];
-//    [self showProjectDatePicker:indexPath];
-//    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
     [self updateDetailControllerForIndexPath:indexPath inTable:tableView];
+    [self cleanCheckMarks:tableView];
+
 }
 
 #pragma mark - Fetched results controller
@@ -686,18 +695,6 @@ typedef enum kfilterModes{
     }
 }
 
-
-
-/*
-// Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed. 
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
-{
-    // In the simplest, most efficient, case, reload the table view.
-    [self.tableView reloadData];
-}
- */
-
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView
 {
     Project *newProject = nil;
@@ -749,15 +746,17 @@ typedef enum kfilterModes{
         cell.imageView.image = nil;
     }
 
-    if (self.lastSelected == categoryMode) {
-        UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(230, 5, 44, 34)];
-        catColor.backgroundColor = [newProject.projectPriority getCategoryColor];
-        catColor.layer.cornerRadius = 3;
-        catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
-        catColor.layer.borderWidth = 1;
-        cell.accessoryView = catColor;
+    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 44)];
+    catColor.backgroundColor = [newProject.projectPriority getCategoryColor];
+    catColor.layer.cornerRadius = 0;
+    catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    catColor.layer.borderWidth = .5;
+    [cell addSubview:catColor];
+    
+    if (newProject == self.activeProject) {
+        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
     } else {
-        cell.accessoryView = nil;
+        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
     }
     
     cell.detailTextLabel.text = caption;
