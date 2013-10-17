@@ -95,19 +95,6 @@ typedef enum khotlistfilterModes{
                                                                   cacheName:nil];
     
     self.taskFRC.delegate = self;
-    
-//    NSMutableArray *buttons = [[NSMutableArray alloc] initWithCapacity:2];
-//    UIBarButtonItem *searchButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemSearch target:self action:@selector(toggleSearchBar)];
-//    searchButton.style = UIBarButtonItemStyleBordered;
-//    [buttons addObject:searchButton];
-//    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(sendHotList)];
-//    addButton.style = UIBarButtonItemStyleBordered;
-//    [buttons addObject:addButton];
-//    UIToolbar *tools = [[UIToolbar alloc] initWithFrame:CGRectMake(0, 0, 100, 45)];
-//    [tools setItems:buttons animated:NO];
-//    UIBarButtonItem *twoButtons = [[UIBarButtonItem alloc] initWithCustomView:tools];
-//    self.navigationItem.rightBarButtonItem = searchButton;
-//    self.notInSearchMode = [[NSUserDefaults standardUserDefaults] boolForKey:kHotListSearchState];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -120,14 +107,6 @@ typedef enum khotlistfilterModes{
         [self.projectTimer releaseTimer];
         self.projectTimer = nil;
     }
-    
-//    if (self.notInSearchMode) {
-//        self.searchBar.frame = CGRectMake(0, -44, 320, self.searchBar.frame.size.height);
-//        self.tableView.frame = CGRectMake(0, 0, 320, [UIScreen mainScreen].bounds.size.height);
-//    } else {
-//        self.searchBar.frame = CGRectMake(0, 0, 320, self.searchBar.frame.size.height);
-//        self.tableView.frame = CGRectMake(0, 44, 320, [UIScreen mainScreen].bounds.size.height - 44);
-//    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -249,6 +228,17 @@ typedef enum khotlistfilterModes{
     } else {
         retValue = self.filteredTasks.count;
     }
+    
+    NSString *placeText = nil;
+    if (self.selectedFilter == categoryMode) {
+        // do something
+        placeText = @"Enter category name";
+    } else {
+        // do something else
+        placeText = @"Enter task name";
+    }
+    self.searchBar.placeholder = placeText;
+    
     return retValue;
 }
 
