@@ -10,6 +10,7 @@
 #import "Project+CategoryProject.h"
 #import "WorkTime.h"
 #import "CCGeneralCloser.h"
+#import "CCGeneralCloserProtocol.h"
 #import "CCiPhoneTaskViewController.h"
 #import "CCProjectTaskDelegate.h"
 #import "CCProjectTimer.h"
@@ -19,7 +20,7 @@
 #import "CCSettingsControl.h"
 #import "CoreData.h"
 
-@interface CCiPhoneMasterViewController : UIViewController <UIPopoverControllerDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate, UIAlertViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,CCProjectTaskDelegate,UISearchDisplayDelegate,CCLoggerDelegate,CoreDataDelegate,UISearchBarDelegate>
+@interface CCiPhoneMasterViewController : UIViewController <UIPopoverControllerDelegate,UITableViewDataSource,UITableViewDelegate,NSFetchedResultsControllerDelegate, UIAlertViewDelegate,UIActionSheetDelegate,MFMailComposeViewControllerDelegate,CCProjectTaskDelegate,UISearchDisplayDelegate,CCLoggerDelegate,CoreDataDelegate,UISearchBarDelegate,CCGeneralCloserProtocol,UIPrintInteractionControllerDelegate>
 
 @property (strong, nonatomic) CCTextEntryPopoverController *projectNameView;
 @property (strong, nonatomic) CCDateSetterViewController *projectPopover;

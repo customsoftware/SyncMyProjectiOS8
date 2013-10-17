@@ -22,12 +22,14 @@
 #import "CCLatestNewsViewController.h"
 #import "iCloudStarterProtocol.h"
 #import "CCAppDelegate.h"
+#import "CCPrintNotesRender.h"
+#import "CCRecentTaskViewController.h"
 
 typedef enum kfilterModes{
     allProjectsMode,
     activeProjectsMode,
     openProjectsMode,
-    categoryMode,
+    recentListMode,
     hotListMode
 } kFilterModes;
 
@@ -42,6 +44,7 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) NSPredicate *activePredicate;
 @property (strong, nonatomic) NSPredicate *openPredicate;
 @property (strong, nonatomic) CCHotListViewController *hotListController;
+@property (strong, nonatomic) CCRecentTaskViewController *recentListController;
 @property NSInteger lastSelected;
 @property (strong, nonatomic) NSMutableArray *filteredProjects;
 @property (strong, nonatomic) CCErrorLogger *logger;
@@ -54,6 +57,7 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *projectActionsButton;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *filterSegmentControl;
+@property (strong, nonatomic) NSString *lastProjectID;
 
 -(IBAction)filterActions:(UISegmentedControl *)sender;
 -(IBAction)actionButton:(UIButton *)sender;
@@ -84,6 +88,10 @@ typedef enum kfilterModes{
         [self.navigationController pushViewController:self.hotListController animated:YES];
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];
+    } else if (sender.selectedSegmentIndex == recentListMode){
+        [self.navigationController pushViewController:self.recentListController animated:YES];
+        sender.selectedSegmentIndex = self.lastSelected;
+        [self sendTimerStopNotification];
     } else {
         self.lastSelected = sender.selectedSegmentIndex;
         [[NSUserDefaults standardUserDefaults] setInteger:self.lastSelected forKey:kProjectFilterStatus];
@@ -99,18 +107,23 @@ typedef enum kfilterModes{
         [self.fetchedProjectsController performFetch:&fetchError];
         [self.tableView reloadData];
         
+        NSIndexPath *indexPath = nil;
         for (Project *project in self.fetchedProjectsController.fetchedObjects ) {
             if (self.activeProject == project) {
-                NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
+                indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
                 [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
             }
         }
         
+        if (indexPath) {
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        }
     }
 }
 
 -(IBAction)actionButton:(UIButton *)sender{
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Close Projects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"This Week", @"Yesterday", @"All Active", nil];
+    actionSheet.tag = 1;
     [actionSheet showInView:self.view];
 }
 
@@ -171,6 +184,7 @@ typedef enum kfilterModes{
 }
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
+    if (actionSheet.tag == 1) {
     self.closer = nil;
     switch (buttonIndex) {
         case 2:
@@ -192,7 +206,57 @@ typedef enum kfilterModes{
             // NSLog(@"Cancelling this");
             break;
     }
+    } else if ( actionSheet.tag == 2 ) {
+        switch (buttonIndex) {
+            case 0:
+                [self.closer emailMessage];
+                [self.navigationController presentViewController:self.closer.mailComposer animated:YES completion:nil];
+                break;
+                
+            case 1:
+                [self printReport];
+                break;
+                
+            default:
+                break;
+        }
+    }
 }
+
+- (void)printReport{
+    UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
+    pic.delegate = self;
+    
+    UIPrintInfo *printInfo = [UIPrintInfo printInfo];
+    printInfo.outputType = UIPrintInfoOutputGrayscale;
+    printInfo.jobName = self.activeProject.projectName;
+    pic.printInfo = printInfo;
+    
+    UIMarkupTextPrintFormatter *notesFormatter = [[UIMarkupTextPrintFormatter alloc]
+                                                  initWithMarkupText:self.closer.messageString];
+    notesFormatter.startPage = 0;
+    CCPrintNotesRender *renderer = [[CCPrintNotesRender alloc] init];
+    renderer.headerString = @"Billable Hour Summary";
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    renderer.fontName = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
+    renderer.fontSize = [defaults integerForKey:kFontSize];
+    [renderer addPrintFormatter:notesFormatter startingAtPageAtIndex:0];
+    pic.printPageRenderer = renderer;
+    pic.showsPageRange = YES;
+    
+    void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
+    ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
+        if (!completed && error) {
+            NSLog(@"Printing could not complete because of error: %@", error);
+        }
+    };
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        [pic presentFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES completionHandler:completionHandler];
+    } else {
+        [pic presentAnimated:YES completionHandler:completionHandler];
+    }
+}
+
 
 #pragma mark - Alert Functionality
 -(NSString *)yesButtonTitle{
@@ -274,6 +338,12 @@ typedef enum kfilterModes{
     if (!showNews) {
         [self.navigationController pushViewController:latestController animated:YES];
     }
+    
+    // Add swipe gesture recognizer to default, unfiltered table view
+    UISwipeGestureRecognizer *showExtrasSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
+    showExtrasSwipe.direction = UISwipeGestureRecognizerDirectionRight;
+    [self.tableView addGestureRecognizer:showExtrasSwipe];
+    
     // Add swipe gesture recognizer to add projects
     self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertNewObject:)];
     [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
@@ -294,6 +364,8 @@ typedef enum kfilterModes{
     self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
     [self filterActions:self.filterSegmentControl];
     self.swiper.enabled = YES;
+    [[CoreData sharedModel:nil] testProjectCount];
+    [[CoreData sharedModel:nil] testPriorityConfig];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -303,18 +375,8 @@ typedef enum kfilterModes{
         [self sendTimerStartNotificationForProject];
     } else {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSString *tempProject = [defaults objectForKey:kSelectedProject];
-        if (tempProject){
-            for (Project *project in [self.fetchedProjectsController fetchedObjects]) {
-                if ([project.projectUUID isEqualToString:tempProject]) {
-                    NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:project];
-                    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-                    break;
-                }
-            }
-        } else {
-            // Do something???
-        }
+        self.lastProjectID = [defaults objectForKey:kSelectedProject];
+        [self.tableView reloadData];
     }
 }
 
@@ -325,7 +387,6 @@ typedef enum kfilterModes{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     // Return YES for supported orientations
@@ -333,6 +394,12 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - Helper
+- (void)sendOutput{
+    UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Send Email" otherButtonTitles:@"Print Report", nil];
+    sheet.tag = 2;
+    [sheet showFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES];
+}
+
 -(IBAction)showSettings:(UIButton *)sender{
     self.settings = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsMain"];
     [self.navigationController pushViewController:self.settings animated:YES];
@@ -377,6 +444,15 @@ typedef enum kfilterModes{
     self.controllingCell = [self.tableView cellForRowAtIndexPath:indexPath];
 }
 
+- (void)swipeRight:(UISwipeGestureRecognizer *)gesture
+{
+    CGPoint location = [gesture locationInView:self.tableView];
+    NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
+//    UITableViewCell *swipedCell  = [self.tableView cellForRowAtIndexPath:swipedIndexPath];
+    
+    //Your own code...
+    [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:swipedIndexPath];
+}
 
 -(void)tableView:(UITableView *)tableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath{
     // Need to invoke popover from here
@@ -412,6 +488,17 @@ typedef enum kfilterModes{
     } else {
         retValue = [self.filteredProjects count];
     }
+    
+//    NSString *placeText = nil;
+//    if (self.lastSelected == categoryMode) {
+//        // do something
+//        placeText = @"Enter category name";
+//    } else {
+//        // do something else
+//        placeText = @"Enter project name";
+//    }
+//    self.searchBar.placeholder = placeText;
+    
     return retValue;
 }
 
@@ -601,18 +688,6 @@ typedef enum kfilterModes{
     }
 }
 
-
-
-/*
- // Implementing the above methods to update the table view in response to individual changes may have performance implications if a large number of changes are made simultaneously. If this proves to be an issue, you can instead just implement controllerDidChangeContent: which notifies the delegate that all section and object changes have been processed.
- 
- - (void)controllerDidChangeContent:(NSFetchedResultsController *)controller
- {
- // In the simplest, most efficient, case, reload the table view.
- [self.tableView reloadData];
- }
- */
-
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView
 {
     Project *newProject = nil;
@@ -628,8 +703,8 @@ typedef enum kfilterModes{
     [formatter setDateStyle:NSDateFormatterMediumStyle];
     [formatter setTimeStyle:NSDateFormatterNoStyle];
     
-    BOOL completeVal = (newProject.complete == SWITCH_ON) ? YES:NO;
-    BOOL activeVal = (newProject.active == SWITCH_ON) ? YES:NO;
+    BOOL completeVal = [newProject.complete boolValue];
+    BOOL activeVal = [newProject.active boolValue];
     
     NSString *endDate;
     if (newProject.dateFinish == nil) {
@@ -651,29 +726,46 @@ typedef enum kfilterModes{
     } else if ( completeVal == YES & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
         cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
-        cell.detailTextLabel.textColor = kGreenColor;
     } else if ( completeVal == NO & activeVal == NO){
         caption = [[NSString alloc] initWithFormat:@"Should start: %@", startDate];
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == YES){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
         cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
-        cell.detailTextLabel.textColor = kGreenColor;
     } else {
         caption = [[NSString alloc] initWithFormat:@"Should finish: %@", endDate];
         cell.imageView.image = nil;
     }
     
-    if (self.lastSelected == categoryMode) {
-        UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(230, 5, 44, 34)];
-        catColor.backgroundColor = [newProject.projectPriority getCategoryColor];
-        catColor.layer.cornerRadius = 3;
-        catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
-        catColor.layer.borderWidth = 1;
-        cell.accessoryView = catColor;
+    // Set detail text color
+    UIColor *textColor = nil;
+    if (completeVal == YES) {
+        textColor = kGreenColor;
+    } else if ([newProject.isOverDue boolValue] == YES ) {
+        textColor = [UIColor redColor];
     } else {
-        cell.accessoryView = nil;
+        textColor = [UIColor darkGrayColor];
     }
+    cell.detailTextLabel.textColor = textColor;
+    
+    if (!self.activeProject && self.lastProjectID) {
+        if ([self.lastProjectID isEqualToString:newProject.projectUUID]) {
+            self.activeProject = newProject;
+        }
+    }
+    
+    if (newProject == self.activeProject) {
+        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+    } else {
+        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+    }
+    
+    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 44)];
+    catColor.backgroundColor = [newProject.projectPriority getCategoryColor];
+    catColor.layer.cornerRadius = 0;
+    catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
+    catColor.layer.borderWidth = .5;
+    [cell addSubview:catColor];
     
     cell.detailTextLabel.text = caption;
 }
@@ -719,6 +811,13 @@ typedef enum kfilterModes{
         _openPredicate = [NSPredicate predicateWithFormat:@"complete == 0"];
     }
     return _openPredicate;
+}
+
+-(CCRecentTaskViewController *)recentListController{
+    if (_recentListController == nil) {
+        _recentListController = [self.storyboard instantiateViewControllerWithIdentifier:@"recentTasks"];
+    }
+    return _recentListController;
 }
 
 -(CCHotListViewController *)hotListController{
