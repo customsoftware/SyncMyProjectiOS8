@@ -63,7 +63,9 @@
 }
 
 -(IBAction)itemPurchased:(UITextField *)sender{
-    self.expense.pmtDescription = sender.text;
+    if (sender.text.length > 0) {
+        self.expense.pmtDescription = sender.text;
+    }
     [self.view endEditing:YES];
 }
 
@@ -231,6 +233,19 @@
     self.receipt.layer.borderWidth = 1.50f;
     self.receipt.layer.borderColor = [[UIColor darkGrayColor] CGColor];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadExpenseValues) name:kiCloudSyncNotification object:nil];
+    
+    // This is fine for the iPhone
+    if (UI_USER_INTERFACE_IDIOM()) {
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self
+         selector:@selector(handleKeyboardDidShow:)
+         name:UIKeyboardWillShowNotification object:nil];
+        
+        [[NSNotificationCenter defaultCenter]
+         addObserver:self
+         selector:@selector(handleKeyboardWillHide:)
+         name:UIKeyboardWillHideNotification object:nil];
+    }
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
@@ -280,6 +295,34 @@
 }
 
 #pragma mark - Helpers
+-(void) handleKeyboardDidShow:(NSNotification *)paramNotification{
+    NSValue *keyboardRectAsObject = [[paramNotification userInfo]
+                                     objectForKey:UIKeyboardFrameEndUserInfoKey];
+    CGRect keyboardRect;
+    
+    [keyboardRectAsObject getValue:&keyboardRect];
+    
+    BOOL isPortrait = UIDeviceOrientationIsPortrait(self.interfaceOrientation);
+    
+    if (!isPortrait) {
+        // Move everything down....
+    }
+}
+
+-(void) handleKeyboardWillHide:(NSNotification *)paramNotification{
+    NSValue *keyboardRectAsObject = [[paramNotification userInfo]
+                                     objectForKey:UIKeyboardFrameEndUserInfoKey];
+    CGRect keyboardRect;
+    
+    [keyboardRectAsObject getValue:&keyboardRect];
+    
+    BOOL isPortrait = UIDeviceOrientationIsPortrait(self.interfaceOrientation);
+    
+    if (!isPortrait) {
+        // Reset things
+    }
+}
+
 - (NSString *)getDocumentsDirectory{
     NSArray *paths = NSSearchPathForDirectoriesInDomains
     (NSDocumentDirectory, NSUserDomainMask, YES);
