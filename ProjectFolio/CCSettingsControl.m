@@ -12,10 +12,8 @@
 @implementation CCSettingsControl
 
 -(BOOL)isICloudAuthorized{
-    return [[CCIAPCards sharedInstance] featurePurchased];
-//    return YES;
+    return YES;
 }
-
 
 -(BOOL)saveString:(NSString *)stringValue atKey:(NSString *)keyName{
     BOOL retValue = YES;
