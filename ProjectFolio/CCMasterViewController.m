@@ -23,6 +23,7 @@
 #import "CCNewProjectViewController.h"
 #import "CCInitializer.h"
 #import "iCloudStarterProtocol.h"
+#import "CCRecentTaskViewController.h"
 
 typedef enum kfilterModes{
     allProjectsMode = 0,
@@ -49,6 +50,7 @@ typedef enum kfilterModes{
 @property (nonatomic) BOOL notInSearchMode;
 @property (strong, nonatomic) RatingReminder * reminder;
 @property (strong, nonatomic) NSString *lastProjectID;
+@property (strong, nonatomic) CCRecentTaskViewController *recentListController;
 
 @end
 
@@ -158,6 +160,7 @@ typedef enum kfilterModes{
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];
     } else if (sender.selectedSegmentIndex == recentListMode){
+        [self.navigationController pushViewController:self.recentListController animated:YES];
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];
     } else {
@@ -811,6 +814,13 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - Lazy getters
+-(CCRecentTaskViewController *)recentListController{
+    if (_recentListController == nil) {
+        _recentListController = [self.storyboard instantiateViewControllerWithIdentifier:@"recentTasks"];
+    }
+    return _recentListController;
+}
+
 -(CCMainTaskViewController *)mainTaskController{
     if (_mainTaskController == nil) {
         _mainTaskController = [self.storyboard instantiateViewControllerWithIdentifier:@"mainTaskList"];

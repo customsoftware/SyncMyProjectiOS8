@@ -1,14 +1,14 @@
 !!!!! PLEASE READ !!!!
 
-Welcome to the latest version of ProjectFolio. I'm excited to announce that starting with this version of the app, you can sync project data between multiple devices using iCloud sync. It's available as an in-app purchase for just 2.99 USD.
+Welcome to the latest version of ProjectFolio. I'm excited to announce that starting with this version of the app, you can sync project data between multiple devices using iCloud sync.
 
 We've changed the way to add projects, tasks, expenses, categories and meetings: just swipe down from the navigation bar.
 
-Regarding the data sync. ProjectFolio will allow only one device at a time, when iCloud sync is enabled, to track time spent on projects. This is so the project timer will not be confused by getting conflicting timer data from multiple devices for the same period of time. You determine which device tracks time in the Settings view. A switch identified by a stopwatch icon enables the device to track time. When enabled, it will send a message to all other devices on the same itunes account to stop tracking time.
+Regarding the data sync. ProjectFolio will allow only one device at a time to track time spent on projects. This is so the project timer will not be confused by getting conflicting timer data from multiple devices for the same period of time. You determine which device tracks time in the Settings view. A switch identified by a stopwatch icon enables the device to track time. When enabled, it will send a message to all other devices on the same itunes account to stop tracking time.
 
-For those of you upgrading from an earlier version of ProjectFolio, this iCloud enabled version will preserve your pre-existing data during the upgrade process. There may be a "quirk" that I haven't yet resolved with the app, namely it may create multiple copies your existing projects. The extras will need to be deleted. The best solution appears to be quitting the app immediately after updating the app then restarting it.
+For those of you upgrading from an earlier version of ProjectFolio, this version will preserve your pre-existing data during the upgrade process. There may be a "quirk" that I haven't yet resolved with the app, namely it may create multiple copies your existing projects. The extras will need to be deleted. The best solution appears to be quitting the app immediately after updating the app then restarting it.
 
-For upgrading iPad users, you will also note that tapping on the project in the master list will no longer take you to the project tasks, it will just change the project you are viewing. If you want to see the project tasks, tap on the detail disclosure button. To see the project detail data, such as start/stop date, billable state etc. swipe down from the navigation bar over the notes. To close the form, swipe up on the form.
+For upgrading iPad users, you will also note that tapping on the project in the master list will no longer take you to the project tasks, it will just change the project you are viewing. If you want to see the project tasks, swipe right on the project. To see the project detail data, such as start/stop date, billable state etc. swipe down from the navigation bar over the notes. To close the form, swipe up on the form.
 
 We've also added a button to take you to an online help site containing videos on how to make the most of ProjectFolio. You'll see the button in the navigation bar of the Project list view of the iPhone app and you'll see it in the upper right corner of the Project Notes view of the iPad app. The icon on the button is a "?".
 

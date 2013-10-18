@@ -23,7 +23,6 @@ typedef enum khotlistfilterModes{
     allProjectsMode,
     todayMode,
     thisWeekMode,
-    categoryMode,
     lateMode
 } kHotListFilterModes;
 
@@ -233,15 +232,7 @@ typedef enum khotlistfilterModes{
         retValue = self.filteredTasks.count;
     }
     
-    NSString *placeText = nil;
-    if (self.selectedFilter == categoryMode) {
-        // do something
-        placeText = @"Enter category name";
-    } else {
-        // do something else
-        placeText = @"Enter task name";
-    }
-    self.searchBar.placeholder = placeText;
+    self.searchBar.placeholder = @"Enter task name";
     
     return retValue;
 }
