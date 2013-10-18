@@ -161,7 +161,8 @@
     [self.request setPredicate:self.allPredicate];
     // NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"completed" ascending:YES];
     NSSortDescriptor *rowOrderDescriptor = [[NSSortDescriptor alloc] initWithKey:@"displayOrder" ascending:YES];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects: rowOrderDescriptor, nil];
+    NSSortDescriptor *nameOrderDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects: rowOrderDescriptor, nameOrderDescriptor,nil];
     [self.request setSortDescriptors:sortDescriptors];
     self.taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request
                                                        managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
@@ -209,6 +210,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [self.sourceProject.managedObjectContext save:nil];
     self.allPredicate = nil;
     self.incompletePredicate = nil;
     self.assignedPredicate = nil;

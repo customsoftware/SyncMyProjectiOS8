@@ -212,7 +212,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self.currentTask.managedObjectContext save:nil];
+    [self.sourceProject.managedObjectContext save:nil];
     self.allPredicate = nil;
     self.incompletePredicate = nil;
     self.assignedPredicate = nil;

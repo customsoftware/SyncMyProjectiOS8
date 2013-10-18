@@ -18,34 +18,11 @@
 @property (strong, nonatomic) CCExpenseNotesViewController *notesController;
 @property (strong, nonatomic) UIImagePickerController *imageController;
 @property (strong, nonatomic) CCLocationController *locationManager;
-@property CGRect currentSize;
+@property (weak, nonatomic) IBOutlet UIScrollView *scroller;
 
 @end
 
 @implementation CCExpenseDetailsViewController
-@synthesize tableView = _tableView;
-@synthesize expense = _expense;
-@synthesize popControll = _popControll;
-@synthesize notesController = _notesController;
-@synthesize imageController = _imageController;
-@synthesize locationManager = _locationManager;
-
-@synthesize popDelegate = _popDelegate;
-@synthesize controllingIndex = _controllingIndex;
-
-@synthesize dateController = _dateController;
-@synthesize numberFormatter = _numberFormatter;
-@synthesize dateFormatter = _dateFormatter;
-
-@synthesize itemPurchased = _itemPurchased;
-@synthesize paidTo = _paidTo;
-@synthesize amountPaid = _amountPaid;
-@synthesize billed = _billed;
-@synthesize receipt = _receipt;
-@synthesize notes = _notes;
-@synthesize milage = _milage;
-@synthesize utilityControll = _utilityControll;
-@synthesize isNew = _isNew;
 
 #pragma mark - IBActions
 -(IBAction)removePicture:(UIButton *)sender{
@@ -103,7 +80,6 @@
         case 2:
             self.imageController.delegate = self;
             [self.imageController setModalPresentationStyle:UIModalPresentationFullScreen];
-            self.currentSize = self.view.frame;
             [self presentViewController:self.imageController animated:YES completion:nil];
             break;
             
@@ -268,6 +244,12 @@
         self.navigationItem.rightBarButtonItem = nil;
     }
 }
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    self.scroller.contentSize = CGSizeMake(320, 550);
+}
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -438,12 +420,10 @@
         theImage = nil;
     }
     [self dismissViewControllerAnimated:YES completion:nil];
-    self.view.frame = self.currentSize;
 }
 
 -(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker{
     [self dismissViewControllerAnimated:YES completion:nil];
-    self.view.frame = self.currentSize;
 }
 
 #pragma mark - Lazy getters
