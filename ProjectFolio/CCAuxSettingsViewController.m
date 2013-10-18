@@ -84,8 +84,6 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTimer) name:kAppString object:nil];
-    [self.scroller setScrollEnabled:YES];
-    self.scroller.scrollsToTop = YES;
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -106,6 +104,12 @@
     [self getAddressFromLat:latitude andLong:longitude];
     [self updateTimer];
 /*Alternative is to have timer run locally on each device, but better is to have one device time and the others watch*/
+}
+
+- (void)viewDidLayoutSubviews {
+    [super viewDidLayoutSubviews];
+    [self.scroller setScrollEnabled:YES];
+    self.scroller.contentSize = CGSizeMake(320, 600);
 }
 
 - (void)dealloc

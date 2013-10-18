@@ -163,7 +163,8 @@
     [self.request setPredicate:self.allPredicate];
     // NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"completed" ascending:YES];
     NSSortDescriptor *rowOrderDescriptor = [[NSSortDescriptor alloc] initWithKey:@"displayOrder" ascending:YES];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects: rowOrderDescriptor, nil];
+    NSSortDescriptor *nameOrderDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects: rowOrderDescriptor, nameOrderDescriptor,nil];
     [self.request setSortDescriptors:sortDescriptors];
     self.taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request
                                                        managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
@@ -469,7 +470,6 @@
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 
@@ -506,11 +506,7 @@
     // Now re-insert it at the destination.
     [things insertObject:task atIndex:[destinationIndexPath row]];
     
-    // All of the objects are now in their correct order. Update each
-    // object's displayOrder field by iterating through the array.
-    
     [self reSortSubTasksWithTasks:things];
-    
     self.currentTask = [[CoreData sharedModel:nil] saveLastModified:self.currentTask];
     if (![[CoreData sharedModel:self] saveContext]){
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Core Data Error" message:@"The save failed your data didn't persist" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
@@ -526,26 +522,8 @@
     self.currentTask = [self.taskFRC objectAtIndexPath:indexPath];
     [self sendTimerStopNotification];
     [self sendTimerStartNotificationForTask];
-
-    // Update the detail view contents
-//    if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
-//        // What we do here is make the sub
-//        if ([self.currentTask isExpanded] == YES) {
-//            for (Task *subTask in self.currentTask.subTasks) {
-//                [subTask setSubTaskVisible:[NSNumber numberWithBool:NO]];
-//            }
-//        } else {
-//            for (Task *subTask in self.currentTask.subTasks) {
-//                [subTask setSubTaskVisible:[NSNumber numberWithBool:YES]];
-//            }
-//        }
-//        [self.taskFRC.managedObjectContext save:nil];
-//        [self.taskFRC performFetch:nil];
-//        [self.tableView reloadData];
-//    } else {
-        self.isNew = NO;
-        [self showTaskDetails:self.tableView rowIndex:indexPath];
-//    }
+    self.isNew = NO;
+    [self showTaskDetails:self.tableView rowIndex:indexPath];
 }
 
 #pragma mark - Helper
