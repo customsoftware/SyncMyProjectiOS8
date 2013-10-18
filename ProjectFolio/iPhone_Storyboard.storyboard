@@ -430,7 +430,6 @@
                                                 <segment title="All"/>
                                                 <segment title="Today"/>
                                                 <segment title="+7"/>
-                                                <segment title="" image="configuration.png"/>
                                                 <segment title="Late"/>
                                             </segments>
                                             <connections>
@@ -2345,18 +2344,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <rect key="frame" x="0.0" y="64" width="320" height="504"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="fAX-zf-DSp">
-                                <rect key="frame" x="8" y="7" width="156" height="38"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
-                                <state key="normal" title="Puchase Upgrades">
-                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                </state>
-                                <connections>
-                                    <action selector="openFAQ:" destination="ruy-76-Jad" eventType="touchUpInside" id="o9K-h7-S2q"/>
-                                </connections>
-                            </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZn-ge-mpm">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sZn-ge-mpm">
                                 <rect key="frame" x="251" y="98" width="61" height="45"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -2370,7 +2358,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <action selector="setHomeLocation:" destination="ruy-76-Jad" eventType="touchUpInside" id="2Zg-Ad-Pe9"/>
                                 </connections>
                             </button>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="Px9-YV-wnP">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="grouped" separatorStyle="singleLineEtched" rowHeight="44" sectionHeaderHeight="1" sectionFooterHeight="10" translatesAutoresizingMaskIntoConstraints="NO" id="Px9-YV-wnP">
                                 <rect key="frame" x="-6" y="370" width="321" height="179"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -2460,7 +2448,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <outlet property="delegate" destination="ruy-76-Jad" id="zpR-M0-aCe"/>
                                 </connections>
                             </tableView>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Font Size:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="0GD-jc-Pus">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text="Font Size:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="10" translatesAutoresizingMaskIntoConstraints="NO" id="0GD-jc-Pus">
                                 <rect key="frame" x="8" y="379" width="89" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -2470,14 +2458,14 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Set color of notes background" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f1s-FI-Huy">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text="Set color of notes background" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="f1s-FI-Huy">
                                 <rect key="frame" x="8" y="136" width="255" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4G2-cf-QQ6">
+                            <view clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4G2-cf-QQ6">
                                 <rect key="frame" x="15" y="159" width="290" height="212"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
@@ -2598,7 +2586,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <outletCollection property="gestureRecognizers" destination="ICB-4J-Whf" appends="YES" id="Tfh-fF-5kd"/>
                                 </connections>
                             </view>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter email address here" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J1H-BK-RjH">
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="Enter email address here" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J1H-BK-RjH">
                                 <rect key="frame" x="8" y="72" width="283" height="30"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -2607,7 +2595,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                     <action selector="email:" destination="ruy-76-Jad" eventType="editingChanged" id="PcS-j5-PTf"/>
                                 </connections>
                             </textField>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Default Email:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ICY-26-BeW">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" ambiguous="YES" misplaced="YES" text="Default Email:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ICY-26-BeW">
                                 <rect key="frame" x="8" y="46" width="113" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <constraints>
@@ -2617,28 +2605,28 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" text="Click to set home location" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rnO-JX-6KG">
+                            <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" misplaced="YES" text="Click to set home location" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rnO-JX-6KG">
                                 <rect key="frame" x="8" y="108" width="235" height="21"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stepper clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" continuous="NO" autorepeat="NO" wraps="YES" value="20" minimumValue="14" maximumValue="48" translatesAutoresizingMaskIntoConstraints="NO" id="nfq-xY-OWK">
+                            <stepper clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" continuous="NO" autorepeat="NO" wraps="YES" value="20" minimumValue="14" maximumValue="48" translatesAutoresizingMaskIntoConstraints="NO" id="nfq-xY-OWK">
                                 <rect key="frame" x="114" y="377" width="94" height="29"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMinX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="changeFontSize:" destination="ruy-76-Jad" eventType="valueChanged" id="uOd-vm-g2O"/>
                                 </connections>
                             </stepper>
-                            <switch opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i51-ZO-hD4">
+                            <switch opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="i51-ZO-hD4">
                                 <rect key="frame" x="227" y="7" width="51" height="31"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <connections>
                                     <action selector="setTimer:" destination="ruy-76-Jad" eventType="valueChanged" id="0tS-hr-yA7"/>
                                 </connections>
                             </switch>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DDg-Gc-eTf">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DDg-Gc-eTf">
                                 <rect key="frame" x="177" y="1" width="56" height="44"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
@@ -2653,7 +2641,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="i51-ZO-hD4" firstAttribute="top" secondItem="fAX-zf-DSp" secondAttribute="top" id="4nb-gU-Ojn"/>
                             <constraint firstItem="nfq-xY-OWK" firstAttribute="top" secondItem="4G2-cf-QQ6" secondAttribute="bottom" constant="6" id="8XN-6k-REr"/>
                             <constraint firstItem="ICY-26-BeW" firstAttribute="leading" secondItem="J1H-BK-RjH" secondAttribute="leading" id="9Ko-4h-mEO"/>
                             <constraint firstItem="0GD-jc-Pus" firstAttribute="top" secondItem="4G2-cf-QQ6" secondAttribute="bottom" constant="8" symbolic="YES" id="AqG-Av-iuJ"/>
@@ -2666,28 +2653,21 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                             <constraint firstItem="DDg-Gc-eTf" firstAttribute="top" secondItem="F1A-Iv-DpT" secondAttribute="bottom" constant="1" id="J1w-gi-aAF"/>
                             <constraint firstItem="f1s-FI-Huy" firstAttribute="top" secondItem="rnO-JX-6KG" secondAttribute="bottom" constant="7" id="JHv-Ye-xWG"/>
                             <constraint firstItem="4G2-cf-QQ6" firstAttribute="top" secondItem="f1s-FI-Huy" secondAttribute="bottom" constant="2" id="LqN-cr-2pU"/>
-                            <constraint firstItem="DDg-Gc-eTf" firstAttribute="bottom" secondItem="fAX-zf-DSp" secondAttribute="bottom" placeholder="YES" id="NKL-ji-W23"/>
                             <constraint firstItem="Px9-YV-wnP" firstAttribute="leading" secondItem="5ca-of-PoE" secondAttribute="leading" constant="-6" id="PMy-sF-tjh"/>
                             <constraint firstAttribute="trailing" secondItem="i51-ZO-hD4" secondAttribute="trailing" constant="44" id="RcD-hT-7tS"/>
                             <constraint firstItem="0GD-jc-Pus" firstAttribute="leading" secondItem="f1s-FI-Huy" secondAttribute="leading" id="Sfn-O9-SaZ"/>
                             <constraint firstAttribute="trailing" secondItem="Px9-YV-wnP" secondAttribute="trailing" constant="5" id="T2L-Es-yjQ"/>
-                            <constraint firstItem="fAX-zf-DSp" firstAttribute="top" secondItem="F1A-Iv-DpT" secondAttribute="bottom" constant="7" id="TTT-fs-C1r"/>
                             <constraint firstItem="sZn-ge-mpm" firstAttribute="top" secondItem="i51-ZO-hD4" secondAttribute="bottom" constant="60" id="UAp-mU-Db7"/>
                             <constraint firstItem="J1H-BK-RjH" firstAttribute="top" secondItem="i51-ZO-hD4" secondAttribute="bottom" constant="34" id="Zkx-4x-bGA"/>
-                            <constraint firstItem="ICY-26-BeW" firstAttribute="top" secondItem="fAX-zf-DSp" secondAttribute="bottom" constant="1" id="aoX-oR-6qj"/>
                             <constraint firstItem="4G2-cf-QQ6" firstAttribute="top" secondItem="sZn-ge-mpm" secondAttribute="bottom" constant="16" id="dFD-T8-AET"/>
                             <constraint firstAttribute="trailing" secondItem="DDg-Gc-eTf" secondAttribute="trailing" constant="87" id="fL8-cg-VdW"/>
                             <constraint firstAttribute="bottom" secondItem="Px9-YV-wnP" secondAttribute="bottom" constant="-45" placeholder="YES" id="ft7-fN-32T"/>
                             <constraint firstAttribute="trailing" secondItem="J1H-BK-RjH" secondAttribute="trailing" constant="29" id="g25-58-4cj"/>
                             <constraint firstAttribute="trailing" secondItem="f1s-FI-Huy" secondAttribute="trailing" constant="57" id="hKq-vk-dWx"/>
-                            <constraint firstItem="fAX-zf-DSp" firstAttribute="leading" secondItem="ICY-26-BeW" secondAttribute="leading" id="hfh-MG-96d"/>
-                            <constraint firstItem="i51-ZO-hD4" firstAttribute="leading" secondItem="fAX-zf-DSp" secondAttribute="trailing" constant="63" id="jrg-bE-8cA"/>
                             <constraint firstItem="4G2-cf-QQ6" firstAttribute="centerX" secondItem="5ca-of-PoE" secondAttribute="centerX" id="lH8-qx-JQH"/>
                             <constraint firstItem="nfq-xY-OWK" firstAttribute="leading" secondItem="0GD-jc-Pus" secondAttribute="trailing" constant="17" id="m3z-ZE-dW9"/>
                             <constraint firstItem="4G2-cf-QQ6" firstAttribute="leading" secondItem="5ca-of-PoE" secondAttribute="leading" constant="15" id="pzF-lu-t8g"/>
-                            <constraint firstItem="fAX-zf-DSp" firstAttribute="leading" secondItem="5ca-of-PoE" secondAttribute="leading" constant="8" id="r7u-3g-jB9"/>
                             <constraint firstItem="sZn-ge-mpm" firstAttribute="leading" secondItem="rnO-JX-6KG" secondAttribute="trailing" constant="8" symbolic="YES" id="s2K-XX-Nla"/>
-                            <constraint firstItem="DDg-Gc-eTf" firstAttribute="leading" secondItem="fAX-zf-DSp" secondAttribute="trailing" constant="13" id="xKC-4z-9Pa"/>
                             <constraint firstAttribute="trailing" secondItem="sZn-ge-mpm" secondAttribute="trailing" constant="8" id="yZt-Rt-c0H"/>
                         </constraints>
                         <connections>
