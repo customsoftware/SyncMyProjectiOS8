@@ -36,6 +36,7 @@ typedef enum kfilterModes{
 @interface CCMasterViewController () <iCloudStarterProtocol>
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
 
+@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (strong, nonatomic) CCGeneralCloser *closer;
 @property (strong, nonatomic) CCMainTaskViewController *mainTaskController;
 @property (strong, nonatomic) Project *activeProject;
@@ -107,6 +108,10 @@ typedef enum kfilterModes{
     if (self.hotListController.projectTimer != nil) {
         [self.hotListController.projectTimer releaseTimer];
         self.hotListController.selectedIndex = nil;
+    }
+    
+    if (self.recentListController.projectTimer != nil) {
+        [self.recentListController.projectTimer releaseTimer];
     }
     
     if (self.activeProject != nil ){
@@ -206,6 +211,12 @@ typedef enum kfilterModes{
     [actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES];
 }
 
+#pragma mark - Setters
+- (void)setActiveProject:(Project *)activeProject {
+    _activeProject = activeProject;
+    self.lastProjectID = activeProject.projectUUID ? activeProject.projectUUID:nil;
+}
+
 #pragma mark - Popover Controls
 -(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
     NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
@@ -238,11 +249,6 @@ typedef enum kfilterModes{
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
     [searchBar setShowsCancelButton:YES animated:YES];
-}
-
-- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-    [self.searchBar resignFirstResponder];
-    [searchBar setShowsCancelButton:NO];
 }
 
 #pragma mark - ActionSheet Functionality
@@ -425,6 +431,7 @@ typedef enum kfilterModes{
     [self.detailViewController.projectNotes resignFirstResponder];
     if (tableView == self.tableView) {
         if (self.fetchedProjectsController.fetchedObjects.count >= indexPath.row) {
+            self.controllingCellIndex = indexPath;
             self.activeProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
         } else {
             self.activeProject = nil;
@@ -432,6 +439,7 @@ typedef enum kfilterModes{
         }
     } else {
         self.activeProject = [self.filteredProjects objectAtIndex:indexPath.row];
+        self.controllingCellIndex = indexPath;
     }
     self.detailViewController.project = self.activeProject;
     self.detailViewController.controllingCellIndex = indexPath;

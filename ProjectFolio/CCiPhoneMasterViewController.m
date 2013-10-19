@@ -360,6 +360,11 @@ typedef enum kfilterModes{
         [self.hotListController.projectTimer releaseTimer];
         self.hotListController.selectedIndex = nil;
     }
+    
+    if (self.recentListController.projectTimer != nil) {
+        [self.recentListController.projectTimer releaseTimer];
+    }
+    
     self.lastSelected = [[NSUserDefaults standardUserDefaults] integerForKey:kProjectFilterStatus];
     self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
     [self filterActions:self.filterSegmentControl];
@@ -393,6 +398,12 @@ typedef enum kfilterModes{
     return YES;
 }
 
+#pragma mark - Setters
+- (void)setActiveProject:(Project *)activeProject {
+    _activeProject = activeProject;
+    self.lastProjectID = activeProject.projectUUID ? activeProject.projectUUID:nil;
+}
+
 #pragma mark - Helper
 - (void)sendOutput{
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Send Email" otherButtonTitles:@"Print Report", nil];
@@ -417,7 +428,7 @@ typedef enum kfilterModes{
     [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"iCloudStarted"];
 }
 
-#pragma mark - Helper and Delegates
+#pragma mark - <CCPopoverControllerDelegate>
 - (void)savePopoverData {
     NSLog(@"Implemented just to keep the compiler happy. Not used");
 }

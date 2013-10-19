@@ -54,19 +54,26 @@ typedef enum kChoiceModes{
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    int option = [[NSUserDefaults standardUserDefaults] integerForKey:kChoiceStorageKey];
-    [self runQuery:option];
-    self.filterOptions.selectedSegmentIndex = option;
-    
     // Add swipe to show notes
     UISwipeGestureRecognizer *showExtrasSwipe = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
     showExtrasSwipe.direction = UISwipeGestureRecognizerDirectionRight;
     [self.tableView addGestureRecognizer:showExtrasSwipe];
+    [self updateDetailControllerForIndexPath:nil inTable:nil];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    [self updateDetailControllerForIndexPath:nil inTable:nil];
+    int option = [[NSUserDefaults standardUserDefaults] integerForKey:kChoiceStorageKey];
+    [self runQuery:option];
+    if (self.currentTask) {
+        NSDictionary *dictionary = @{@"workProject.projectName":self.currentTask.taskProject.projectName,
+                                     @"workTask.title":self.currentTask.title};
+        
+        int rowNum = [self.recentTasks indexOfObject:dictionary];
+        NSIndexPath *indexPath = [NSIndexPath indexPathForItem:rowNum inSection:0];
+        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+    }
+    self.filterOptions.selectedSegmentIndex = option;
 }
 
 - (void)didReceiveMemoryWarning
@@ -150,13 +157,6 @@ typedef enum kChoiceModes{
 }
 
 #pragma mark - Helper
--(void)sendTimerStartNotificationForProject{
-    if (self.currentTask) {
-        NSDictionary *projectDictionary = @{ @"Project" : self.currentTask.taskProject };
-        [[NSNotificationCenter defaultCenter] postNotificationName:kStartNotification object:nil userInfo:projectDictionary];
-    }
-}
-
 -(void)sendTimerStopNotification{
     NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
@@ -176,7 +176,7 @@ typedef enum kChoiceModes{
     self.projectDetailController.project = self.currentTask.taskProject;
     self.projectDetailController.controllingCellIndex = indexPath;
     [self sendTimerStopNotification];
-    [self sendTimerStartNotificationForProject];
+    [self sendTimerStartNotificationForTask];
     
     self.projectDetailController.activeTimer = self.projectTimer;
     

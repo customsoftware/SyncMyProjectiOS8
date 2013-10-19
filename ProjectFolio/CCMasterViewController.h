@@ -35,7 +35,6 @@
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *projectActionsButton;
-@property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (strong, nonatomic) UISwipeGestureRecognizer *swiper;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *filterSegmentControl;
 

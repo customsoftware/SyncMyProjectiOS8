@@ -53,12 +53,6 @@ typedef enum khotlistfilterModes{
 @end
 
 @implementation CCHotListViewController
-
--(void)sendTimerStartNotificationForProject{
-    NSDictionary *projectDictionary = @{ @"Project" : self.task.taskProject };
-    [[NSNotificationCenter defaultCenter] postNotificationName:kStartNotification object:nil userInfo:projectDictionary];
-}
-
 -(void)sendTimerStopNotification{
     NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
@@ -109,10 +103,6 @@ typedef enum khotlistfilterModes{
 
     if (self.selectedIndex != nil) {
         [self.tableView selectRowAtIndexPath:self.selectedIndex animated:YES scrollPosition:UITableViewScrollPositionNone];
-    } else if (self.projectTimer != nil){
-        [self.projectTimer releaseTimer];
-        self.projectTimer = nil;
-        [self updateDetailControllerForIndexPath:nil inTable:nil];
     }
 }
 
@@ -121,6 +111,7 @@ typedef enum khotlistfilterModes{
     [[NSUserDefaults standardUserDefaults] setBool:self.notInSearchMode forKey:kHotListSearchState];
     [super viewWillDisappear:animated];
 }
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
 	return YES;
@@ -186,7 +177,6 @@ typedef enum khotlistfilterModes{
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
     [self.searchBar resignFirstResponder];
-//    [self toggleSearchBar];
 }
 
 #pragma mark - Table view data source
@@ -233,8 +223,6 @@ typedef enum khotlistfilterModes{
         retValue = self.filteredTasks.count;
     }
     
-    self.searchBar.placeholder = @"Enter task name";
-    
     return retValue;
 }
 
@@ -278,18 +266,10 @@ typedef enum khotlistfilterModes{
 #pragma mark - Table view delegate
 -(void)updateDetailControllerForIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView{
     [self.projectDetailController.projectNotes resignFirstResponder];
-    // self.activeProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
-    
-    /*if (tableView == self.tableView) {
-        self.activeProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
-    } else {
-        self.activeProject = [self.filteredProjects objectAtIndex:indexPath.row];
-    }*/
-    
     self.projectDetailController.project = self.task.taskProject;
     self.projectDetailController.controllingCellIndex = indexPath;
     [self sendTimerStopNotification];
-    [self sendTimerStartNotificationForProject];
+    [self sendTimerStartNotificationForTask];
     
     self.projectDetailController.activeTimer = self.projectTimer;
     
@@ -325,7 +305,7 @@ typedef enum khotlistfilterModes{
     if (self.selectedIndex.row == indexPath.row && self.projectTimer != nil ) {
         // Do nothing
     } else {
-        [self sendTimerStartNotificationForTask];
+//        [self sendTimerStartNotificationForTask];
         self.selectedIndex = indexPath;
         if (tableView == self.tableView){
             [self updateDetailControllerForIndexPath:indexPath inTable:tableView];
@@ -481,9 +461,4 @@ typedef enum khotlistfilterModes{
     return _latePredicate;
 }
 
-- (void)viewDidUnload {
-    [self setSearchBar:nil];
-    [self setFilterOptions:nil];
-    [super viewDidUnload];
-}
 @end
