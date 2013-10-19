@@ -38,6 +38,7 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *showTimers;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *showTaskChart;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
+@property (strong, nonatomic) UISwipeGestureRecognizer *swipeDown;
 
 -(IBAction)showDeliverablePopover:(id)sender;
 -(IBAction)showTimePopover:(id)sender;

@@ -31,15 +31,21 @@
     [CCIAPCards sharedInstance];
     self.delegateList = [[NSArray alloc] init];
     // Override point for customization after application launch.
-    [[NSNotificationCenter defaultCenter]
-     addObserver:self
-     selector:@selector(kvStoreDidChange:)
-     name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification
-     object:[NSUbiquitousKeyValueStore defaultStore]];
-    [[NSUbiquitousKeyValueStore defaultStore] synchronize];
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+    [center addObserver:self
+               selector:@selector(kvStoreWillChange:)
+                   name:NSPersistentStoreCoordinatorStoresWillChangeNotification
+                 object:nil];
+    [center addObserver:self
+               selector:@selector(kvStoreDidChange:)
+                   name:NSUbiquitousKeyValueStoreDidChangeExternallyNotification
+                 object:[NSUbiquitousKeyValueStore defaultStore]];
+    [center addObserver:self
+               selector:@selector(kvContainerDidChange:)
+                   name:NSUbiquityIdentityDidChangeNotification
+                 object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kvStoreWillChange:) name:NSPersistentStoreCoordinatorStoresWillChangeNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(kvContainerDidChange:) name:NSUbiquityIdentityDidChangeNotification object:nil];
+    [[NSUbiquitousKeyValueStore defaultStore] synchronize];
     
     // Override point for customization after application launch.
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {

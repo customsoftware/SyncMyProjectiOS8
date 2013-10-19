@@ -498,9 +498,9 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
         [menu update];
     }
     
-    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showProjectDetails:)];
-    [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
-    [self.navigationController.navigationBar addGestureRecognizer:swipeDown];
+    self.swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(showProjectDetails:)];
+    [self.swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
+    [self.navigationController.navigationBar addGestureRecognizer:self.swipeDown];
     [self configureView];
     CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
     [application registeriCloudDelegate:self];

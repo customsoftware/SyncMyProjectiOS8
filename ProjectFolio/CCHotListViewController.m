@@ -70,6 +70,7 @@ typedef enum khotlistfilterModes{
     NSNotification *startTimer = [NSNotification notificationWithName:kStartTaskNotification object:nil userInfo:projectDictionary];
     [[NSNotificationCenter defaultCenter] postNotification:startTimer];
 }
+
 #pragma mark - View Life cycle
 - (void)viewDidLoad
 {
@@ -108,10 +109,10 @@ typedef enum khotlistfilterModes{
 
     if (self.selectedIndex != nil) {
         [self.tableView selectRowAtIndexPath:self.selectedIndex animated:YES scrollPosition:UITableViewScrollPositionNone];
-        //       [self updateDetailControllerForIndexPath:self.selectedIndex];
     } else if (self.projectTimer != nil){
         [self.projectTimer releaseTimer];
         self.projectTimer = nil;
+        [self updateDetailControllerForIndexPath:nil inTable:nil];
     }
 }
 
@@ -292,12 +293,17 @@ typedef enum khotlistfilterModes{
     
     self.projectDetailController.activeTimer = self.projectTimer;
     
-    if (self.task.taskProject.projectNotes) {
-        self.projectDetailController.projectNotes.text = self.task.taskProject.projectNotes;
+    if (self.task) {
+        if (self.task.taskProject.projectNotes) {
+            self.projectDetailController.projectNotes.text = self.task.taskProject.projectNotes;
+        } else {
+            self.projectDetailController.projectNotes.text = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", self.task.taskProject.projectName];
+        }
+        self.projectDetailController.title = [[NSString alloc] initWithFormat:@"%@: Notes", self.task.taskProject.projectName ];
     } else {
-        self.projectDetailController.projectNotes.text = [[NSString alloc] initWithFormat:@"Enter notes for %@ project here", self.task.taskProject.projectName];
+        self.projectDetailController.title = @"Notes";
+        self.projectDetailController.projectNotes.text = @"";
     }
-    self.projectDetailController.title = [[NSString alloc] initWithFormat:@"%@: Notes", self.task.taskProject.projectName ];
 }
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -327,6 +333,7 @@ typedef enum khotlistfilterModes{
             [self updateDetailControllerForIndexPath:indexPath inTable:self.searchDisplayController.searchResultsTableView];
         }
     }
+    
     CCTaskViewDetailsController *detailViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"taskDetails"];
     detailViewController.activeTask = self.task;
     detailViewController.selectedIndexPath = indexPath;
@@ -358,20 +365,21 @@ typedef enum khotlistfilterModes{
 }
 
 #pragma mark - Helper
+
 - (void)swipeRight:(UISwipeGestureRecognizer *)gesture
 {
     CGPoint location = [gesture locationInView:self.tableView];
     NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
     self.task = [self.taskFRC objectAtIndexPath:swipedIndexPath];
-    
-    // Show notes here
-    self.notesController = [self.storyboard instantiateViewControllerWithIdentifier:@"expenseNotes"];
-    self.notesController.modalPresentationStyle = UIModalPresentationFormSheet;
-    self.notesController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-    
-    self.notesController.notesDelegate = self;
-    [self presentViewController:self.notesController animated:YES completion:nil];
-    
+    if (self.task) {
+        // Show notes here
+        self.notesController = [self.storyboard instantiateViewControllerWithIdentifier:@"expenseNotes"];
+        self.notesController.modalPresentationStyle = UIModalPresentationFormSheet;
+        self.notesController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+        
+        self.notesController.notesDelegate = self;
+        [self presentViewController:self.notesController animated:YES completion:nil];
+    }
 }
 
 - (void)updateDisplayedItemsInHotList {

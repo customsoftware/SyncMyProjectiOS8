@@ -462,6 +462,16 @@ static CoreData *sharedModel = nil;
         newProject.dateStart = [NSDate date];
         newProject.dateFinish = [NSDate date];
         [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
+        // How to see details
+        newProject = [NSEntityDescription
+                      insertNewObjectForEntityForName:@"Project"
+                      inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
+        newProject.projectName = @"Swipe right for details";
+        newProject.projectNotes = @"Swipe right on record to see details of the record or notes.";
+        newProject.dateCreated = [NSDate date];
+        newProject.dateStart = [NSDate date];
+        newProject.dateFinish = [NSDate date];
+        [[[CoreData sharedModel:nil] managedObjectContext] save:&fetchError];
         [pFRC performFetch:&fetchError];
     }
 }

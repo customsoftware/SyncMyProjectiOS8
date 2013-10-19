@@ -160,6 +160,7 @@ typedef enum kfilterModes{
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];
     } else if (sender.selectedSegmentIndex == recentListMode){
+        self.recentListController.projectDetailController = self.detailViewController;
         [self.navigationController pushViewController:self.recentListController animated:YES];
         sender.selectedSegmentIndex = self.lastSelected;
         [self sendTimerStopNotification];

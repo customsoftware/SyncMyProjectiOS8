@@ -773,11 +773,11 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <viewControllerLayoutGuide type="bottom" id="nAk-iT-acE"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="8KM-79-KkV">
-                        <rect key="frame" x="0.0" y="44" width="3928" height="1148"/>
+                        <rect key="frame" x="0.0" y="44" width="3928" height="1544"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <textView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" usesAttributedText="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IRB-5p-vRn">
-                                <rect key="frame" x="20" y="8" width="3888" height="1140"/>
+                                <rect key="frame" x="20" y="8" width="3888" height="1536"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <attributedString key="attributedText">
                                     <fragment content="Lborum. Nam liber te conscient to factor tum poen legum odioque civiuda.">
@@ -3915,16 +3915,16 @@ The feature requires an active iCloud account and that iCloud is enabled on your
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Title" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="Vx7-JF-cYb">
-                                                    <rect key="frame" x="15" y="3" width="34" height="22"/>
+                                                    <rect key="frame" x="15" y="3" width="36" height="22"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="left" text="Subtitle" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pV0-ks-rt3">
                                                     <rect key="frame" x="15" y="25" width="43" height="15"/>
                                                     <autoresizingMask key="autoresizingMask"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                    <fontDescription key="fontDescription" type="italicSystem" pointSize="12"/>
                                                     <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -3932,6 +3932,10 @@ The feature requires an active iCloud account and that iCloud is enabled on your
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="pM5-pf-yYg" id="WLc-NL-owO"/>
+                                    <outlet property="delegate" destination="pM5-pf-yYg" id="JBg-i5-v9W"/>
+                                </connections>
                             </tableView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="CdY-Lu-UXN">
                                 <rect key="frame" x="0.0" y="724" width="320" height="44"/>
@@ -3940,13 +3944,16 @@ The feature requires an active iCloud account and that iCloud is enabled on your
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="WIR-PV-P0a"/>
                                     <barButtonItem style="plain" id="T9w-bA-aXm">
                                         <segmentedControl key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="bar" selectedSegmentIndex="0" id="3E4-tf-joz">
-                                            <rect key="frame" x="20" y="8" width="280" height="29"/>
+                                            <rect key="frame" x="20" y="7" width="280" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <segments>
-                                                <segment title="All"/>
+                                                <segment title="Top 5"/>
                                                 <segment title="Top 15"/>
                                                 <segment title="Top 30"/>
                                             </segments>
+                                            <connections>
+                                                <action selector="selectFilterOption:" destination="pM5-pf-yYg" eventType="valueChanged" id="nMt-DM-yUB"/>
+                                            </connections>
                                         </segmentedControl>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="1aR-ge-uUI"/>
@@ -3966,6 +3973,10 @@ The feature requires an active iCloud account and that iCloud is enabled on your
                         <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" title="Recent Tasks" id="xVh-dL-LLR"/>
+                    <connections>
+                        <outlet property="filterOptions" destination="3E4-tf-joz" id="t1c-vh-jSD"/>
+                        <outlet property="tableView" destination="32i-De-vKm" id="fB4-WU-GfP"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="TS0-lo-Txk" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

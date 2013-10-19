@@ -534,6 +534,8 @@
     self.currentTask = [self.taskFRC objectAtIndexPath:swipedIndexPath];
 
     if (UIGestureRecognizerStateEnded == longPress.state) {
+        cell.highlighted = NO;
+    } else if (UIGestureRecognizerStateBegan == longPress.state) {
         if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
             // What we do here is make the sub
             if ([self.currentTask isExpanded] == YES) {
@@ -551,9 +553,25 @@
         } else {
             self.isNew = NO;
         }
-        cell.highlighted = NO;
-        
+        cell.highlighted = YES;
     } else if (UIGestureRecognizerStateRecognized == longPress.state) {
+        if (self.currentTask.subTasks != nil && [self.currentTask.subTasks count] > 0) {
+            // What we do here is make the sub
+            if ([self.currentTask isExpanded] == YES) {
+                for (Task *subTask in self.currentTask.subTasks) {
+                    [subTask setSubTaskVisible:[NSNumber numberWithBool:NO]];
+                }
+            } else {
+                for (Task *subTask in self.currentTask.subTasks) {
+                    [subTask setSubTaskVisible:[NSNumber numberWithBool:YES]];
+                }
+            }
+            [self.taskFRC.managedObjectContext save:nil];
+            [self.taskFRC performFetch:nil];
+            [self.tableView reloadData];
+        } else {
+            self.isNew = NO;
+        }
         cell.highlighted = YES;
     }
 }
@@ -563,15 +581,15 @@
     CGPoint location = [gesture locationInView:self.tableView];
     NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
     self.currentTask = [self.taskFRC objectAtIndexPath:swipedIndexPath];
-    
-    // Show notes here
-    self.notesController = [self.storyboard instantiateViewControllerWithIdentifier:@"expenseNotes"];
-    self.notesController.modalPresentationStyle = UIModalPresentationFormSheet;
-    self.notesController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-    
-    self.notesController.notesDelegate = self;
-    [self presentViewController:self.notesController animated:YES completion:nil];
-
+    if (self.currentTask) {
+        // Show notes here
+        self.notesController = [self.storyboard instantiateViewControllerWithIdentifier:@"expenseNotes"];
+        self.notesController.modalPresentationStyle = UIModalPresentationFormSheet;
+        self.notesController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+        
+        self.notesController.notesDelegate = self;
+        [self presentViewController:self.notesController animated:YES completion:nil];
+    }
 }
 
 - (void)doubleTap:(UITapGestureRecognizer*)tap
