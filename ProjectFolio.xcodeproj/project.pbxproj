@@ -166,6 +166,7 @@
 		90ADE54E177C66630040D701 /* home.png in Resources */ = {isa = PBXBuildFile; fileRef = 90ADE548177C66630040D701 /* home.png */; };
 		90B44D3417ADC0DF00A2A6C4 /* HelpAliased-26.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B44D3317ADC0DF00A2A6C4 /* HelpAliased-26.png */; };
 		90B44D3717ADC51000A2A6C4 /* CCUpgradesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B44D3617ADC51000A2A6C4 /* CCUpgradesViewController.m */; };
+		90B6AAE61811EA2200777A61 /* CCMostRecentTasks.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B6AAE51811EA2200777A61 /* CCMostRecentTasks.m */; };
 		90B7A1891803D7CF00E8A361 /* 57 icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B7A1851803D7CF00E8A361 /* 57 icon.png */; };
 		90B7A18A1803D7CF00E8A361 /* 72 icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B7A1861803D7CF00E8A361 /* 72 icon.png */; };
 		90B7A18B1803D7CF00E8A361 /* 114 icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90B7A1871803D7CF00E8A361 /* 114 icon.png */; };
@@ -454,6 +455,8 @@
 		90B44D3317ADC0DF00A2A6C4 /* HelpAliased-26.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "HelpAliased-26.png"; sourceTree = "<group>"; };
 		90B44D3517ADC51000A2A6C4 /* CCUpgradesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCUpgradesViewController.h; sourceTree = "<group>"; };
 		90B44D3617ADC51000A2A6C4 /* CCUpgradesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCUpgradesViewController.m; sourceTree = "<group>"; };
+		90B6AAE41811EA2200777A61 /* CCMostRecentTasks.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCMostRecentTasks.h; sourceTree = "<group>"; };
+		90B6AAE51811EA2200777A61 /* CCMostRecentTasks.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCMostRecentTasks.m; sourceTree = "<group>"; };
 		90B7A1851803D7CF00E8A361 /* 57 icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "57 icon.png"; sourceTree = "<group>"; };
 		90B7A1861803D7CF00E8A361 /* 72 icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "72 icon.png"; sourceTree = "<group>"; };
 		90B7A1871803D7CF00E8A361 /* 114 icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "114 icon.png"; sourceTree = "<group>"; };
@@ -595,6 +598,7 @@
 		241F118415D5F3C700C12500 /* Data Objects */ = {
 			isa = PBXGroup;
 			children = (
+				90B6AAE31811E9F500777A61 /* DataFunctions */,
 				24A98B3715B275B000ABBB85 /* ProjectFolio.xcdatamodeld */,
 				905E859C16C212D200B64CB8 /* Calendar.h */,
 				905E859D16C212D300B64CB8 /* Calendar.m */,
@@ -936,6 +940,15 @@
 			name = Printing;
 			sourceTree = "<group>";
 		};
+		90B6AAE31811E9F500777A61 /* DataFunctions */ = {
+			isa = PBXGroup;
+			children = (
+				90B6AAE41811EA2200777A61 /* CCMostRecentTasks.h */,
+				90B6AAE51811EA2200777A61 /* CCMostRecentTasks.m */,
+			);
+			name = DataFunctions;
+			sourceTree = "<group>";
+		};
 		90D387EA17E4FC55007855AF /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -1150,6 +1163,7 @@
 				242301EE15F8CC680085A150 /* CCGeneralCloser.m in Sources */,
 				24E99B6715FB8C8A0022C132 /* CCCanIDoIt.m in Sources */,
 				2418700515FBFF6200BD56BC /* CCExpenseSummaryViewController.m in Sources */,
+				90B6AAE61811EA2200777A61 /* CCMostRecentTasks.m in Sources */,
 				90AB432D17EA71C80036B987 /* RatingReminder.m in Sources */,
 				2418700915FC00F400BD56BC /* CCTaskSummaryViewController.m in Sources */,
 				24CC3C1A15FE13DC0012C439 /* CCParentTaskViewController.m in Sources */,
