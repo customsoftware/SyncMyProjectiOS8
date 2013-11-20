@@ -1,6 +1,6 @@
 //
 //  CCUpgradesViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 8/3/13.
 //
@@ -16,7 +16,8 @@
 
 @property (weak, nonatomic) IBOutlet UIButton *iCloudButton;
 
-- (IBAction)iCloudSync:(UIButton *)sender;
+- (IBAction)enableTiming:(UIButton *)sender;
+- (IBAction)enableExpenses:(UIButton *)sender;
 - (IBAction)restorePurchase:(UIButton *)sender;
 
 @property (weak, nonatomic) IBOutlet UITextView *iCloudText;
@@ -41,41 +42,20 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productPurchased:) name:IAPHelperProductPurchasedNotification object:nil];
     self.products = [[NSArray alloc] init];
     self.priceFormatter = [[NSNumberFormatter alloc] init];
     [self.priceFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
     [self.priceFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-    if ([[CCIAPCards sharedInstance] featurePurchased]) {
+    if ([[CCIAPCards sharedInstance] timerPurchased] && [[CCIAPCards sharedInstance] expensesPurchased]) {
         [self showFeatureAlreadyPurchased];
     } else {
         if ([SKPaymentQueue canMakePayments]) {
-            self.iCloudText.text = @"This version of the app is limited to not sharing data with other devices. You must purchase the upgrade to share data with other devices on the same Apple account.";
             
             [[CCIAPCards sharedInstance] requestProductsWithCompletionHandler:^(BOOL success, NSArray *products){
-                if (success) {
-                    NSNumberFormatter *priceFormatter = [[NSNumberFormatter alloc] init];
-                    [priceFormatter setFormatterBehavior:NSNumberFormatterBehavior10_4];
-                    [priceFormatter setNumberStyle:NSNumberFormatterCurrencyStyle];
-                    
-                    self.products = products;
-                    SKProduct *product = (SKProduct *)self.products[0];
-                    [priceFormatter setLocale:product.priceLocale];
-                    NSString *productLabel = [NSString stringWithFormat:@"%@ - %@",
-                                              product.localizedTitle,
-                                              [priceFormatter stringFromNumber:product.price]
-                                              ];
-                    [self.iCloudButton setTitle:productLabel forState:UIControlStateNormal];
-                    
-                } else {
-                    NSLog(@"Failed to retrieve purchase items");
-                }
+                
             }];
         } else {
-            self.iCloudText.text = @"Currently, the data on this app can't be shared with other devices. You will need to enable iCloud sync on your device first.";
-            self.iCloudButton.enabled = NO;
-            self.refreshButton.enabled = NO;
-            [self.iCloudButton setTitle:@"iCloud Sync Disabled" forState:UIControlStateDisabled];
+            
         }
     }
 }
@@ -87,12 +67,14 @@
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)iCloudSync:(UIButton *)sender {
-    SKProduct *product = self.products[0];
-    [[CCIAPCards sharedInstance] buyProduct:product];
+- (IBAction)enableTiming:(UIButton *)sender {
+    
+}
+
+- (IBAction)enableExpenses:(UIButton *)sender {
+    
 }
 
 #pragma mark - <UIAlertViewDelegate>
@@ -118,7 +100,7 @@
     [_products enumerateObjectsUsingBlock:^(SKProduct * product, NSUInteger idx, BOOL *stop) {
         if ([product.productIdentifier isEqualToString:productIdentifier]) {
             [self showFeaturePurchased];
-            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kiCloudSyncKey];
+//            [[NSUserDefaults standardUserDefaults] setBool:YES forKey:kiCloudSyncKey];
             *stop = YES;
         }
     }];
@@ -127,20 +109,13 @@
 }
 
 - (void)showFeatureAlreadyPurchased{
-    self.iCloudButton.enabled = NO;
-    self.refreshButton.enabled = NO;
-    [self.iCloudButton setTitle:@"iCloud Sync Purchased" forState:UIControlStateDisabled];
-    self.iCloudText.text = @"Thank you for your purchase.";
+
+    
 }
 
 - (void)showFeaturePurchased{
-    self.iCloudButton.enabled = NO;
-    self.refreshButton.enabled = NO;
-    [self.iCloudButton setTitle:@"iCloud Sync Purchased" forState:UIControlStateDisabled];
-    self.iCloudText.text = @"Thank you for your purchase. You will need to exit ProjectFolio completely, not just put it in the backrground and restart it for iCloud synchronization to start. Until you restart the app, it will work in just 'Local mode'.";
-    [self showAlertText:@"iCloud Sync is ready, but you must restart, not just minimize the app, to start utilizing the iCloud sync capability of the app." withTitle:@"iCloud Sync Requires Restart" andButton:@"OK"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"iCloudPaidFor"];
-    [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"iCloudStarted"];
+
+    
 }
 
 @end

@@ -1,6 +1,6 @@
 //
 //  CCAuxPriorityEditorViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/17/12.
 //

@@ -1,6 +1,6 @@
 //
 //  iCloudStarterProtocol.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 9/28/13.
 //

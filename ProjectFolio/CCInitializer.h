@@ -1,6 +1,6 @@
 //
 //  CCInitializer.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/20/12.
 //

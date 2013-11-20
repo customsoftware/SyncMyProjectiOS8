@@ -1,6 +1,6 @@
 //
 //  CCMostRecentTasks.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 10/18/13.
 //

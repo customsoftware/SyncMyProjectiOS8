@@ -1,6 +1,6 @@
 //
 //  CCTimerSummaryViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/14/12.
 //
@@ -21,6 +21,7 @@
 @property (strong, nonatomic) NSMutableArray *billableTimers;
 @property (strong, nonatomic) CCTimeViewController *timerDetails;
 @property NSInteger selectedIndex;
+
 @end
 
 @implementation CCTimerSummaryViewController
@@ -64,7 +65,98 @@
     return returnValue;
 }
 
+#pragma mark - Helpers
+- (void)compressBilledEvents {
+//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^{
+        NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"WorkTime"];
+        NSSortDescriptor *sortByProjectUUID = [[NSSortDescriptor alloc] initWithKey:@"workProject.projectUUID" ascending:YES];
+        NSSortDescriptor *sortByTaskUUID = [[NSSortDescriptor alloc] initWithKey:@"workTask.taskUUID" ascending:YES];
+        [request setSortDescriptors:@[sortByProjectUUID,sortByTaskUUID]];
+        NSPredicate *timerPredicate = [NSPredicate predicateWithFormat:@"(workProject.projectName == %@) AND ( billed == 1 )", self.controllingProject.projectName];
+        [request setPredicate:timerPredicate];
+        
+        // Since this is on a background thread, create a manage object context for this thread
+    NSManagedObjectContext *context = [[CoreData sharedModel:nil] managedObjectContext];
+//        NSManagedObjectContext *context = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
+//        context.persistentStoreCoordinator = [[CoreData sharedModel:nil]persistentStoreCoordinator];
+    
+        NSFetchedResultsController *eventsFRC =
+        [[NSFetchedResultsController alloc] initWithFetchRequest:request
+                                            managedObjectContext:context
+                                              sectionNameKeyPath:nil
+                                                       cacheName:nil];
+        
+        [eventsFRC performFetch:nil];
+        NSArray *fetchedEvents = [eventsFRC fetchedObjects];
+        NSString *currentProjectUUID = @"NotHere";
+        NSString *currentTaskUUID = @"NotHere";
+        NSString *currentDay = @"Not Set";
+        WorkTime *compressedTime = nil;
+        float currentInterval = 0;
+        for (WorkTime *event in fetchedEvents) {
+            // Always get the interval
+            NSTimeInterval elapseTime = [event.end timeIntervalSinceDate:event.start]; //3600;
+//            NSLog(@"Raw elapse: %f", elapseTime);
+            //elapseTime = round(elapseTime*1000)/1000;
+            
+            if ([event.workTask.taskUUID isEqualToString:currentTaskUUID] &&
+                [event.workProject.projectUUID isEqualToString:currentProjectUUID] &&
+                [event.taskDay isEqualToString:currentDay]) {
+                currentInterval = currentInterval + elapseTime;
+//                NSLog(@"a Interval: %f", currentInterval);
+//                compressedTime.end = [compressedTime.start dateByAddingTimeInterval:currentInterval];
+            } else if ( event.workTask.taskUUID == nil &&
+                       [event.workProject.projectUUID isEqualToString:currentProjectUUID] &&
+                       [event.taskDay isEqualToString:currentDay]) {
+                currentInterval = currentInterval + elapseTime;
+//                NSLog(@"b Interval: %f", currentInterval);
+//                compressedTime.end = [compressedTime.start dateByAddingTimeInterval:currentInterval];
+            } else {
+                // Close out the old one and create a new one
+                if (compressedTime) {
+                    // Save
+                    compressedTime.start = event.start;
+                    compressedTime.end = [compressedTime.start dateByAddingTimeInterval:currentInterval];
+                    [compressedTime.managedObjectContext save:nil];
+                    compressedTime = nil;
+                }
+                
+                compressedTime = [CoreData createNewTimerForProject:event.workProject andTask:event.workTask];
+                
+//                compressedTime = [CoreData createNewTimerForProject:event.workProject andTask:event.workTask];
+                //compressedTime.start = event.start;
+                //compressedTime.end = event.end;
+                currentInterval = elapseTime;
+                compressedTime.timerUUID = [[CoreData sharedModel:nil] getUUID];
+                compressedTime.billed = [NSNumber numberWithBool:YES];
+                currentProjectUUID = event.workProject.projectUUID;
+                currentTaskUUID = event.workTask.taskUUID;
+                currentDay = event.taskDay;
+                //
+            }
+            [context deleteObject:event];
+        }
+        [context save:nil];
+//    });
+}
+
 #pragma mark - Delegate actions
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+    switch (buttonIndex) {
+        case 0:
+            // Do nothing
+            break;
+            
+        case 1:
+            // Compress
+            [self compressBilledEvents];
+            break;
+            
+        default:
+            break;
+    }
+}
+
 -(void)didFinishWithError:(NSError *)error{
     [self dismissViewControllerAnimated:YES completion:nil];
 }
@@ -84,6 +176,7 @@
                 }
             }
             [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
+            
             [self viewWillAppear:YES];
         }
     }
@@ -209,11 +302,16 @@
                     [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:time];
                 }
             }
+            
             [self viewWillAppear:YES];
         }
+        
+    } else if (buttonIndex == 3){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Compress Time" message:@"Do you want the billed time compressed into daily totals? This is not reversible." delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"OK", nil];
+         [alert show];
     }
+    
 }
-
 
 #pragma mark - Life Cycle
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -319,29 +417,6 @@
     self.navigationItem.title = @"Summary of Time";
     UIBarButtonItem * printButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAction target:self action:@selector(showActionSheet)];
     self.navigationItem.rightBarButtonItem = printButton;
-}
-
-- (void)viewDidUnload
-{
-    [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    self.totalProjectTime = nil;
-    self.billedTime = nil;
-    self.unbilledTime = nil;
-    self.markBilled = nil;
-    self.outPut = nil;
-    self.reportableTime = nil;
-    self.billRate = nil;
-    self.billingAmount = nil;
-    self.remainingBudget = nil;
-    self.remainingTime = nil;
-    self.time = nil;
-    self.emailer = nil;
-    self.projectDelegate = nil;
-    self.billableTimers = nil;
-    self.fetchRequest = nil;
-    self.timerFRC = nil;
-    self.timerDetails = nil;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation

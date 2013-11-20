@@ -1,6 +1,6 @@
 //
 //  CCInitializer.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/20/12.
 //
@@ -54,7 +54,7 @@
     newExpense.expenseProject = project;
     newExpense.expensed = [NSNumber numberWithBool:NO];
     newExpense.datePaid = [NSDate dateWithTimeInterval:230000 sinceDate:[NSDate date]];
-    newExpense.notes = @"Please click the sticky-notes button.    \nYou can also enter notes about the purchase.\nYou can take a photograph of your receipt by clicking on the camera button. If it's not enabled, it means your iOS device doesn't have a camera.\nYou can also use expences to track milage. You can do this one of two ways.\n1. You can directly enter the milage in the milage field.\n2. You can click on the airplane button to use location services to compute milage for you based upon your current location and the location you set as 'home' in the settings popover.";
+    newExpense.notes = @"Please tap the sticky-notes button.    \nYou can also enter notes about the purchase.\nYou can take a photograph of your receipt by tapping on the camera button. If it's not enabled, it means your iOS device doesn't have a camera.\nYou can also use expences to track milage. You can do this one of two ways.\n1. You can directly enter the milage in the milage field.\n2. You can tap on the airplane button to use location services to compute milage for you based upon your current location and the location you set as 'home' in the settings popover.";
     [project addProjectExpenseObject:newExpense];
 }
 
@@ -70,7 +70,7 @@
     [notes appendFormat:@"Then selecting them and tapping on the 'Create Task' menu button\n\n"];
     [notes appendFormat:@"You can set the display font of these notes and notes on expenses and tasks in the settings popover.\n"];
     [notes appendFormat:@"You can also set font size and screen color in the settings popover\n\n"];
-    [notes appendFormat:@"By clicking on the 'Home' button in the settings popover, you can set your 'home' location for computing miles traveled in the expenses popover.\n\n"];
+    [notes appendFormat:@"By tapping on the 'Home' button in the settings popover, you can set your 'home' location for computing miles traveled in the expenses popover.\n\n"];
     [notes appendFormat:@"You can set the default calendar the app will use to save meetings in and in which it will look for existing meetings to add to it's meeting list. It will search for meetings which have the name of the project embeded in the meeting title.\n\n"];
     [notes appendFormat:@"The 'line graph' button in the lower right will give you a graphic presentation of your active projects over time. The vertical red line in the chart represents today. Projects that are on time are green. Projects that are late are red. Projects that haven't started yet are gray.\n\n"];
     [notes appendFormat:@"The 'graph' button in the lower left will give you a graphic presentation of your active tasks over time. The vertical gray line in the chart represents today. Detail text for tasks that are late are red. Detail notes for completed tasks are green. The double red vertical lines are when the project is due. The black horizontal lines represent a super-task. Its sub-tasks are displayed under it.\n\n"];

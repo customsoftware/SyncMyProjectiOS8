@@ -1,6 +1,6 @@
 //
 //  Project.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 2/5/13.
 //

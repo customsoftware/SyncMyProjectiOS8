@@ -154,6 +154,22 @@
 			<key>Key</key>
 			<string>defaultCalendar</string>
 		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSGroupSpecifier</string>
+			<key>Title</key>
+			<string>Time inactive projects</string>
+		</dict>
+		<dict>
+			<key>Type</key>
+			<string>PSToggleSwitchSpecifier</string>
+			<key>Title</key>
+			<string>Timer Enabled</string>
+			<key>Key</key>
+			<string>enableTimingOnInactiveProjects</string>
+			<key>DefaultValue</key>
+			<false/>
+		</dict>
 	</array>
 </dict>
 </plist>

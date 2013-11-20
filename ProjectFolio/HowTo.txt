@@ -1,8 +1,6 @@
 Add a project, task, expense, category or meeting by swiping down from navigation bar over the respective table list.
 
-Update a project's data in iPhone app by on the project in project list.
-
-Update a project's data in iPad app by swiping down from navigation bar over detail view containing this information. Close the view by swiping up on the view.
+Update a project's data by swiping down from navigation bar over detail view containing this information. Close the view by tapping outside the view.
 
 To collapse child tasks into the parent task or to expand hidden child tasks, just press on the task until it blinks then release the tap and the sub-tasks will appear, or hide, as the case may be.
 
@@ -13,4 +11,4 @@ Add tasks:
 
 Where a seach field is visible, swipe up on the list to hide it.
 
-For additional and more indepth help, tap "?" icon. In iPhone it is in Project list navigation bar. In iPad, it is in Project Notes navigation bar.
+For additional and more indepth help, tap "Info" icon. In iPhone it is in Project list navigation bar. In iPad, it is in Project Notes navigation bar.

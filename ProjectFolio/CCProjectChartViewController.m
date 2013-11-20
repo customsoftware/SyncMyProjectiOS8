@@ -1,6 +1,6 @@
 //
 //  CCProjectChartViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/22/12.
 //

@@ -1,6 +1,6 @@
 //
 //  CCExpenseNotesViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/20/12.
 //

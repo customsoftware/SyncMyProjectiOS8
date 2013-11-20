@@ -1,6 +1,6 @@
 //
 //  CCProjectTimer.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/8/12.
 //
@@ -18,5 +18,6 @@
 -(void)releaseTimer;
 -(void)startTimingNameForProject:(NSNotification *)notification;
 -(void)startTimingNameForTask:(NSNotification *)notification;
+-(void)restartTimer;
 
 @end

@@ -1,6 +1,6 @@
 //
 //  CCHotListViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/21/12.
 //
@@ -8,6 +8,8 @@
 
 #import "CCHotListViewController.h"
 #import "CCDetailViewController.h"
+#import "CCiPhoneDetailViewController.h"
+
 #define kStartNotification @"ProjectTimerStartNotification"
 #define kStartTaskNotification  @"TaskTimerStartNotification"
 #define kStopNotification       @"ProjectTimerStopNotification"
@@ -23,7 +25,8 @@ typedef enum khotlistfilterModes{
     allProjectsMode,
     todayMode,
     thisWeekMode,
-    lateMode
+    lateMode,
+    categoryMode
 } kHotListFilterModes;
 
 @interface CCHotListViewController ()  <CCNotesDelegate>
@@ -34,6 +37,7 @@ typedef enum khotlistfilterModes{
 -(BOOL)shouldShowCancelButton;
 -(IBAction)filterOptions:(UISegmentedControl *)sender;
 - (void)sendHotList;
+- (IBAction)showNotes:(UIBarButtonItem *)sender;
 
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) NSPredicate *todayPredicate;
@@ -49,6 +53,7 @@ typedef enum khotlistfilterModes{
 @property NSInteger selectedSegment;
 @property (nonatomic) BOOL notInSearchMode;
 @property (strong, nonatomic) CCExpenseNotesViewController *notesController;
+@property (strong, nonatomic) CCiPhoneDetailViewController *detailController;
 
 @end
 
@@ -72,7 +77,7 @@ typedef enum khotlistfilterModes{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateDisplayedItemsInHotList) name:kiCloudSyncNotification object:nil];
 	
     self.dateFormatter = [[NSDateFormatter alloc] init];
-    [self.dateFormatter setTimeStyle:NSDateFormatterShortStyle];
+    [self.dateFormatter setTimeStyle:NSDateFormatterNoStyle];
     [self.dateFormatter setDateStyle:NSDateFormatterShortStyle];
     
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
@@ -147,6 +152,13 @@ typedef enum khotlistfilterModes{
     } else if ( sender.selectedSegmentIndex == lateMode ) {
         [self.fetchRequest setPredicate:self.latePredicate];
     }
+    
+    if (sender.selectedSegmentIndex == categoryMode ) {
+        self.searchBar.placeholder = @"Enter category name";
+    } else {
+        self.searchBar.placeholder = @"Enter task name";
+    }
+    
     self.selectedSegment = sender.selectedSegmentIndex;
     [self.projectTimer releaseTimer];
     self.projectTimer = nil;
@@ -161,7 +173,7 @@ typedef enum khotlistfilterModes{
 -(void)filterContentForSearchText:(NSString *)searchText scope:(NSString *)scope{
     [self.filteredTasks removeAllObjects];
     NSPredicate *nameLikePredicate = nil;
-    if (self.selectedSegment == 3) {
+    if (self.selectedSegment == categoryMode) {
         nameLikePredicate = [NSPredicate predicateWithFormat:@"taskPriority.priority beginswith[c] %@", searchText];
     } else {
         nameLikePredicate = [NSPredicate predicateWithFormat:@"taskProject.projectName beginswith[c] %@", searchText];
@@ -183,14 +195,14 @@ typedef enum khotlistfilterModes{
 -(void)configureCell:(UITableViewCell *)cell{
     
     NSString *detailMessage;
-    NSString *ownerName;
-    if (self.task.assignedTo == nil) {
-        ownerName = @"Self";
-    } else {
-        ownerName = [[NSString alloc] initWithFormat:@"%@ %@", self.task.assignedFirst, self.task.assignedLast];
-    }
-    detailMessage = [[NSString alloc] initWithFormat:@"Owner: %@ Due: %@", ownerName, [self.dateFormatter stringFromDate:self.task.dueDate]];
-    cell.textLabel.text = [[NSString alloc]initWithFormat:@"%@: %@", self.task.taskProject.projectName, self.task.title];
+//    NSString *ownerName;
+//    if (self.task.assignedTo == nil) {
+//        ownerName = @"Self";
+//    } else {
+//        ownerName = [[NSString alloc] initWithFormat:@"%@ %@", self.task.assignedFirst, self.task.assignedLast];
+//    }
+    detailMessage = [[NSString alloc] initWithFormat:@"Due: %@ - %@", [self.dateFormatter stringFromDate:self.task.dueDate ], self.task.taskProject.projectName];
+    cell.textLabel.text = [[NSString alloc]initWithFormat:@"%@", self.task.title];
     cell.detailTextLabel.text = detailMessage;
     if (self.task.notes.length > 0) {
         cell.imageView.image = [UIImage imageNamed:@"179-notepad.png"];
@@ -288,8 +300,10 @@ typedef enum khotlistfilterModes{
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
     self.projectDetailController.project.projectNotes = self.projectDetailController.projectNotes.text;
-    [self.task.managedObjectContext save:nil];
-    [self.projectTimer releaseTimer];
+    if (self.task) {
+        [self.task.managedObjectContext save:nil];
+        [self.projectTimer releaseTimer];
+    }
     self.projectTimer = nil;
 }
 
@@ -378,6 +392,11 @@ typedef enum khotlistfilterModes{
     [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
 }
 
+- (IBAction)showNotes:(UIBarButtonItem *)sender {
+    self.detailController.project = self.task.taskProject;
+    [self.navigationController pushViewController:self.detailController animated:YES];
+}
+
 -(BOOL)shouldShowCancelButton{
     return  NO;
 }
@@ -419,7 +438,7 @@ typedef enum khotlistfilterModes{
 
 -(NSPredicate *)allPredicate {
     if (_allPredicate == nil) {
-        _allPredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate != nil"];
+        _allPredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate != nil AND ( taskProject.complete = 0)"];
     }
     return _allPredicate;
 }
@@ -428,7 +447,7 @@ typedef enum khotlistfilterModes{
     if (_todayPredicate == nil) {
         self.startRange = [self today];
         self.endRange = [[NSDate alloc] initWithTimeInterval:ONE_DAY sinceDate:self.startRange];
-        _todayPredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate >=%@ AND dueDate <= %@", self.startRange, self.endRange];
+        _todayPredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate >=%@ AND dueDate <= %@ AND ( taskProject.complete = 0)", self.startRange, self.endRange];
     }
     return _todayPredicate;
 }
@@ -438,7 +457,7 @@ typedef enum khotlistfilterModes{
         self.startRange = [self today];
         self.endRange = [[NSDate alloc] initWithTimeInterval:ONE_WEEK sinceDate:self.startRange];
         
-        _nextWeekPredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate >=%@ AND dueDate <= %@", self.startRange, self.endRange];
+        _nextWeekPredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate >=%@ AND dueDate <= %@ AND ( taskProject.complete = 0)", self.startRange, self.endRange];
     }
     return _nextWeekPredicate;
 }
@@ -448,7 +467,7 @@ typedef enum khotlistfilterModes{
         self.startRange = [self today];
         self.endRange = [[NSDate alloc] initWithTimeInterval:ONE_MONTH sinceDate:self.startRange];
         
-        _nextMonthPredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate >=%@ AND dueDate <= %@", self.startRange, self.endRange];
+        _nextMonthPredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate >=%@ AND dueDate <= %@ AND ( taskProject.complete = 0)", self.startRange, self.endRange];
     }
     return _nextMonthPredicate;
 }
@@ -459,6 +478,13 @@ typedef enum khotlistfilterModes{
         _latePredicate = [NSPredicate predicateWithFormat:@"completed == 0 AND dueDate <= %@", self.startRange];
     }
     return _latePredicate;
+}
+
+-(CCiPhoneDetailViewController *)detailController{
+    if (_detailController == nil) {
+        _detailController = [self.storyboard instantiateViewControllerWithIdentifier:@"detailViewController"];
+    }
+    return _detailController;
 }
 
 @end

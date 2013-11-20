@@ -1,6 +1,6 @@
 //
 //  CCVisibleFixer.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 10/1/12.
 //

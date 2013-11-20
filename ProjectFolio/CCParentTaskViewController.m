@@ -1,6 +1,6 @@
 //
 //  CCParentTaskViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/10/12.
 //

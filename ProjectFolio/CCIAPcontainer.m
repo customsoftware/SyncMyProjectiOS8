@@ -7,8 +7,6 @@
 //
 
 #import "CCIAPcontainer.h"
-NSString *const IAPHelperProductPurchasedNotification = @"IAPHelperProductPurchasedNotification";
-
 @interface CCIAPcontainer () <SKProductsRequestDelegate, SKPaymentTransactionObserver>
 
 @property (strong, nonatomic) SKProductsRequest *productRequest;
@@ -124,7 +122,7 @@ RequestProductsCompletionHandler _completionHandler;
     [_purchasedProductIdentifiers addObject:productIdentifier];
     [[NSUserDefaults standardUserDefaults] setBool:YES forKey:productIdentifier];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    [[NSNotificationCenter defaultCenter] postNotificationName:IAPHelperProductPurchasedNotification object:productIdentifier userInfo:nil];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:IAPHelperProductPurchasedNotification object:productIdentifier userInfo:nil];
     
 }
 

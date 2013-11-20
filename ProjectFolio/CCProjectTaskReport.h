@@ -1,6 +1,6 @@
 //
 //  CCProjectTaskReport.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 10/19/13.
 //
@@ -16,6 +16,6 @@ typedef enum kRangeModes{
 
 @interface CCProjectTaskReport : NSObject
 
-+ (NSArray *) getTaskLevelReportForDateRange:(kRangeModes) rangeMode fromDate:(NSDate *)startDate;
++ (NSArray *) getReportGroupedByProjectTaskDateForDateRange:(kRangeModes) rangeMode fromDate:(NSDate *)startDate;
 
 @end

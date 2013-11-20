@@ -1,0 +1,6 @@
+!!!!! PLEASE READ !!!!
+
+This fixes a bug in the display of task notes.
+
+This adds these new features:
+1.  You have the ability to disable the timer for inactive projects from the settings view and from the Settings app on your device.

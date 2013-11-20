@@ -1,6 +1,6 @@
 //
 //  CCExpenseDetailsViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/3/12.
 //
@@ -225,10 +225,12 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
-    self.expense.paidTo = self.paidTo.text;
-    self.expense.pmtDescription = self.itemPurchased.text;
-    self.expense.amount = [self.numberFormatter numberFromString:self.amountPaid.text];
-    [self.expense.managedObjectContext save:nil];
+    if (self.expense) {
+        self.expense.paidTo = self.paidTo.text;
+        self.expense.pmtDescription = self.itemPurchased.text;
+        self.expense.amount = [self.numberFormatter numberFromString:self.amountPaid.text];
+        [self.expense.managedObjectContext save:nil];
+    }
     [self.locationManager forceShutdownOfLocator];
 }
 

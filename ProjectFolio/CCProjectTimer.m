@@ -1,6 +1,6 @@
 //
 //  CCProjectTimer.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/8/12.
 //
@@ -37,30 +37,90 @@
 }
 
 -(void)timerTest{
-    if (self.timer != nil ) {
-        self.timer.billed = [NSNumber numberWithBool:NO];
-        self.timer.start = [NSDate date];
-        self.parentProject.projectUUID = (self.parentProject.projectUUID != nil) ? self.parentProject.projectUUID : [[CoreData sharedModel:nil] getUUID];
-        [self.defaults saveString:self.parentProject.projectUUID atKey:kSelectedProject];
-    } else if ( !self.parentProject ) {
-        // No project selected yet, so no point to start a timer yet.
-    } else {
-        BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
-        if (keyStatus == YES) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Timer Failure" message:[[NSString alloc] initWithFormat:@"Timer for %@ project failed to start", self.parentProject.projectName] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-            [alert show];
+    if ([self.defaults isTimeAuthorized]) {
+        if (self.timer != nil ) {
+            self.timer.billed = [NSNumber numberWithBool:NO];
+            self.timer.start = [NSDate date];
+            self.parentProject.projectUUID = (self.parentProject.projectUUID != nil) ? self.parentProject.projectUUID : [[CoreData sharedModel:nil] getUUID];
+            [self.defaults saveString:self.parentProject.projectUUID atKey:kSelectedProject];
+            if (self.owningTask) {
+                [self.defaults saveString:self.owningTask.taskUUID atKey:kSelectedTask];
+            } else {
+                [self.defaults saveString:@"None" atKey:kSelectedTask];
+            }
+            NSString *timeString = [self.formatter stringFromDate:self.timer.start];
+            [self.defaults saveString:timeString atKey:kStartTime];
+        } else if ( !self.parentProject ) {
+            // No project selected yet, so no point to start a timer yet.
+        } else {
+            BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
+            if (keyStatus == YES) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Timer Failure" message:[[NSString alloc] initWithFormat:@"Timer for %@ project failed to start", self.parentProject.projectName] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
         }
     }
 }
 
 -(void)startTimer{
-    self.timer = [CoreData createNewTimerForProject:self.parentProject];
-    [self timerTest];
+    if ([self isTImerEnabledForProject:self.parentProject]) {
+        self.timer = [CoreData createNewTimerForProject:self.parentProject];
+        [self timerTest];
+    } else {
+        self.timer = nil;
+    }
 }
 
 -(void)startTaskTimer{
-    self.timer = [CoreData createNewTimerForProject:self.parentProject andTask:self.owningTask];
-    [self timerTest];
+    if ([self isTImerEnabledForProject:self.parentProject]) {
+        self.timer = [CoreData createNewTimerForProject:self.parentProject andTask:self.owningTask];
+        [self timerTest];
+    } else {
+        self.timer = nil;
+    }
+}
+
+#pragma mark - Public API
+- (void)restartTimer {
+    if (!self.timer) {
+        NSString *projectUUID = [[NSUserDefaults standardUserDefaults] stringForKey:kSelectedProject];
+        NSString *taskUUID = [[NSUserDefaults standardUserDefaults] stringForKey:kSelectedTask];
+        NSString *startTime = [[NSUserDefaults standardUserDefaults] stringForKey:kStartTime];
+        if (startTime != nil && projectUUID != nil && startTime.length > 0 && projectUUID.length > 0 ) {
+            // We have valid time and a project. Start the timer for the project and set the start time
+            //  to the stored time
+            NSManagedObjectContext *context = [[CoreData sharedModel:nil] managedObjectContext];
+            NSFetchRequest *request = [[NSFetchRequest alloc] init];
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"projectUUID == %@", projectUUID];
+            NSEntityDescription *entity = [NSEntityDescription entityForName:@"Project"
+                                                      inManagedObjectContext:context];
+            NSSortDescriptor *activeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"active" ascending:NO];
+            [request setEntity:entity];
+            [request setSortDescriptors:@[activeDescriptor]];
+            [request setPredicate:predicate];
+            NSFetchedResultsController *frc = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:context sectionNameKeyPath:nil cacheName:nil];
+            NSError *error = nil;
+            [frc performFetch:&error];
+            if (!error && frc.fetchedObjects.count > 0 ) {
+                self.parentProject = frc.fetchedObjects[0];
+                [self startTimer];
+                self.timer.start = [self.formatter dateFromString:startTime];
+            }
+        }
+        
+        if (taskUUID != nil && ![taskUUID isEqualToString:@"None"]) {
+            // Find the task and set it as the controlling task for the timer
+            Task *foundTask = nil;
+            for (Task *task in self.parentProject.projectTask) {
+                if ([task.taskUUID isEqualToString:taskUUID]) {
+                    foundTask = task;
+                    break;
+                }
+            }
+            self.timer.workTask = foundTask;
+            [foundTask addTaskTimerObject:self.timer];
+        }
+    }
 }
 
 -(void)startTimingNameForProject:(NSNotification *)notification{
@@ -104,6 +164,21 @@
         self.defaults =nil;
     }
 }
+
+#pragma mark - Helpers
+- (BOOL)isTImerEnabledForProject:(Project *)project {
+    BOOL inactiveEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:kInActiveEnabled];
+    BOOL returnValue = NO;
+    
+    if ([project.active boolValue]) {
+        if (inactiveEnabled) { returnValue = YES; }
+    } else {
+        returnValue = YES;
+    }
+    
+    return returnValue;
+}
+
 
 #pragma mark - Lazy Getter
 -(CCSettingsControl *)defaults{

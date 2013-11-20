@@ -1,6 +1,6 @@
 //
 //  CCMasterViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 7/14/12.
 //  Copyright (c) 2012 Ken Cluff. All rights reserved.

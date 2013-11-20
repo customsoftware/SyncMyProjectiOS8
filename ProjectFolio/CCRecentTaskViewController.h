@@ -1,6 +1,6 @@
 //
 //  CCRecentTaskViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 10/14/13.
 //

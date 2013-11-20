@@ -1,6 +1,6 @@
 //
 //  CCAuxDateViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/1/12.
 //

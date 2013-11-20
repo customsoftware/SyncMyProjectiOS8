@@ -1,6 +1,6 @@
 //
 //  CCSubTaskViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/27/12.
 //

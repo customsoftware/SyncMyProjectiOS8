@@ -1,6 +1,6 @@
 //
 //  CCProjectSwitchTableViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/5/12.
 //

@@ -7,12 +7,11 @@
 //
 
 #import "CCLocalData.h"
-#define kCompanyID          @"4MAEKVPSTZ.com.customsoftware."
-#define kUbiquityCtrName    @"com.customsoftware"
-//#define kAppString @"deviceKey"
+#define kCompanyID          @"4MAEKVPSTZ.com.customsoftware.projectfolio."
+#define kUbiquityCtrName    @"com.customsoftware.projectfolio"
 #define kAppStatus @"Status"
 #define kiCloudToken @"Token"
-#define kAppID @"ProjectFolio"
+#define kAppID @"synctask"
 #define kStartupFinished @"Startup Finished"
 
 @implementation CCLocalData

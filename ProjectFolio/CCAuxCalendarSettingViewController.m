@@ -1,6 +1,6 @@
 //
 //  CCAuxCalendarSettingViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/22/12.
 //

@@ -1,6 +1,6 @@
 //
 //  CCiPhoneTaskViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/28/12.
 //
@@ -210,7 +210,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self.sourceProject.managedObjectContext save:nil];
+    if (self.sourceProject) {
+        [self.sourceProject.managedObjectContext save:nil];
+    }
     self.allPredicate = nil;
     self.incompletePredicate = nil;
     self.assignedPredicate = nil;

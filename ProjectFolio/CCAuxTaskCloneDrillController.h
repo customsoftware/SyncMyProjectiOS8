@@ -1,6 +1,6 @@
 //
 //  CCAuxTaskCloneDrillController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/5/12.
 //

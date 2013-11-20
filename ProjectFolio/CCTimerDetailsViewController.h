@@ -1,6 +1,6 @@
 //
 //  CCTimerDetailsViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/14/12.
 //

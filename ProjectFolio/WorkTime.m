@@ -1,8 +1,8 @@
 //
 //  WorkTime.m
-//  ProjectFolio
+//  
 //
-//  Created by Kenneth Cluff on 2/5/13.
+//  Created by Kenneth Cluff on 10/19/13.
 //
 //
 
@@ -22,7 +22,14 @@
 @dynamic end;
 @dynamic start;
 @dynamic timerUUID;
+@dynamic taskDay;
 @dynamic workProject;
 @dynamic workTask;
+
+- (NSString *)taskDay {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:@"YYYYMMDD"];
+    return [formatter stringFromDate:self.start];
+}
 
 @end

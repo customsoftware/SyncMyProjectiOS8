@@ -1,6 +1,6 @@
 //
 //  CCiPhoneMasterViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/26/12.
 //
@@ -14,6 +14,8 @@
 #define kStopNotification   @"ProjectTimerStopNotification"
 #define kSearchState        @"searchMode"
 #define kActiveProject      @"activeProject"
+#define kRowHeight          47
+#define kRecentsIndexKey    3
 
 #import "CCiPhoneMasterViewController.h"
 #import "CCPopoverControllerDelegate.h"
@@ -28,7 +30,7 @@
 typedef enum kfilterModes{
     allProjectsMode,
     activeProjectsMode,
-    openProjectsMode,
+    projectCategoryMode,
     recentListMode,
     hotListMode
 } kFilterModes;
@@ -53,17 +55,19 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) CCiPhoneDetailViewController *detailController;
 @property (weak, nonatomic) CCAuxSettingsViewController *settings;
 @property (nonatomic) BOOL inICloudMode;
+@property (strong, nonatomic) CCSettingsControl *systemSettings;
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *projectActionsButton;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (weak, nonatomic) IBOutlet UISegmentedControl *filterSegmentControl;
 @property (strong, nonatomic) NSString *lastProjectID;
+@property (weak, nonatomic) IBOutlet UIButton *actionButton;
 
 -(IBAction)filterActions:(UISegmentedControl *)sender;
 -(IBAction)actionButton:(UIButton *)sender;
 -(IBAction)insertNewObject:(UIButton *)sender;
 -(IBAction)showSettings:(UIButton *)sender;
--(IBAction)openFAQ:(UIBarButtonItem *)sender;
+-(IBAction)openFAQ:(UIButton *)sender;
 
 @end
 
@@ -99,10 +103,15 @@ typedef enum kfilterModes{
         if (sender.selectedSegmentIndex == allProjectsMode) {
             [self.request setPredicate:nil];
         } else if ( sender.selectedSegmentIndex == activeProjectsMode ) {
-            [self.request setPredicate:self.activePredicate];
-        } else if ( sender.selectedSegmentIndex == openProjectsMode ) {
             [self.request setPredicate:self.openPredicate];
         }
+        
+        if (sender.selectedSegmentIndex == projectCategoryMode) {
+            self.searchBar.placeholder = @"Enter category name";
+        } else {
+            self.searchBar.placeholder = @"Enter project name";
+        }
+        
         NSError *fetchError = [[NSError alloc] init];
         [self.fetchedProjectsController performFetch:&fetchError];
         [self.tableView reloadData];
@@ -148,7 +157,7 @@ typedef enum kfilterModes{
 -(void)filterContentForSearchText:(NSString *)searchText scope:(NSString *)scope{
     [self.filteredProjects removeAllObjects];
     NSPredicate *nameLikePredicate = nil;
-    if (self.lastSelected == 3) {
+    if (self.lastSelected == projectCategoryMode) {
         nameLikePredicate = [NSPredicate predicateWithFormat:@"projectPriority.priority beginswith[c] %@", searchText];
     } else {
         nameLikePredicate = [NSPredicate predicateWithFormat:@"projectName beginswith[c] %@", searchText];
@@ -312,7 +321,9 @@ typedef enum kfilterModes{
 - (void)awakeFromNib
 {
     // self.clearsSelectionOnViewWillAppear = NO;
-    self.preferredContentSize = CGSizeMake(320.0, 600.0);
+    if ([self respondsToSelector:@selector(preferredContentSize)]) {
+        self.preferredContentSize = CGSizeMake(320.0, 600.0);
+    }
     [super awakeFromNib];
 }
 
@@ -330,6 +341,7 @@ typedef enum kfilterModes{
     // Set up the search controller
     self.searchDisplayController.delegate = self;
     self.projectTimer = [[CCProjectTimer alloc] init];
+    [self.projectTimer restartTimer];
     
     CCLatestNewsViewController *latestController = [self.storyboard instantiateViewControllerWithIdentifier:@"latestNews"];
     latestController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
@@ -371,11 +383,14 @@ typedef enum kfilterModes{
     self.swiper.enabled = YES;
     [[CoreData sharedModel:nil] testProjectCount];
     [[CoreData sharedModel:nil] testPriorityConfig];
+    [self.filterSegmentControl setEnabled:[self.systemSettings isTimeAuthorized] forSegmentAtIndex:kRecentsIndexKey];
+    self.actionButton.enabled = [self.systemSettings isTimeAuthorized];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-
+    [self setTintForApp];
+    
     if (self.activeProject != nil ){
         [self sendTimerStartNotificationForProject];
     } else {
@@ -405,6 +420,20 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - Helper
+- (void)setTintForApp {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    float blueTint = [defaults floatForKey:kBlueTintNameKey];
+    float redTint = [defaults floatForKey:kRedTintNameKey];
+    if ( blueTint != 0 && redTint != 0) {
+        CGFloat alpha = [defaults floatForKey:kTintSaturation];
+        CGFloat red = [defaults floatForKey:kRedTintNameKey];
+        CGFloat blue = [defaults floatForKey:kBlueTintNameKey];
+        CGFloat green = [defaults floatForKey:kGreenTintNameKey];
+        UIColor *newColor = [[UIColor alloc] initWithRed:red green:green blue:blue alpha:alpha];
+        [[UIApplication sharedApplication] keyWindow].tintColor = newColor;
+    }
+}
+
 - (void)sendOutput{
     UIActionSheet *sheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Send Email" otherButtonTitles:@"Print Report", nil];
     sheet.tag = 2;
@@ -416,7 +445,6 @@ typedef enum kfilterModes{
     [self.navigationController pushViewController:self.settings animated:YES];
 }
 
-
 -(IBAction)openFAQ:(UIButton *)sender{
     [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"http://www.ktcsoftware.com/pf/faq/faq.html"]];
 }
@@ -424,8 +452,10 @@ typedef enum kfilterModes{
 - (void)respondToiCloudUpdate {
     [self.fetchedProjectsController performFetch:nil];
     [self.tableView reloadData];
-    [self.indicator stopAnimating];
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"iCloudStarted"];
+    [[CoreData sharedModel:nil] testProjectCount];
+    [[CoreData sharedModel:nil] testPriorityConfig];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kHelpTest];
+//    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"iCloudStarted"];
 }
 
 #pragma mark - <CCPopoverControllerDelegate>
@@ -442,6 +472,10 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - Table Controls
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return kRowHeight;
+}
+
 -(void)updateDetailControllerForIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView{
     if (tableView == self.tableView) {
         self.activeProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
@@ -593,8 +627,10 @@ typedef enum kfilterModes{
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (tableView == self.tableView) {
-        [self.activeProject.managedObjectContext save:nil];
-        [self sendTimerStopNotification];
+        if (self.activeProject) {
+            [self.activeProject.managedObjectContext save:nil];
+            [self sendTimerStopNotification];
+        }
     }
 }
 
@@ -773,7 +809,7 @@ typedef enum kfilterModes{
     
     UIColor *projectColor = [newProject.projectPriority getCategoryColor];
     if (!projectColor) projectColor = [UIColor whiteColor];
-    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 44)];
+    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, kRowHeight)];
     catColor.backgroundColor = projectColor;
     catColor.layer.cornerRadius = 0;
     catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
@@ -796,7 +832,14 @@ typedef enum kfilterModes{
     [alertViewProjectName show];
 }
 
-#pragma mark - Lazy getters
+#pragma mark - Accessors
+-(CCSettingsControl *)systemSettings{
+    if (_systemSettings == nil) {
+        _systemSettings = [[CCSettingsControl alloc] init];
+    }
+    return _systemSettings;
+}
+
 -(CCiPhoneTaskViewController *)mainTaskController{
     if (_mainTaskController == nil) {
         _mainTaskController = [self.storyboard instantiateViewControllerWithIdentifier:@"mainTaskList"];

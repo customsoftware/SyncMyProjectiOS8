@@ -1,6 +1,6 @@
 //
 //  CCUpgradesViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 8/3/13.
 //

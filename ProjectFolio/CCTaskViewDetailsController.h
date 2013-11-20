@@ -1,6 +1,6 @@
 //
 //  CCTaskViewDetailsController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/4/12.
 //

@@ -1,6 +1,6 @@
 //
 //  Priority+Category.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 7/17/13.
 //

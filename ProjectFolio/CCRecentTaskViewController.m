@@ -1,6 +1,6 @@
 //
 //  CCRecentTaskViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 10/14/13.
 //
@@ -10,6 +10,7 @@
 #import "CCMostRecentTasks.h"
 #import "CCExpenseNotesViewController.h"
 #import "CCTaskViewDetailsController.h"
+#import "CCiPhoneDetailViewController.h"
 
 #define kStartNotification      @"ProjectTimerStartNotification"
 #define kStartTaskNotification  @"TaskTimerStartNotification"
@@ -34,7 +35,9 @@ typedef enum kChoiceModes{
 @property (strong, nonatomic) NSManagedObjectContext *context;
 @property (strong, nonatomic) NSFetchedResultsController *taskFRC;
 @property (strong, nonatomic) NSEntityDescription *entity;
+@property (strong, nonatomic) CCiPhoneDetailViewController *detailController;
 
+- (IBAction)showNotes:(UIBarButtonItem *)sender;
 - (IBAction)selectFilterOption:(UISegmentedControl *)sender;
 @end
 
@@ -151,6 +154,11 @@ typedef enum kChoiceModes{
 }
 
 #pragma mark - Outlets and Actions
+- (IBAction)showNotes:(UIBarButtonItem *)sender {
+    self.detailController.project = self.currentTask.taskProject;
+    [self.navigationController pushViewController:self.detailController animated:YES];
+}
+
 - (IBAction)selectFilterOption:(UISegmentedControl *)sender {
     [[NSUserDefaults standardUserDefaults] setInteger:sender.selectedSegmentIndex forKey:kChoiceStorageKey];
     [self runQuery:sender.selectedSegmentIndex];
@@ -290,6 +298,13 @@ typedef enum kChoiceModes{
     }
     
     return _context;
+}
+
+-(CCiPhoneDetailViewController *)detailController{
+    if (_detailController == nil) {
+        _detailController = [self.storyboard instantiateViewControllerWithIdentifier:@"detailViewController"];
+    }
+    return _detailController;
 }
 
 @end

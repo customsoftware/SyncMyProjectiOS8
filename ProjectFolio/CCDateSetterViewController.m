@@ -1,12 +1,13 @@
 //
 //  CCDateSetterViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 7/21/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
 #import "CCDateSetterViewController.h"
+#import "CCSettingsControl.h"
 
 #define START_INDEX [NSIndexPath indexPathForRow:0 inSection:0]
 #define END_INDEX [NSIndexPath indexPathForRow:1 inSection:0]
@@ -28,6 +29,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *startDate;
 @property (weak, nonatomic) IBOutlet UIButton *customerName;
 @property (weak, nonatomic) IBOutlet UITextView *helpText;
+@property (strong, nonatomic) CCSettingsControl *settings;
+@property (weak, nonatomic) IBOutlet UIButton *canWeFinish;
 
 - (IBAction)runCanDoAnalysis:(UIButton *)sender;
 - (IBAction)runProjectClonePopover:(UIButton *)sender;
@@ -299,7 +302,9 @@
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self.project.managedObjectContext save:nil];
+    if (self.project) {
+        [self.project.managedObjectContext save:nil];
+    }
 }
 
 - (void)dealloc {
@@ -323,9 +328,11 @@
 }
 
 - (void)resetBudget {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Confirm Reseting Budget" message:@"Are you certain you want to reset the budget entries?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
-    alert.tag = 2;
-    [alert show];
+    if ([self.settings isTimeAuthorized] || [self.settings isExpenseAuthorized]) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Confirm Reseting Budget" message:@"Are you certain you want to reset the budget entries?" delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"OK", nil];
+        alert.tag = 2;
+        [alert show];
+    }
 }
 
 -(void)setDisplayBackGroundColor{
@@ -411,6 +418,13 @@
         hourBudget = [NSString stringWithFormat:@"%@", self.project.hourBudget];
     } else { hourBudget = @""; }
     self.hourBudgetField.text = hourBudget;
+    self.hourBudgetField.enabled = [self.settings isTimeAuthorized];
+    self.canWeFinish.enabled = [self.settings isTimeAuthorized];
+    self.startDate.enabled = [self.settings isTimeAuthorized];
+    self.completionDate.enabled = [self.settings isTimeAuthorized];
+    self.billableSwitch.enabled = [self.settings isExpenseAuthorized];
+    self.hourlyRateField.enabled = [self.settings isExpenseAuthorized];
+    self.projectCostBudget.enabled = [self.settings isExpenseAuthorized];
     
     self.projectCostBudget.text = [self.project.costBudget stringValue];
     [self.activeSwitch setOn:[self.project.active boolValue]];
@@ -428,6 +442,13 @@
 }
 
 #pragma mark - Accessors
+-(CCSettingsControl *)settings{
+    if (_settings == nil) {
+        _settings = [[CCSettingsControl alloc] init];
+    }
+    return _settings;
+}
+
 -(ABPeoplePickerNavigationController *)ownerController{
     if (_ownerController == nil) {
         _ownerController = [[ABPeoplePickerNavigationController alloc] init];

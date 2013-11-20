@@ -5,7 +5,9 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>${PRODUCT_NAME}</string>
+	<string>My Projects</string>
+	<key>CFBundleDisplayName~ipad</key>
+	<string>SyncMyProject</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFiles</key>
@@ -20,7 +22,7 @@
 	<key>CFBundleIcons~ipad</key>
 	<dict/>
 	<key>CFBundleIdentifier</key>
-	<string>com.customsoftware.ProjectFolio</string>
+	<string>com.customsoftware.projectfolio.synctask</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -28,15 +30,15 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>2.0</string>
+	<string>1.0.1</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2.0</string>
+	<string>1.0.1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationUsageDescription</key>
-	<string>Project Folio needs to know where you are so it can compute milage for you when you want to record milage traveled for business purposes.</string>
+	<string>SyncMyProject needs to know where you are so it can compute milage for you when you want to record milage traveled for business purposes.</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

@@ -1,6 +1,6 @@
 //
 //  CoreData.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 12/4/12.
 //
@@ -52,7 +52,6 @@
 #pragma mark - Instance methods
 - (id)saveLastModified:(id)recordObject;
 - (id)initWithDelegate:(id<CoreDataDelegate>)newDelegate;
-- (void)fixExistingData;
 - (void)testPriorityConfig;
 - (void)testProjectCount;
 

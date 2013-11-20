@@ -1,6 +1,6 @@
 //
 //  CCDeliverableViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/2/12.
 //
@@ -163,9 +163,11 @@
 
 -(IBAction)savePopoverData{
     if (self.isNew && self.deliverable != nil) {
-        self.deliverable.expenseProject = self.project;
-        [self.project addProjectExpenseObject:self.deliverable];
-        [self.project.managedObjectContext save:nil];
+        if (self.project) {
+            self.deliverable.expenseProject = self.project;
+            [self.project addProjectExpenseObject:self.deliverable];
+            [self.project.managedObjectContext save:nil];
+        }
     }
 }
 

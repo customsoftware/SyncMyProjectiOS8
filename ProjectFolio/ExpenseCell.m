@@ -1,6 +1,6 @@
 //
 //  ExpenseCell.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/3/12.
 //

@@ -1,6 +1,6 @@
 //
 //  CCHotListViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/21/12.
 //
@@ -26,7 +26,5 @@
 @property (strong, nonatomic) NSFetchedResultsController *taskFRC;
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
 @property (strong, nonatomic) NSIndexPath * selectedIndex;
-
-
 
 @end

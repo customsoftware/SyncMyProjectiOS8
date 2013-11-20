@@ -1,10 +1,13 @@
 //
 //  WorkTime.h
-//  ProjectFolio
+//  
 //
-//  Created by Kenneth Cluff on 2/5/13.
+//  Created by Kenneth Cluff on 10/19/13.
 //
 //
+
+#import <Foundation/Foundation.h>
+#import <CoreData/CoreData.h>
 
 @class Project, Task;
 
@@ -19,6 +22,7 @@
 @property (nonatomic, retain) NSDate * end;
 @property (nonatomic, retain) NSDate * start;
 @property (nonatomic, retain) NSString * timerUUID;
+@property (nonatomic, retain) NSString * taskDay;
 @property (nonatomic, retain) Project *workProject;
 @property (nonatomic, retain) Task *workTask;
 

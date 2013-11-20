@@ -1,6 +1,6 @@
  //
 //  CCMainTaskViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/21/12.
 //
@@ -158,7 +158,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+    // Do any additional setup after loading the view.
     self.sourceProject = [self.projectDelegate getActiveProject];
     [self.request setPredicate:self.allPredicate];
     // NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"completed" ascending:YES];
@@ -212,7 +212,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-    [self.sourceProject.managedObjectContext save:nil];
+    if (self.sourceProject) [self.sourceProject.managedObjectContext save:nil];
     self.allPredicate = nil;
     self.incompletePredicate = nil;
     self.assignedPredicate = nil;

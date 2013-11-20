@@ -1,6 +1,6 @@
 //
 //  CCDetailViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 7/14/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
@@ -17,9 +17,34 @@
 #import "CCModalViewDelegate.h"
 #import "CCEmailer.h"
 #import "CCLatestNewsViewController.h"
+#import "CCGeneralCloserProtocol.h"
 
+typedef enum detailActionSheetOptions {
+    sendNotes = 0,
+    contactDeveloper,
+    closeProjects,
+    cancelActionSheet
+} detailActionSheetOptions;
 
-@interface CCDetailViewController : UIViewController <CCProjectTaskDelegate,UIPopoverControllerDelegate, UISplitViewControllerDelegate,CCModalViewDelegate,UIActionSheetDelegate,CCEmailDelegate,CCLoggerDelegate,CCTaskSummaryDelegate,UIGestureRecognizerDelegate,UIPrintInteractionControllerDelegate>
+typedef enum actionSheetTypes {
+    topSheet = 0,
+    closeOptionSheet,
+    sendOptionSheet,
+    sendCloseOptionSheet
+} actionSheetTypes;
+
+typedef enum sendNoteTypes {
+    emailNotes = 0,
+    printNotes
+} sendNoteTypes;
+
+typedef enum closeOptions {
+    closeYesterday = 0,
+    closeLastWeek,
+    closeAll
+} closeOptions;
+
+@interface CCDetailViewController : UIViewController <CCProjectTaskDelegate,UIPopoverControllerDelegate, UISplitViewControllerDelegate,CCModalViewDelegate,UIActionSheetDelegate,CCEmailDelegate,CCLoggerDelegate,CCTaskSummaryDelegate,UIGestureRecognizerDelegate,UIPrintInteractionControllerDelegate,CCGeneralCloserProtocol>
 
 @property (strong, nonatomic) id detailItem;
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;
@@ -39,12 +64,12 @@
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *showTaskChart;
 @property (strong, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
 @property (strong, nonatomic) UISwipeGestureRecognizer *swipeDown;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *showChart;
 
 -(IBAction)showDeliverablePopover:(id)sender;
 -(IBAction)showTimePopover:(id)sender;
 -(IBAction)showCalendarPopover:(id)sender;
 -(IBAction)showChart:(UIBarButtonItem *)sender;
--(IBAction)sendNotes:(UIButton *)sender;
 -(IBAction)showSettings:(UIBarButtonItem *)sender;
 -(IBAction)showTaskChart:(UIBarButtonItem *)sender;
 

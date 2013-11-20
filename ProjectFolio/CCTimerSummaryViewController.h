@@ -1,6 +1,6 @@
 //
 //  CCTimerSummaryViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/14/12.
 //
@@ -14,7 +14,7 @@
 #import "CCProjectTaskDelegate.h"
 #import "CCTimeViewController.h"
 
-@interface CCTimerSummaryViewController : UIViewController<CCTimeSelector,CCEmailDelegate,MFMailComposeViewControllerDelegate,UIPrintInteractionControllerDelegate,UIActionSheetDelegate,NSFetchedResultsControllerDelegate>
+@interface CCTimerSummaryViewController : UIViewController<CCTimeSelector,CCEmailDelegate, UIAlertViewDelegate,MFMailComposeViewControllerDelegate,UIPrintInteractionControllerDelegate,UIActionSheetDelegate,NSFetchedResultsControllerDelegate>
 
 @property (strong, nonatomic) IBOutlet UILabel *totalProjectTime;
 @property (strong, nonatomic) IBOutlet UILabel *billedTime;

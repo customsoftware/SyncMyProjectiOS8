@@ -1,12 +1,15 @@
 //
 //  CCiPhoneDetailViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/28/12.
 //
 //
 
 #import "CCiPhoneDetailViewController.h"
+#import "CCPrintNotesRender.h"
+#import "CCSettingsControl.h"
+
 #define kShowProjects @"neverShowProjects"
 #define kFontNameKey @"font"
 #define kFontSize @"fontSize"
@@ -15,7 +18,7 @@
 #define kGreenNameKey @"greenbalance"
 #define kSaturation @"saturation"
 
-@interface CCiPhoneDetailViewController () <UITextViewDelegate>
+@interface CCiPhoneDetailViewController () <UITextViewDelegate,UIPrintInteractionControllerDelegate>
 - (void)configureView;
 @property BOOL canUseCalendar;
 @property (weak, nonatomic) CCAuxSettingsViewController *settings;
@@ -24,6 +27,7 @@
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) UIMenuItem *longPressMenu;
 @property NSInteger lastButton;
+@property (strong, nonatomic) CCSettingsControl *sysSettings;
 
 @end
 
@@ -101,6 +105,9 @@
     }
     [self setFontForDisplay];
     [self setDisplayBackGroundColor];
+    self.showTimers.enabled = [self.sysSettings isTimeAuthorized];
+    self.showTaskChart.enabled = [self.sysSettings isTimeAuthorized];
+    self.showDeliverables.enabled = [self.sysSettings isExpenseAuthorized];
 }
 
 #pragma mark - Popover Controls
@@ -172,15 +179,13 @@
 }
 
 -(IBAction)sendNotes:(UIBarButtonItem *)sender{
-    UIActionSheet *actionSheet = [[ UIActionSheet alloc] initWithTitle:@"Reporting Center" delegate:self cancelButtonTitle:@"OK" destructiveButtonTitle:nil otherButtonTitles:@"Email Notes", @"Send Error Report", @"Submit Feedback", @"Print Notes", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Send Notes", @"Contact Developer", nil];
+    actionSheet.tag = 0;
     [actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
     [self.projectNotes resignFirstResponder];
 }
 
 -(IBAction)showSettings:(UIBarButtonItem *)sender{
-    /*if (self.popover != nil) {
-        [self.popover dismissPopoverAnimated:YES];
-    }*/
     self.settings = [self.storyboard instantiateViewControllerWithIdentifier:@"settingsMain"];
     [self.navigationController pushViewController:self.settings animated:YES];
 }
@@ -188,28 +193,6 @@
 -(void)popoverControllerDidDismissPopover:(UIPopoverController *)popoverController{
     [self releasePopovers];
 }
-
-/*-(void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender{
-    // self.popover = [(UIStoryboardPopoverSegue *)segue popoverController];
-    // self.popover.delegate = self;
-    
-    if ([[segue identifier] isEqualToString:@"projectSettings"]){
-        self.settings = (CCAuxSettingsViewController *)self.navigationController.visibleViewController;
-        
-    }else if ([[segue identifier] isEqualToString:@"deliverable"]){
-        self.deliverable = (CCDeliverableViewController *)self.navigationController.visibleViewController;
-        self.deliverable.project = self.project;
-        // self.deliverable.popController = self.popover;
-        
-    } else if ([[segue identifier] isEqualToString:@"time"]){
-        self.time = (CCTimerSummaryViewController *)self.navigationController.visibleViewController;
-        self.time.projectDelegate = self;
-        
-    } else if ([[segue identifier] isEqualToString:@"calendar"]){
-        self.calendar = (CCCalendarViewController *)self.navigationController.visibleViewController;
-        self.calendar.project = self.project;
-    }
-}*/
 
 -(BOOL)popoverControllerShouldDismissPopover:(UIPopoverController *)popoverController{
     return YES;
@@ -268,40 +251,64 @@
 
 -(void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex{
     self.lastButton = buttonIndex;
-    if (buttonIndex == 0) {
-        NSString *subject = nil;
-        if (self.navigationController.navigationItem.title != nil) {
-            subject = self.navigationController.navigationItem.title;
-        } else {
-            subject = self.navigationItem.title;
+    if (actionSheet.tag == 0) {
+        if (buttonIndex == 0) {
+            // Present action sheet to sent notes
+            UIActionSheet *actionSheet = [[ UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Email Notes", @"Print Notes", nil];
+            actionSheet.tag = 1;
+            [actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
+            
+        } else if (buttonIndex == 1) {
+            self.emailer.subjectLine = @"Contact Developer";
+            self.emailer.messageText = @"Enter your comments here.";
+            self.emailer.emailDelegate = self;
+            self.emailer.addressee = @"syncMyProject@ktcsoftware.com";
+            self.emailer.useHTML = [NSNumber numberWithBool:YES];
+            [self.emailer sendEmail];
+            [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
         }
-        self.emailer.subjectLine = subject;
-        self.emailer.messageText = self.projectNotes.text;
-        self.emailer.emailDelegate = self;
-        self.emailer.useHTML = [NSNumber numberWithBool:YES];
-        [self.emailer sendEmail];
-        [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
-    } else if (buttonIndex == 1){
-        self.emailer.subjectLine = @"Project Folio Crash Report";
-        self.emailer.messageText = @"Please enter any additional comments here.";
-        self.emailer.emailDelegate = self;
-        self.emailer.addressee = @"support@ktcsoftware.com";
-        self.emailer.useHTML = [NSNumber numberWithBool:YES];
-        [self.emailer sendEmail];
-        self.logger = [[CCErrorLogger alloc] initWithDelegate:self];
-        NSArray *attachments = [[NSArray alloc] initWithObjects:[self.logger getErrorFile], nil];
-        [self.emailer  addFileAttachements:attachments];
-        [self.logger releaseLogger];
-        [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
-    } else if (buttonIndex == 2) {
-        self.emailer.subjectLine = @"Project Folio Feedback";
-        self.emailer.messageText = @"Enter your comments here.";
-        self.emailer.emailDelegate = self;
-        self.emailer.addressee = @"projectfolio@ktcsoftware.com";
-        self.emailer.useHTML = [NSNumber numberWithBool:YES];
-        [self.emailer sendEmail];
-        [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
-    } else {
+    } else if ( actionSheet.tag == 1) {
+        if (buttonIndex == 0) {
+            NSString *subject = nil;
+            if (self.navigationController.navigationItem.title != nil) {
+                subject = self.navigationController.navigationItem.title;
+            } else {
+                subject = self.navigationItem.title;
+            }
+            self.emailer.subjectLine = subject;
+            self.emailer.messageText = self.projectNotes.text;
+            self.emailer.emailDelegate = self;
+            self.emailer.useHTML = [NSNumber numberWithBool:YES];
+            [self.emailer sendEmail];
+            [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
+        } else if (buttonIndex == 1){
+            UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
+            pic.delegate = self;
+            
+            UIPrintInfo *printInfo = [UIPrintInfo printInfo];
+            printInfo.outputType = UIPrintInfoOutputGrayscale;
+            printInfo.jobName = self.project.projectName;
+            pic.printInfo = printInfo;
+            
+            UIPrintFormatter *notesFormatter = [self.projectNotes viewPrintFormatter];
+            notesFormatter.startPage = 0;
+            CCPrintNotesRender *renderer = [[CCPrintNotesRender alloc] init];
+            renderer.headerString = [NSString stringWithFormat:@"Notes for %@ project", self.project.projectName];
+            NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+            renderer.fontName = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
+            renderer.fontSize = [defaults integerForKey:kFontSize];
+            [renderer addPrintFormatter:notesFormatter startingAtPageAtIndex:0];
+            pic.printPageRenderer = renderer;
+            pic.showsPageRange = YES;
+            
+            void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
+            ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
+                if (!completed && error) {
+                    NSLog(@"Printing could not complete because of error: %@", error);
+                }
+            };
+            [pic presentAnimated:YES completionHandler:completionHandler];
+        }
     }
 }
 
@@ -428,7 +435,14 @@
     return YES;
 }
 
-#pragma mark - Lazy Getters
+#pragma mark - Accessors
+-(CCSettingsControl *)sysSettings{
+    if (_sysSettings == nil) {
+        _sysSettings = [[CCSettingsControl alloc] init];
+    }
+    return _sysSettings;
+}
+
 -(NSFetchedResultsController *)fetchedProjectsController{
     if (_fetchedProjectsController == nil) {
         NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];

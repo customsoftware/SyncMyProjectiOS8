@@ -1,6 +1,6 @@
 //
 //  CCProjectTaskDelegate.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/21/12.
 //

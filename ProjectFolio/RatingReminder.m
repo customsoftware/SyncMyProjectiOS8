@@ -1,6 +1,6 @@
 //
 //  RatingReminder.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 9/18/13.
 //

@@ -7,8 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <StoreKit/StoreKit.h>
-UIKIT_EXTERN NSString *const IAPHelperProductPurchasedNotification;
+
+//UIKIT_EXTERN NSString *const IAPHelperProductPurchasedNotification;
+
+//NSString *const IAPHelperProductPurchasedNotification = @"IAPHelperProductPurchasedNotification";
 
 typedef void (^RequestProductsCompletionHandler)(BOOL success, NSArray *products);
 

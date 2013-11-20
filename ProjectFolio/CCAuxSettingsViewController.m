@@ -1,6 +1,6 @@
 //
 //  CCAuxSettingsViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/3/12.
 //
@@ -8,6 +8,14 @@
 
 #import "CCAuxSettingsViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "CCColorViewController.h"
+#import "CCSettingsControl.h"
+#import "CCAuxPriorityViewController.h"
+#import "CCAuxCalendarSettingViewController.h"
+#import "CCMasterViewController.h"
+#import "CCAuxFontListViewController.h"
+#import "CCAppDelegate.h"
+#import "CCUpgradesViewController.h"
 
 #define kFontNameKey @"font"
 #define kFontSize @"fontSize"
@@ -21,21 +29,31 @@
 #define kHomeLocation @"homeLocation"
 #define kDefaultCalendar @"defaultCalendar"
 
-@interface CCAuxSettingsViewController () <UIScrollViewDelegate>
+@interface CCAuxSettingsViewController () <UIScrollViewDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) CCLocationController *locationManager;
+@property (strong, nonatomic) CCSettingsControl *settings;
 @property (strong, nonatomic) NSUserDefaults *defaults;
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) CCAuxPriorityViewController *priorityController;
 @property (strong, nonatomic) CCAuxCalendarSettingViewController *calendarController;
-@property (weak, nonatomic) IBOutlet UIScrollView *scroller;
+@property (strong, nonatomic) CCColorViewController *colorController;
+@property (strong, nonatomic) CCUpgradesViewController *upgrades;
 
+@property (weak, nonatomic) IBOutlet UISwitch *activeEnabledSwitch;
+@property (weak, nonatomic) IBOutlet UIScrollView *scroller;
 @property (weak, nonatomic) IBOutlet UIStepper *changeFontSize;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
-@property (weak, nonatomic) IBOutlet UIView *colorPad;
 @property (weak, nonatomic) IBOutlet UILabel *location;
 @property (weak, nonatomic) IBOutlet UITextField *email;
 @property (weak, nonatomic) IBOutlet UISwitch *timerOffOn;
+@property (weak, nonatomic) IBOutlet UIButton *homeButton;
+@property (weak, nonatomic) IBOutlet UISwitch *expenseSwitch;
+@property (weak, nonatomic) IBOutlet UISwitch *timeSwitch;
+
+- (IBAction)enableTiming:(UISwitch *)sender;
+- (IBAction)exepenseEnabled:(UISwitch *)sender;
+- (IBAction)enableInActiveProjectTiming:(UISwitch *)sender;
 @end
 
 @implementation CCAuxSettingsViewController
@@ -57,10 +75,10 @@
 -(void)setReverseGeoCodeSuccessWithPlacemark:(NSArray *)placemark{
     CLPlacemark *address = [placemark objectAtIndex:0];
     if (address == nil) {
-        self.location.text = [[NSString alloc] initWithFormat:@"Click button to set home location"];
+        self.location.text = [[NSString alloc] initWithFormat:@"Tap button to set home location"];
     } else {
         if (address.subThoroughfare == nil && address.thoroughfare == nil && address.locality == nil) {
-            self.location.text = [[NSString alloc] initWithFormat:@"Click button to set home location"];
+            self.location.text = [[NSString alloc] initWithFormat:@"Tap button to set home location"];
         } else {
             self.location.text = [[NSString alloc] initWithFormat:@"%@ %@, %@", address.subThoroughfare, address.thoroughfare, address.locality];
         }
@@ -88,17 +106,10 @@
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    self.colorPad.layer.borderWidth = 1.25f;
-    self.colorPad.layer.cornerRadius = 5;
-    self.colorPad.layer.borderColor = [[UIColor darkGrayColor] CGColor];
-    for (UIView *view in self.colorPad.subviews) {
-        view.layer.borderWidth = 1.25f;
-        view.layer.cornerRadius = 3;
-        view.layer.borderColor = [[UIColor darkGrayColor]CGColor];
-    }
     [self.tableView reloadData];
     self.email.text = [self.defaults objectForKey:kDefaultEmail];
     NSString * homeLocation = [self.defaults objectForKey:kHomeLocation];
+    [self.activeEnabledSwitch setOn:[self.defaults boolForKey:kInActiveEnabled]];
     NSString *latitude = [[homeLocation componentsSeparatedByString:@"\\"] objectAtIndex:0];
     NSString *longitude = [[homeLocation componentsSeparatedByString:@"\\"] objectAtIndex:1];
     [self getAddressFromLat:latitude andLong:longitude];
@@ -118,25 +129,41 @@
 }
 
 - (void)updateTimer{
-    BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
-    NSString *localDeviceGUID = [[NSUserDefaults standardUserDefaults] objectForKey:kAppString];
-    
-    // Get Cloud status
-    NSString *controllingAppID = nil;
-    NSDictionary *cloudDictionary = [[CoreData sharedModel:nil] cloudDictionary];
-    if (cloudDictionary != nil && [cloudDictionary valueForKey:kAppString]) {
-        controllingAppID = [cloudDictionary valueForKey:kAppString];
-        if ([localDeviceGUID isEqualToString:controllingAppID]){
-            keyStatus = YES;
-        } else {
-            keyStatus = NO;
+    if ([self.settings isTimeAuthorized]) {
+        BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
+        NSString *localDeviceGUID = [[NSUserDefaults standardUserDefaults] objectForKey:kAppString];
+        
+        // Get Cloud status
+        NSString *controllingAppID = nil;
+        NSDictionary *cloudDictionary = [[CoreData sharedModel:nil] cloudDictionary];
+        if (cloudDictionary != nil ) {
+            if (cloudDictionary[kAppString]) {
+                controllingAppID = cloudDictionary[kAppString];
+                if ([localDeviceGUID isEqualToString:controllingAppID]){
+                    keyStatus = YES;
+                } else {
+                    keyStatus = NO;
+                }
+            } else {
+                keyStatus = YES;
+            }
+            
+            if (cloudDictionary[kDefaultEmail]) {
+                self.email.text = cloudDictionary[kDefaultEmail];
+            }
         }
+        
+        [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
+        [self.timerOffOn setOn:keyStatus];
+        self.timerOffOn.enabled = YES;
     } else {
-        keyStatus = YES;
+        [self.timerOffOn setOn:NO];
+        self.timerOffOn.enabled = NO;
     }
     
-    [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
-    [self.timerOffOn setOn:keyStatus];
+    [self.timeSwitch setOn:[self.settings isTimeAuthorized]];
+    [self.expenseSwitch setOn:[self.settings isExpenseAuthorized]];
+    self.homeButton.enabled = [self.settings isExpenseAuthorized];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -159,8 +186,48 @@
     [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
 }
 
+- (IBAction)enableTiming:(UISwitch *)sender {
+    if (sender.isOn) {
+        if (![self.defaults boolForKey:kTimePurchased]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Premium Feature" message:@"Tracking time is a premium feature which must first be purchased before it can be enabled. Would you like to purchase this feature now?" delegate:self cancelButtonTitle:@"No thanks" otherButtonTitles:@"Yes", nil];
+            alert.tag = timingAlert;
+            [alert show];
+        } else {
+            [self.settings authorizeTime];
+            [self updateTimer];
+        }
+    } else {
+        [self.settings deAuthorizeTime];
+    }
+    self.timerOffOn.enabled = [self.settings isTimeAuthorized];
+    NSNotification *timerChange = [NSNotification notificationWithName:kEnableTime object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:timerChange];
+}
+
+- (IBAction)exepenseEnabled:(UISwitch *)sender {
+    if (sender.isOn) {
+        if (![self.defaults boolForKey:kTimePurchased]) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Premium Feature" message:@"Tracking expenses and recording milage is a premium feature which must first be purchased before it can be enabled. Would you like to purchase this feature now?" delegate:self cancelButtonTitle:@"No thanks" otherButtonTitles:@"Yes", nil];
+            alert.tag = expenseAlert;
+            [alert show];
+        } else {
+            [self.settings authorizeExpenses];
+        }
+    } else {
+        [self.settings deAuthorizeExpenses];
+    }
+    self.homeButton.enabled = [self.settings isExpenseAuthorized];
+    NSNotification *expenseChange = [NSNotification notificationWithName:kEnableExpense object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:expenseChange];
+}
+
+- (IBAction)enableInActiveProjectTiming:(UISwitch *)sender {
+    [self.defaults setBool:sender.isOn forKey:kInActiveEnabled];
+}
+
 -(IBAction)email:(UITextField *)sender {
     [self.defaults setObject:sender.text forKey:kDefaultEmail];
+    [[[CoreData sharedModel:nil] iCloudKey] setString:sender.text forKey:kDefaultEmail];
 }
 
 -(IBAction)openFAQ:(UIButton *)sender{
@@ -191,72 +258,6 @@
     self.logger = nil;
 }
 
--(void)setDisplayBackGroundColor{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    CGFloat alpha = [defaults floatForKey:kSaturation];
-    CGFloat red = [defaults floatForKey:kRedNameKey];
-    CGFloat blue = [defaults floatForKey:kBlueNameKey];
-    CGFloat green = [defaults floatForKey:kGreenNameKey];
-    UIColor *newColor = [[UIColor alloc] initWithRed:red green:green blue:blue alpha:alpha];
-    //self.projectNotes.backgroundColor = newColor;
-    self.view.backgroundColor = newColor;
-}
-
--(IBAction)tapHandler:(UITapGestureRecognizer *)sender{
-    [self.email resignFirstResponder];
-    CGPoint currentTouch = [sender locationInView:self.colorPad];
-    int x = currentTouch.x;
-    int y = currentTouch.y;
-    int z = 0;
-    if (x > 10 &&  x < 71){
-        x = 1;
-    } else if ( x > 78 && x < 139 ){
-        x = 2;
-    } else if ( x > 146 && x < 207) {
-        x = 3;
-    } else if ( x > 214 && x < 275) {
-        x = 4;
-    }
-    
-    z = x - 1;
-    if (y >= 10 &&  y < 71){
-        y = 1;
-    } else if ( y > 78 && y < 139 ){
-        y = 2;
-    } else if ( y > 146 && y < 207) {
-        y = 3;
-    }
-    y = y - 1;
-    z = z + ( y * 4 );
-    if (z < 0 || z > 11) {
-        z = 0;
-    }
-    
-    // NSLog(@"x: %d y: %d view pointer: %d", x, y, z);
-    
-    UIView *subView = [self.colorPad.subviews objectAtIndex:z];
-    UIColor *viewColor = subView.backgroundColor;
-    CGFloat red;
-    CGFloat green;
-    CGFloat blue;
-    CGFloat alpha;
-    
-    BOOL answer = [viewColor getRed:&red green:&green blue:&blue alpha:&alpha];
-    if (answer == YES) {
-        [self.defaults setFloat:red forKey:kRedNameKey];
-        [self.defaults setFloat:green forKey:kGreenNameKey];
-        [self.defaults setFloat:blue forKey:kBlueNameKey];
-        [self.defaults setFloat:alpha forKey:kSaturation];
-        NSString *colorChangeNotification = [[NSString alloc] initWithFormat:@"%@", @"BackGroundColorChangeNotification"];
-        NSNotification *colorChange = [NSNotification notificationWithName:colorChangeNotification object:nil];
-        [[NSNotificationCenter defaultCenter] postNotification:colorChange];
-        
-        if (UI_USER_INTERFACE_IDIOM() != UIUserInterfaceIdiomPad)  {
-            [self setDisplayBackGroundColor];
-        }
-    }
-}
-
 - (IBAction)changeFontSize:(UIStepper *)sender {
     [self.defaults setInteger:sender.value forKey:kFontSize];
     NSString *fontChangeNotification = [[NSString alloc] initWithFormat:@"%@", @"FontChangeNotification"];
@@ -264,16 +265,24 @@
     [[NSNotificationCenter defaultCenter] postNotification:fontChange];
 }
 
-#pragma mark - Table view data source
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView{
-    return 1;
+#pragma mark - Delegats
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    if (buttonIndex == 1) {
+        // Go to the purchase feature here
+        self.upgrades.preferredContentSize = self.view.bounds.size;
+        [self.navigationController pushViewController:self.upgrades animated:YES];
+    } else {
+        if (alertView.tag == timingAlert) {
+            [self.timeSwitch setOn:NO];
+        } else if ( alertView.tag == expenseAlert ) {
+            [self.expenseSwitch setOn:NO];
+        }
+    }
 }
 
+#pragma mark - Table view data source
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
-    NSInteger returnValue = 0;
-    if (section == 0) {
-        returnValue = 3;
-    }
+    NSInteger returnValue = 5;
     return returnValue;
 }
 
@@ -281,20 +290,17 @@
     static NSString *fontSettingCell = @"fontSetting";
     static NSString *calendarCellID = @"calendarCell";
     static NSString *priorityCellID = @"priorityCell";
+    static NSString *tintCellID = @"tintCell";
+    static NSString *colorCellID = @"colorCell";
     
     UITableViewCell *cell = nil;
-    if (indexPath.row == 0 && indexPath.section == 0) {
+    if (indexPath.row == settingFontOption) {
         cell = [tableView dequeueReusableCellWithIdentifier:fontSettingCell];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:fontSettingCell];
         }
         cell.detailTextLabel.text = [self.defaults  objectForKey:kFontNameKey];
-    } else if (indexPath.row == 2 && indexPath.section == 0){
-        cell = [tableView dequeueReusableCellWithIdentifier:priorityCellID];
-        if (cell == nil) {
-            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:priorityCellID];
-        }
-    } else if (indexPath.row == 1 && indexPath.section == 0){
+    } else if (indexPath.row == settingCalendarOption){
         cell = [tableView dequeueReusableCellWithIdentifier:calendarCellID];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:calendarCellID];
@@ -305,6 +311,21 @@
         } else {
             cell.textLabel.text = @"Set Default Calendar";
         }
+    } else if (indexPath.row == settingCatgoryOption){
+        cell = [tableView dequeueReusableCellWithIdentifier:priorityCellID];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:priorityCellID];
+        }
+    } else if (indexPath.row == settingTintOption){
+        cell = [tableView dequeueReusableCellWithIdentifier:tintCellID];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:tintCellID];
+        }
+    } else if (indexPath.row == settingBGColorOption){
+        cell = [tableView dequeueReusableCellWithIdentifier:colorCellID];
+        if (cell == nil) {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:colorCellID];
+        }
     }
     return cell;
 }
@@ -314,14 +335,18 @@
 {
     [self.email resignFirstResponder];
     // Navigation logic may go here. Create and push another view controller.
-    if (indexPath.row == 0 && indexPath.section == 0) {
+    if (indexPath.row == settingFontOption) {
         [self performSegueWithIdentifier:@"showFonts" sender:self];
-    } else  if ( indexPath.row == 1 && indexPath.section == 0 ) {
-        self.calendarController.preferredContentSize = self.preferredContentSize;
+    } else if ( indexPath.row == settingCalendarOption ) {
         [self.navigationController pushViewController:self.calendarController animated:YES];
-    } else {
-        self.priorityController.preferredContentSize = self.preferredContentSize;
+    } else if ( indexPath.row == settingCatgoryOption ) {
         [self.navigationController pushViewController:self.priorityController animated:YES];
+    } else if ( indexPath.row == settingTintOption ) {
+        self.colorController.colorMode = @"Tint";
+        [self.navigationController pushViewController:self.colorController animated:YES];
+    } else if ( indexPath.row == settingBGColorOption ) {
+        self.colorController.colorMode = @"BackGround";
+        [self.navigationController pushViewController:self.colorController animated:YES];
     }
 }
 
@@ -336,6 +361,13 @@
 }
 
 #pragma mark - Lazy Getter
+-(CCSettingsControl *)settings{
+    if (_settings == nil) {
+        _settings = [[CCSettingsControl alloc] init];
+    }
+    return _settings;
+}
+
 -(NSUserDefaults *)defaults{
     if (_defaults == nil) {
         _defaults = [NSUserDefaults standardUserDefaults];
@@ -363,6 +395,20 @@
         _calendarController = [self.storyboard instantiateViewControllerWithIdentifier:@"calendarSettings"];
     }
     return _calendarController;
+}
+
+-(CCColorViewController *)colorController{
+    if (_colorController == nil) {
+        _colorController = [self.storyboard instantiateViewControllerWithIdentifier:@"colorSettings"];
+    }
+    return _colorController;
+}
+
+-(CCUpgradesViewController *)upgrades{
+    if (_upgrades == nil) {
+        _upgrades = [self.storyboard instantiateViewControllerWithIdentifier:@"inAppUpgrades"];
+    }
+    return _upgrades;
 }
 
 @end

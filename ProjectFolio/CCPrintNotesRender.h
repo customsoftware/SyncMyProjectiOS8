@@ -1,6 +1,6 @@
 //
 //  CCPrintNotesRender.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 3/4/13.
 //

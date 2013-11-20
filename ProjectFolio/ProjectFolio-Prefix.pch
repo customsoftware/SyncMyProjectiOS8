@@ -18,6 +18,10 @@
 #define kRedNameKey @"redbalance"
 #define kGreenNameKey @"greenbalance"
 #define kSaturation @"saturation"
+#define kBlueTintNameKey @"tintbluebalance"
+#define kRedTintNameKey @"tintredbalance"
+#define kGreenTintNameKey @"tintgreenbalance"
+#define kTintSaturation @"tintsaturation"
 #define MIN_MARGIN 36
 #define HEADER_FOOTER_MARGIN_PADDING  5
 #define MIN_HEADER_FOOTER_DISTANCE_FROM_CONTENT 10
@@ -27,6 +31,7 @@
 #define kTaskFilterStatus       @"taskFilterStatus"
 #define kHotListFilterStatus    @"hotListFilterStatus"
 #define kSelectedProject        @"activeProject"
+#define kHelpTest               @"helpTest"
 
 #define ONE_HOUR 1
 #define TWO_DAY 48*60*60
@@ -61,11 +66,20 @@
 #define kAppStatus          @"Status"
 #define kiCloudToken        @"Token"
 #define kStartupFinished    @"Startup Finished"
-#define kAppBundleName      @"com.customsoftware.ProjectFolio"
-#define kAppName            @"ProjectFolio"
-#define kAppleID            @"572353940"
+#define kAppBundleName      @"com.customsoftware.projectfolio.synctask"
+#define kAppName            @"SyncMyProject"
+#define kAppleID            @"728772576"
 #define kRatingCounterKey   @"RatingCounterRunKey"
 #define kRatingCounterReferenceKey   @"RatingCounterReferenceKey"
+#define kStartNotification  @"ProjectTimerStartNotification"
+#define kStopNotification   @"ProjectTimerStopNotification"
+#define kEnableTime         @"EnableProjectTimeKeeping"
+#define kEnableExpense      @"EnableProjectExpenseTracking"
+#define kTimePurchased      @"PurchasedProjectTimeKeeping"
+#define kExpensePurchased   @"PurchasedProjectExpenseTracking"
+#define kStartTime          @"projectStartTime"
+#define kSelectedTask       @"controllingTask"
+#define kInActiveEnabled    @"enableTimingOnInactiveProjects"
 
 #ifdef __OBJC__
     #import <UIKit/UIKit.h>
@@ -73,4 +87,5 @@
     #import <CoreData/CoreData.h>
     #import "Priority+Category.h"
     #import "CoreData.h"
+    #import <StoreKit/StoreKit.h>
 #endif

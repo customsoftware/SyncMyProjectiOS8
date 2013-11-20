@@ -1,21 +1,23 @@
 //
 //  CCTextEntryPopoverController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 7/17/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
 //
 
 #import "CCTextEntryPopoverController.h"
+#import "CCSettingsControl.h"
+
+@interface CCTextEntryPopoverController ()
+
+@property (strong, nonatomic) CCSettingsControl *settings;
+
+@end
 
 @implementation CCTextEntryPopoverController
 
-@synthesize delegate;
-@synthesize projectName;
-@synthesize textField;
-
-#pragma mark -
-#pragma mark Popover Controls
+#pragma mark - Popover Controls
 
 -(IBAction)savePressed:(id)sender{
     [self.delegate savePopoverData];
@@ -51,24 +53,9 @@
 #pragma mark - View lifecycle
 
 -(void)viewWillAppear:(BOOL)animated{
-    self.textField.text = projectName;
+    self.textField.text = self.projectName;
     [super viewWillAppear:animated];
 }
-
-/*
-// Implement loadView to create a view hierarchy programmatically, without using a nib.
-- (void)loadView
-{
-}
-*/
-
-/*
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-}
-*/
 
 - (void)viewDidUnload
 {

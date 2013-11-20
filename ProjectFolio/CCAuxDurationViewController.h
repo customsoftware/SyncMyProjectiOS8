@@ -1,6 +1,6 @@
 //
 //  CCAuxDurationViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/26/12.
 //

@@ -1,6 +1,6 @@
 //
 //  CCAppDelegate.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 7/14/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
@@ -11,6 +11,7 @@
 #import "CCDetailViewController.h"
 #import "CCiPhoneMasterViewController.h"
 #import "CCIAPCards.h"
+#import "CCProjectTimer.h"
 
 #define iCloudSynIfAvailable   YES
 
@@ -28,7 +29,6 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [self setAppID];
-    [CCIAPCards sharedInstance];
     self.delegateList = [[NSArray alloc] init];
     // Override point for customization after application launch.
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
@@ -60,10 +60,15 @@
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString *version = [[NSBundle mainBundle] objectForInfoDictionaryKey:(NSString *)kCFBundleVersionKey];
     NSString *storedVersion = [defaults objectForKey:(NSString *)kCFBundleVersionKey];
+    
     if (![storedVersion isEqualToString:version]) {
         [defaults setBool:NO forKey:@"dontShowNewsAgain"];
         [defaults setObject:version forKey:(NSString *)kCFBundleVersionKey];
+        [defaults setBool:YES forKey:kHelpTest];
+    } else {
+        [defaults setBool:NO forKey:kHelpTest];
     }
+    
     float redTest = [defaults floatForKey:kRedNameKey];
     float blueTest = [defaults floatForKey:kRedNameKey];
     if (redTest == 0 && blueTest == 0) {
@@ -76,12 +81,11 @@
         [defaults setInteger:2 forKey:kRatingCounterReferenceKey];
         [defaults setInteger:0 forKey:kRatingCounterKey];
     }
+   
     [self setButtonStateWithShow:NO];
     [[UIApplication sharedApplication] setMinimumBackgroundFetchInterval:UIApplicationBackgroundFetchIntervalMinimum];
     
     // Reinstate the timer. Find the latest timer event. If it has a null end time
-    //  then make it the active timer
-    
     
     return YES;
 }
@@ -170,7 +174,7 @@
      Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
      */
     [[NSUbiquitousKeyValueStore defaultStore] synchronize];
-    [self setButtonStateWithShow:YES];
+//    [self setButtonStateWithShow:YES];
 }
 
 - (void)application:(UIApplication *)application performFetchWithCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler {
@@ -180,6 +184,8 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
+    NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
+    [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
     [[CoreData sharedModel:nil] saveContext];
 }
 
@@ -205,17 +211,12 @@
 -(void)kvStoreWillChange:(NSNotification *)notification{
     // Need to make certain this happens on the main thread since we're updating UI
     dispatch_async(dispatch_get_main_queue(), ^{
-//        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"iCloud Remote Storage Ready" message:@"The app now has full access to iCloud syncing of data. Enjoy" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-//        [alert show];
-
         [[[CoreData sharedModel:nil] managedObjectContext] save:nil];
         
         for (id<iCloudStarterProtocol> delegate in self.delegateList) {
             [delegate respondToiCloudUpdate];
         }
     });
-    
-    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"iCloudPaidFor"];
 }
 
 #pragma mark - API

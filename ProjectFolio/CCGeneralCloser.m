@@ -1,6 +1,6 @@
 //
 //  CCGeneralCloser.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/6/12.
 //
@@ -8,6 +8,7 @@
 
 #import "CCGeneralCloser.h"
 #import "CCiPhoneMasterViewController.h"
+#import "CCProjectTaskReport.h"
 
 @interface CCGeneralCloser()
 @property (strong, nonatomic) NSString *subjectLine;
@@ -21,15 +22,10 @@
 @end
 
 @implementation CCGeneralCloser
-@synthesize mailComposer = _mailComposer;
-@synthesize subjectLine = _subjectLine;
-@synthesize callingView = _callingView;
-@synthesize mode = _mode;
 
 #pragma mark - Life Cycle
 -(void)viewDidLoad{
     [super viewDidLoad];
-    
 }
 
 -(void)viewDidUnload{
@@ -143,6 +139,8 @@
 
 
 -(NSArray *)getBillableArray{
+//    NSArray *testArray = [CCProjectTaskReport getReportGroupedByProjectTaskDateForDateRange:yesterdayMode fromDate:[NSDate date]];
+    
     NSEntityDescription *entity = [NSEntityDescription entityForName:@"WorkTime" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     NSSortDescriptor *projectDescriptor = [[NSSortDescriptor alloc] initWithKey:@"workProject.projectName" ascending:YES];
     NSSortDescriptor *startDescriptor = [[NSSortDescriptor alloc] initWithKey:@"start" ascending:YES];

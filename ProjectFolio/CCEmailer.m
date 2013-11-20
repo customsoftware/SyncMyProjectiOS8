@@ -1,6 +1,6 @@
 //
 //  CCEmailer.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/25/12.
 //  This handles all of the email tasks for Project Folio

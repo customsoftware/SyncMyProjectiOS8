@@ -1,6 +1,6 @@
 //
 //  CCCalendarControlViewController.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 2/7/13.
 //

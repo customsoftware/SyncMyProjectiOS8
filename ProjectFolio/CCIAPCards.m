@@ -8,8 +8,6 @@
 
 #import "CCIAPCards.h"
 
-#define sharedSecret        @"a09000753fb445549bfcb844a5f3b424"
-
 @implementation CCIAPCards
 
 + (CCIAPCards *)sharedInstance{
@@ -17,8 +15,8 @@
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         NSSet *productIdentifiers = [NSSet setWithObjects:
-                                     @"com.customsoftware.ProjectFolio.iCloudSync",
-                                     @"com.customsoftware.ProjectFolio.test", nil];
+                                     kExpenseFeatureKey,
+                                     kTimerFeatureKey, nil];
         sharedInstance = [[self alloc] initWithProductIdentifiers:productIdentifiers];
     });
     return sharedInstance;
@@ -28,10 +26,16 @@
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
 
-- (BOOL)featurePurchased{
+- (BOOL)expensesPurchased{
     // Verify the receipt
-    BOOL iCloudSyncEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:kiCloudSyncKey];
-    return iCloudSyncEnabled;
+    BOOL featureEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:kExpenseFeatureKey];
+    return featureEnabled;
+}
+
+- (BOOL)timerPurchased{
+    // Verify the receipt
+    BOOL featureEnabled = [[NSUserDefaults standardUserDefaults] boolForKey:kTimerFeatureKey];
+    return featureEnabled;
 }
 
 @end

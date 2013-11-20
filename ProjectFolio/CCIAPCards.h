@@ -7,12 +7,14 @@
 //
 
 #import "CCIAPcontainer.h"
-#define kiCloudSyncKey @"com.customsoftware.ProjectFolio.iCloudSync"
+#define kExpenseFeatureKey @"SMPExpenses"
+#define kTimerFeatureKey @"SMPTimer"
 
 @interface CCIAPCards : CCIAPcontainer
 
 + (CCIAPCards *)sharedInstance;
 - (void)restoreCompletedTransactions;
-- (BOOL)featurePurchased;
+- (BOOL)expensesPurchased;
+- (BOOL)timerPurchased;
 
 @end

@@ -1,6 +1,6 @@
 //
 //  CCLocationController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 9/22/12.
 //
@@ -45,6 +45,7 @@
 }
 
 -(CLLocationDistance)getApproximateMilesFrom:(CLLocation *)fromLocation To:(CLLocation *)toLocation{
+    
     CLLocationDistance distance = [self getBirdFlyMilesFrom:fromLocation To:toLocation];
     
     // If distance is > 100 then do great arc only

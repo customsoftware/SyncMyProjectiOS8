@@ -1,6 +1,6 @@
 //
 //  CCMasterViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 7/14/12.
 //  Copyright (c) 2012 _Ken Cluff. All rights reserved.
@@ -10,9 +10,8 @@
 #define SWITCH_ON [[NSNumber alloc] initWithInt:1]
 #define SWITCH_OFF [[NSNumber alloc] initWithInt:0]
 
-#define kStartNotification  @"ProjectTimerStartNotification"
-#define kStopNotification   @"ProjectTimerStopNotification"
 #define kSearchState        @"searchMode"
+#define kRowHeight          51.3
 
 #import "RatingReminder.h"
 #import "CCMasterViewController.h"
@@ -24,11 +23,12 @@
 #import "CCInitializer.h"
 #import "iCloudStarterProtocol.h"
 #import "CCRecentTaskViewController.h"
+#import "CCSettingsControl.h"
 
 typedef enum kfilterModes{
     allProjectsMode = 0,
     activeProjectsMode,
-    openProjectsMode,
+    projectCategoryMode,
     recentListMode,
     hotListMode
 } kFilterModes;
@@ -52,6 +52,7 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) RatingReminder * reminder;
 @property (strong, nonatomic) NSString *lastProjectID;
 @property (strong, nonatomic) CCRecentTaskViewController *recentListController;
+@property (strong, nonatomic) CCSettingsControl *settings;
 
 @end
 
@@ -74,13 +75,13 @@ typedef enum kfilterModes{
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-	
-    self.detailViewController = (CCDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];    
+	self.detailViewController = (CCDetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
     self.tableView.dataSource = self;
     self.tableView.delegate = self;
     // Set up the search controller
     self.searchDisplayController.delegate = self;
     self.projectTimer = [[CCProjectTimer alloc] init];
+    [self.projectTimer restartTimer];
     CCAppDelegate *application = (CCAppDelegate *)[[UIApplication sharedApplication] delegate];
     [application registeriCloudDelegate:self];
     
@@ -98,13 +99,13 @@ typedef enum kfilterModes{
     self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertNewObject:)];
     [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
     [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:kEnableTime object:nil];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     NSString *enableNotification = @"EnableControlsNotification";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:enableNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMinimumRecordSet) name:kAppString object:nil];
-    
     if (self.hotListController.projectTimer != nil) {
         [self.hotListController.projectTimer releaseTimer];
         self.hotListController.selectedIndex = nil;
@@ -126,15 +127,16 @@ typedef enum kfilterModes{
     self.filterSegmentControl.selectedSegmentIndex = self.lastSelected;
     [self filterActions:self.filterSegmentControl];
     
+    [self.filterSegmentControl setEnabled:[self.settings isTimeAuthorized] forSegmentAtIndex:recentListMode];
     self.swiper.enabled = YES;
     [self cleanCheckMarks:self.tableView];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
-    
+    [self setTintForApp];
+    [self enableControls];
     if (self.activeProject != nil) {
-        [self enableControls];
         [self sendTimerStartNotificationForProject];
     }
 }
@@ -150,6 +152,11 @@ typedef enum kfilterModes{
     self.swiper.enabled = NO;
     [super viewWillDisappear:animated];
 }
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
@@ -173,9 +180,13 @@ typedef enum kfilterModes{
         if (sender.selectedSegmentIndex == allProjectsMode) {
             [self.request setPredicate:nil];
         } else if ( sender.selectedSegmentIndex == activeProjectsMode ) {
-            [self.request setPredicate:self.activePredicate];
-        } else if ( sender.selectedSegmentIndex == openProjectsMode ) {
             [self.request setPredicate:self.openPredicate];
+        }
+        
+        if (sender.selectedSegmentIndex == projectCategoryMode) {
+            self.searchBar.placeholder = @"Enter category name";
+        } else {
+            self.searchBar.placeholder = @"Enter project name";
         }
         
         self.lastSelected = sender.selectedSegmentIndex;
@@ -206,7 +217,7 @@ typedef enum kfilterModes{
 }
 
 -(IBAction)actionButton:(UIBarButtonItem *)sender{
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Close Projects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"This Week", @"Yesterday", @"All Active", nil];
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Report Time Spent on Projects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"This Week", @"Yesterday", @"All Active", nil];
     actionSheet.tag = 1;
     [actionSheet showFromBarButtonItem:self.navigationItem.leftBarButtonItem animated:YES];
 }
@@ -226,6 +237,10 @@ typedef enum kfilterModes{
 - (void)respondToiCloudUpdate {
     [self.fetchedProjectsController performFetch:nil];
     [self.tableView reloadData];
+    
+    [[CoreData sharedModel:nil] testProjectCount];
+    [[CoreData sharedModel:nil] testPriorityConfig];
+    [[NSUserDefaults standardUserDefaults] setBool:NO forKey:kHelpTest];
     [self cleanCheckMarks:self.tableView];
 }
 
@@ -233,7 +248,7 @@ typedef enum kfilterModes{
 -(void)filterContentForSearchText:(NSString *)searchText scope:(NSString *)scope{
     [self.filteredProjects removeAllObjects];
     NSPredicate *nameLikePredicate = nil;
-    if (self.lastSelected == 3) {
+    if (self.lastSelected == projectCategoryMode) {
         nameLikePredicate = [NSPredicate predicateWithFormat:@"projectPriority.priority beginswith[c] %@", searchText];
     } else {
         nameLikePredicate = [NSPredicate predicateWithFormat:@"projectName beginswith[c] %@", searchText];
@@ -367,6 +382,20 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - Helper
+- (void)setTintForApp {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    float blueTint = [defaults floatForKey:kBlueTintNameKey];
+    float redTint = [defaults floatForKey:kRedTintNameKey];
+    if ( blueTint != 0 && redTint != 0) {
+        CGFloat alpha = [defaults floatForKey:kTintSaturation];
+        CGFloat red = [defaults floatForKey:kRedTintNameKey];
+        CGFloat blue = [defaults floatForKey:kBlueTintNameKey];
+        CGFloat green = [defaults floatForKey:kGreenTintNameKey];
+        UIColor *newColor = [[UIColor alloc] initWithRed:red green:green blue:blue alpha:alpha];
+        [[UIApplication sharedApplication] keyWindow].tintColor = newColor;
+    }
+}
+
 -(void)sendTimerStartNotificationForProject{
     NSDictionary *projectDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:self.activeProject, @"Project", nil];
     NSNotification *startTimer = [NSNotification notificationWithName:kStartNotification object:nil userInfo:projectDictionary];
@@ -420,17 +449,25 @@ typedef enum kfilterModes{
 }
 
 -(void)enableControls{
-    self.detailViewController.showDeliverables.enabled = YES;
-    self.detailViewController.showCalendar.enabled = YES;
-    self.detailViewController.showTimers.enabled = YES;
-    self.detailViewController.showTaskChart.enabled = YES;
+    if (self.activeProject != nil) {
+        self.detailViewController.showDeliverables.enabled = [self.settings isExpenseAuthorized];
+        self.detailViewController.showCalendar.enabled = YES;
+        self.detailViewController.showTimers.enabled = [self.settings isTimeAuthorized];
+        self.detailViewController.showTaskChart.enabled = [self.settings isTimeAuthorized];
+        self.detailViewController.showChart.enabled = [self.settings isTimeAuthorized];
+    }
+    [self.filterSegmentControl setEnabled:[self.settings isTimeAuthorized] forSegmentAtIndex:recentListMode];
 }
 
 #pragma mark - Table Controls
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    return kRowHeight;
+}
+
 -(void)updateDetailControllerForIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView{
     [self.detailViewController.projectNotes resignFirstResponder];
     if (tableView == self.tableView) {
-        if (self.fetchedProjectsController.fetchedObjects.count >= indexPath.row) {
+        if (indexPath.row <= self.fetchedProjectsController.fetchedObjects.count) {
             self.controllingCellIndex = indexPath;
             self.activeProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
         } else {
@@ -758,7 +795,7 @@ typedef enum kfilterModes{
 
     UIColor *projectColor = [newProject.projectPriority getCategoryColor];
     if (!projectColor) projectColor = [UIColor whiteColor];
-    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, 44)];
+    UIView *catColor = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 7, kRowHeight)];
     catColor.backgroundColor = projectColor;
     catColor.layer.cornerRadius = 0;
     catColor.layer.borderColor = [[UIColor darkGrayColor] CGColor];
@@ -823,6 +860,13 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - Lazy getters
+- (CCSettingsControl *)settings {
+    if (!_settings) {
+        _settings = [[CCSettingsControl alloc] init];
+    }
+    return _settings;
+}
+
 -(CCRecentTaskViewController *)recentListController{
     if (_recentListController == nil) {
         _recentListController = [self.storyboard instantiateViewControllerWithIdentifier:@"recentTasks"];

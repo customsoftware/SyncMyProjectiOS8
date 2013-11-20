@@ -1,6 +1,6 @@
 //
 //  CCSettingsControl.h
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/30/12.
 //
@@ -13,5 +13,12 @@
 -(BOOL)saveNumber:(NSNumber *)numberValue atKey:(NSString *)keyName;
 -(NSNumber *)recallNumberAtKey:(NSString *)keyName;
 -(BOOL)isICloudAuthorized;
+-(BOOL)isTimeAuthorized;
+-(BOOL)isExpenseAuthorized;
+// These support in-app purchases
+-(void)authorizeTime;
+-(void)authorizeExpenses;
+-(void)deAuthorizeTime;
+-(void)deAuthorizeExpenses;
 
 @end

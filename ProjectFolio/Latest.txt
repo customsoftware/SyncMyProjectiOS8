@@ -1,23 +1,7 @@
 !!!!! PLEASE READ !!!!
 
-Welcome to the latest version of ProjectFolio. I'm excited to announce that starting with this version of the app, you can sync project data between multiple devices using iCloud sync.
+This fixes a bug where opening a financial report from the Project notes view openned the wrong report: Yesterday and Last week were crossed.
+This fixes a bug where the app would sometimes crash on startup when there was no project selected when the app was terminated.
 
-We've changed the way to add projects, tasks, expenses, categories and meetings: just swipe down from the navigation bar.
-
-Regarding the data sync. ProjectFolio will allow only one device at a time to track time spent on projects. This is so the project timer will not be confused by getting conflicting timer data from multiple devices for the same period of time. You determine which device tracks time in the Settings view. A switch identified by a stopwatch icon enables the device to track time. When enabled, it will send a message to all other devices on the same itunes account to stop tracking time.
-
-For those of you upgrading from an earlier version of ProjectFolio, this version will preserve your pre-existing data during the upgrade process. There may be a "quirk" that I haven't yet resolved with the app, namely it may create multiple copies your existing projects. The extras will need to be deleted. The best solution appears to be quitting the app immediately after updating the app then restarting it.
-
-For upgrading iPad users, you will also note that tapping on the project in the master list will no longer take you to the project tasks, it will just change the project you are viewing. If you want to see the project tasks, swipe right on the project. To see the project detail data, such as start/stop date, billable state etc. swipe down from the navigation bar over the notes. To close the form, swipe up on the form.
-
-We've also added a button to take you to an online help site containing videos on how to make the most of ProjectFolio. You'll see the button in the navigation bar of the Project list view of the iPhone app and you'll see it in the upper right corner of the Project Notes view of the iPad app. The icon on the button is a "?".
-
-We've also made some changes to the arrangement of views in the iPhone version of the app.
-1.	The app settings button is now in the navigation bar of the Project list view. The settings view allows you to set the display font of the app, the background color of the notes views and manage the categories and the default email address to which reports are sent.
-2.	The notes button is now at the bottom of the Task list view. From the Notes view you can see the expenses view, the meetings view, the project timer data and the task timeline chart.
-
-To view this information again, click on the Help button and go to the "what's new" web page.
-
-As you get started using the app, I suggest opening the Settings view and set the font, font size, view color and other settings before you start using the app. The settings view is openned by tapping on the button with the "Gear" icon.
-
-Thanks for using ProjectFolio.
+This adds these new features:
+1.  You have the ability to disable the timer for inactive projects from the settings view and from the Settings app on your device.

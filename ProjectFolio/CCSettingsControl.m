@@ -1,6 +1,6 @@
 //
 //  CCSettingsControl.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 11/30/12.
 //
@@ -9,12 +9,52 @@
 #import "CCSettingsControl.h"
 #import "CCIAPCards.h"
 
+#define kAuthTimeKey        @"authorizeTimeKey"
+#define kAuthExpenseKey     @"authorizeExpenseKey"
+
+
+@interface CCSettingsControl ()
+
+@property (strong, nonatomic) NSUserDefaults *defaults;
+
+@end
+
+
 @implementation CCSettingsControl
 
 -(BOOL)isICloudAuthorized{
     return YES;
 }
 
+#pragma mark - In-App purchase API
+-(BOOL)isTimeAuthorized{
+    return YES;
+//    return [self.defaults boolForKey:kAuthTimeKey];
+}
+
+-(BOOL)isExpenseAuthorized{
+    return YES;
+//    return [self.defaults boolForKey:kAuthExpenseKey];
+}
+
+- (void)authorizeTime {
+    
+    [self.defaults setBool:YES forKey:kAuthTimeKey];
+}
+
+- (void)authorizeExpenses {
+    [self.defaults setBool:YES forKey:kAuthExpenseKey];
+}
+
+- (void)deAuthorizeTime {
+    [self.defaults setBool:NO forKey:kAuthTimeKey];
+}
+
+- (void)deAuthorizeExpenses {
+    [self.defaults setBool:NO forKey:kAuthExpenseKey];
+}
+
+#pragma mark - Public API
 -(BOOL)saveString:(NSString *)stringValue atKey:(NSString *)keyName{
     BOOL retValue = YES;
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -96,6 +136,14 @@
         retValue = (NSNumber *)[userDefaults objectForKey:keyName];
     }
     return retValue;
+}
+
+#pragma mark - Accessors
+- (NSUserDefaults *)defaults {
+    if (!_defaults) {
+        _defaults = [NSUserDefaults standardUserDefaults];
+    }
+    return _defaults;
 }
 
 @end

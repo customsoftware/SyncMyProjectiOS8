@@ -5,14 +5,14 @@
       "idiom" : "iphone",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "Default@2x.png",
+      "filename" : "iPhone4S Launch.png",
       "scale" : "2x"
     },
     {
       "extent" : "full-screen",
       "idiom" : "iphone",
       "subtype" : "retina4",
-      "filename" : "Default-568h@2x.png",
+      "filename" : "iPhone 5 Launch.png",
       "minimum-system-version" : "7.0",
       "orientation" : "portrait",
       "scale" : "2x"
@@ -22,7 +22,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "Default-Portrait~ipad.png",
+      "filename" : "SMPLaunch iPad Portrait.png",
       "scale" : "1x"
     },
     {
@@ -30,7 +30,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "Default-Landscape~ipad.png",
+      "filename" : "SMPLaunch iPad Landscape.png",
       "scale" : "1x"
     },
     {
@@ -38,7 +38,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "Default-Portrait@2x~ipad.png",
+      "filename" : "SPM Launch iPad Portrait 2x.png",
       "scale" : "2x"
     },
     {
@@ -46,7 +46,7 @@
       "idiom" : "ipad",
       "extent" : "full-screen",
       "minimum-system-version" : "7.0",
-      "filename" : "Default-Landscape@2x~ipad.png",
+      "filename" : "SMP Launch iPad Landscape 2x.png",
       "scale" : "2x"
     }
   ],

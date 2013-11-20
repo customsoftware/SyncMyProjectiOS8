@@ -1,6 +1,6 @@
 //
 //  CCNewProjectViewController.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Kenneth Cluff on 7/17/13.
 //
@@ -31,8 +31,13 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    [self setFontForDisplay];
+    // [self setFontForDisplay];
     [self setDisplayBackGroundColor];
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    [self.projectName becomeFirstResponder];
 }
 
 - (void)didReceiveMemoryWarning
@@ -54,20 +59,20 @@
 }
 
 #pragma mark - Helpers
--(void)setFontForDisplay{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *fontFamily = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
-    NSString *nullString = [[NSString alloc] initWithFormat:@"%@", nil];
-    if ([fontFamily isEqualToString:nullString]) {
-        fontFamily = @"Optima";
-    }
-    CGFloat fontSize = [defaults integerForKey:kFontSize];
-    if (fontSize < 16) {
-        fontSize = 16;
-    }
-    UIFont *displayFont = [UIFont fontWithName:fontFamily size:fontSize];
-    self.projectName.font = displayFont;
-}
+//-(void)setFontForDisplay{
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    NSString *fontFamily = [[NSString alloc] initWithFormat:@"%@", [defaults objectForKey:kFontNameKey]];
+//    NSString *nullString = [[NSString alloc] initWithFormat:@"%@", nil];
+//    if ([fontFamily isEqualToString:nullString]) {
+//        fontFamily = @"Optima";
+//    }
+//    CGFloat fontSize = [defaults integerForKey:kFontSize];
+//    if (fontSize < 16) {
+//        fontSize = 16;
+//    }
+//    UIFont *displayFont = [UIFont fontWithName:fontFamily size:fontSize];
+//    self.projectName.font = displayFont;
+//}
 
 -(void)setDisplayBackGroundColor{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

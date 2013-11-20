@@ -1,6 +1,6 @@
 //
 //  CCBarObject.m
-//  ProjectFolio
+//  SyncMyProject
 //
 //  Created by Ken Cluff on 8/23/12.
 //
