@@ -51,9 +51,8 @@
 @property (weak, nonatomic) IBOutlet UISwitch *expenseSwitch;
 @property (weak, nonatomic) IBOutlet UISwitch *timeSwitch;
 
-- (IBAction)enableTiming:(UISwitch *)sender;
-- (IBAction)exepenseEnabled:(UISwitch *)sender;
-- (IBAction)enableInActiveProjectTiming:(UISwitch *)sender;
+- (IBAction)declareDeviceAsDesignatedTimer:(UISwitch *)sender;
+- (IBAction)enableTimingOfInactiveProjects:(UISwitch *)sender;
 @end
 
 @implementation CCAuxSettingsViewController
@@ -129,41 +128,35 @@
 }
 
 - (void)updateTimer{
-    if ([self.settings isTimeAuthorized]) {
-        BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
-        NSString *localDeviceGUID = [[NSUserDefaults standardUserDefaults] objectForKey:kAppString];
-        
-        // Get Cloud status
-        NSString *controllingAppID = nil;
-        NSDictionary *cloudDictionary = [[CoreData sharedModel:nil] cloudDictionary];
-        if (cloudDictionary != nil ) {
-            if (cloudDictionary[kAppString]) {
-                controllingAppID = cloudDictionary[kAppString];
-                if ([localDeviceGUID isEqualToString:controllingAppID]){
-                    keyStatus = YES;
-                } else {
-                    keyStatus = NO;
-                }
-            } else {
+    BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
+    NSString *localDeviceGUID = [[NSUserDefaults standardUserDefaults] objectForKey:kAppString];
+    
+    // Get Cloud status
+    NSString *controllingAppID = nil;
+    NSDictionary *cloudDictionary = [[CoreData sharedModel:nil] cloudDictionary];
+    if (cloudDictionary != nil ) {
+        if (cloudDictionary[kAppString]) {
+            controllingAppID = cloudDictionary[kAppString];
+            if ([localDeviceGUID isEqualToString:controllingAppID]){
                 keyStatus = YES;
+            } else {
+                keyStatus = NO;
             }
-            
-            if (cloudDictionary[kDefaultEmail]) {
-                self.email.text = cloudDictionary[kDefaultEmail];
-            }
+        } else {
+            keyStatus = YES;
         }
         
-        [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
-        [self.timerOffOn setOn:keyStatus];
-        self.timerOffOn.enabled = YES;
-    } else {
-        [self.timerOffOn setOn:NO];
-        self.timerOffOn.enabled = NO;
+        if (cloudDictionary[kDefaultEmail]) {
+            self.email.text = cloudDictionary[kDefaultEmail];
+        }
     }
     
-    [self.timeSwitch setOn:[self.settings isTimeAuthorized]];
-    [self.expenseSwitch setOn:[self.settings isExpenseAuthorized]];
-    self.homeButton.enabled = [self.settings isExpenseAuthorized];
+    [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
+    [self.timerOffOn setOn:keyStatus];
+    self.timerOffOn.enabled = YES;
+    
+    [self.timeSwitch setOn:keyStatus];
+    [self.activeEnabledSwitch setOn:[[NSUserDefaults standardUserDefaults] boolForKey:kInActiveEnabled]];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
@@ -176,7 +169,7 @@
 }
 
 #pragma mark - IBActions
--(IBAction)setTimer:(UISwitch *)sender{
+-(IBAction)declareDeviceAsDesignatedTimer:(UISwitch *)sender{
     BOOL keyStatus = [sender isOn];
     [self.email resignFirstResponder];
     if (keyStatus == YES) {
@@ -184,44 +177,11 @@
         [[[CoreData sharedModel:nil] iCloudKey] setString:deviceGUID forKey:kAppString];
     }
     [[NSUserDefaults standardUserDefaults] setBool:keyStatus forKey:kAppStatus];
+
+    [self updateTimer];
 }
 
-- (IBAction)enableTiming:(UISwitch *)sender {
-    if (sender.isOn) {
-        if (![self.defaults boolForKey:kTimePurchased]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Premium Feature" message:@"Tracking time is a premium feature which must first be purchased before it can be enabled. Would you like to purchase this feature now?" delegate:self cancelButtonTitle:@"No thanks" otherButtonTitles:@"Yes", nil];
-            alert.tag = timingAlert;
-            [alert show];
-        } else {
-            [self.settings authorizeTime];
-            [self updateTimer];
-        }
-    } else {
-        [self.settings deAuthorizeTime];
-    }
-    self.timerOffOn.enabled = [self.settings isTimeAuthorized];
-    NSNotification *timerChange = [NSNotification notificationWithName:kEnableTime object:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:timerChange];
-}
-
-- (IBAction)exepenseEnabled:(UISwitch *)sender {
-    if (sender.isOn) {
-        if (![self.defaults boolForKey:kTimePurchased]) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Premium Feature" message:@"Tracking expenses and recording milage is a premium feature which must first be purchased before it can be enabled. Would you like to purchase this feature now?" delegate:self cancelButtonTitle:@"No thanks" otherButtonTitles:@"Yes", nil];
-            alert.tag = expenseAlert;
-            [alert show];
-        } else {
-            [self.settings authorizeExpenses];
-        }
-    } else {
-        [self.settings deAuthorizeExpenses];
-    }
-    self.homeButton.enabled = [self.settings isExpenseAuthorized];
-    NSNotification *expenseChange = [NSNotification notificationWithName:kEnableExpense object:nil];
-    [[NSNotificationCenter defaultCenter] postNotification:expenseChange];
-}
-
-- (IBAction)enableInActiveProjectTiming:(UISwitch *)sender {
+- (IBAction)enableTimingOfInactiveProjects:(UISwitch *)sender {
     [self.defaults setBool:sender.isOn forKey:kInActiveEnabled];
 }
 

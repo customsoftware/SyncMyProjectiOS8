@@ -140,8 +140,8 @@
 
 -(void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath{
     WorkTime *newTime = [self.displayTimers objectAtIndex:[indexPath row]];
-    NSTimeInterval elapseTime = [newTime.end timeIntervalSinceDate:newTime.start];    
-    NSString *elapseTimeString = [self.numberFormatter stringFromNumber:[[NSNumber alloc] initWithDouble:elapseTime/60]];
+    double eTime = [newTime.elapseTime integerValue];
+    NSString *elapseTimeString = [self.numberFormatter stringFromNumber:[[NSNumber alloc] initWithDouble:eTime/60]];
     cell.textLabel.text = [[NSString alloc] initWithFormat:@"Elapse time: %@ minutes", elapseTimeString];
     cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"%@ - %@", [self.dateFormatter stringFromDate:newTime.start], [self.endDateFormatter stringFromDate:newTime.end]];
     if (indexPath.row == 0 && self.timeSelector.selectedSegmentIndex == 0 ) {

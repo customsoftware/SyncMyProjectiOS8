@@ -170,6 +170,7 @@
 		90B89F5A1812676200A63CD4 /* CCProjectTaskReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B89F591812676200A63CD4 /* CCProjectTaskReport.m */; };
 		90BE7B5416D973EF00421003 /* CCLocalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BE7B5316D973EF00421003 /* CCLocalData.m */; };
 		90BE7B5516D973EF00421003 /* CCLocalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BE7B5316D973EF00421003 /* CCLocalData.m */; };
+		90C3452D1846531800028C91 /* ProjectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C3452C1846531800028C91 /* ProjectCell.m */; };
 		90C3A071182C463300B16B51 /* 57 icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90C3A06D182C463300B16B51 /* 57 icon.png */; };
 		90C3A072182C463300B16B51 /* 72 icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90C3A06E182C463300B16B51 /* 72 icon.png */; };
 		90C3A073182C463300B16B51 /* 114 icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90C3A06F182C463300B16B51 /* 114 icon.png */; };
@@ -465,6 +466,8 @@
 		90B89F591812676200A63CD4 /* CCProjectTaskReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCProjectTaskReport.m; sourceTree = "<group>"; };
 		90BE7B5216D973EF00421003 /* CCLocalData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCLocalData.h; sourceTree = "<group>"; };
 		90BE7B5316D973EF00421003 /* CCLocalData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCLocalData.m; sourceTree = "<group>"; };
+		90C3452B1846531800028C91 /* ProjectCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProjectCell.h; sourceTree = "<group>"; };
+		90C3452C1846531800028C91 /* ProjectCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProjectCell.m; sourceTree = "<group>"; };
 		90C3A06D182C463300B16B51 /* 57 icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "57 icon.png"; sourceTree = "<group>"; };
 		90C3A06E182C463300B16B51 /* 72 icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "72 icon.png"; sourceTree = "<group>"; };
 		90C3A06F182C463300B16B51 /* 114 icon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "114 icon.png"; sourceTree = "<group>"; };
@@ -683,6 +686,8 @@
 				24E9BAE91669D2A300DBC616 /* CCSettingsControl.m */,
 				90AB432B17EA71C80036B987 /* RatingReminder.h */,
 				90AB432C17EA71C80036B987 /* RatingReminder.m */,
+				90C3452B1846531800028C91 /* ProjectCell.h */,
+				90C3452C1846531800028C91 /* ProjectCell.m */,
 			);
 			name = "General Objects";
 			sourceTree = "<group>";
@@ -1142,6 +1147,7 @@
 				245B162A15CA53B5004D5819 /* CCTimeViewController.m in Sources */,
 				245B162F15CA5C28004D5819 /* CCCalendarViewController.m in Sources */,
 				245B163015CA5C28004D5819 /* CCDeliverableViewController.m in Sources */,
+				90C3452D1846531800028C91 /* ProjectCell.m in Sources */,
 				247D182715CDB2E5009F50A1 /* CCTaskViewDetailsController.m in Sources */,
 				2460D5A215D2954D0090A76E /* CCProjectTimer.m in Sources */,
 				245B2FB315D5314200CBB390 /* Model_Fm201208081_To201208091.xcmappingmodel in Sources */,

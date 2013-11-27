@@ -36,33 +36,35 @@
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
+- (void)setActiveProject {
+    self.parentProject.projectUUID = (self.parentProject.projectUUID != nil) ? self.parentProject.projectUUID : [[CoreData sharedModel:nil] getUUID];
+    [self.defaults saveString:self.parentProject.projectUUID atKey:kSelectedProject];
+}
+
 -(void)timerTest{
-    if ([self.defaults isTimeAuthorized]) {
-        if (self.timer != nil ) {
-            self.timer.billed = [NSNumber numberWithBool:NO];
-            self.timer.start = [NSDate date];
-            self.parentProject.projectUUID = (self.parentProject.projectUUID != nil) ? self.parentProject.projectUUID : [[CoreData sharedModel:nil] getUUID];
-            [self.defaults saveString:self.parentProject.projectUUID atKey:kSelectedProject];
-            if (self.owningTask) {
-                [self.defaults saveString:self.owningTask.taskUUID atKey:kSelectedTask];
-            } else {
-                [self.defaults saveString:@"None" atKey:kSelectedTask];
-            }
-            NSString *timeString = [self.formatter stringFromDate:self.timer.start];
-            [self.defaults saveString:timeString atKey:kStartTime];
-        } else if ( !self.parentProject ) {
-            // No project selected yet, so no point to start a timer yet.
+    if (self.timer != nil ) {
+        self.timer.billed = [NSNumber numberWithBool:NO];
+        self.timer.start = [NSDate date];
+        if (self.owningTask) {
+            [self.defaults saveString:self.owningTask.taskUUID atKey:kSelectedTask];
         } else {
-            BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
-            if (keyStatus == YES) {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Timer Failure" message:[[NSString alloc] initWithFormat:@"Timer for %@ project failed to start", self.parentProject.projectName] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert show];
-            }
+            [self.defaults saveString:@"None" atKey:kSelectedTask];
+        }
+        NSString *timeString = [self.formatter stringFromDate:self.timer.start];
+        [self.defaults saveString:timeString atKey:kStartTime];
+    } else if ( !self.parentProject ) {
+        // No project selected yet, so no point to start a timer yet.
+    } else {
+        BOOL keyStatus = [[NSUserDefaults standardUserDefaults] boolForKey:kAppStatus];
+        if (keyStatus == YES) {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Timer Failure" message:[[NSString alloc] initWithFormat:@"Timer for %@ project failed to start", self.parentProject.projectName] delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+            [alert show];
         }
     }
 }
 
 -(void)startTimer{
+    [self setActiveProject];
     if ([self isTImerEnabledForProject:self.parentProject]) {
         self.timer = [CoreData createNewTimerForProject:self.parentProject];
         [self timerTest];
@@ -72,6 +74,7 @@
 }
 
 -(void)startTaskTimer{
+    [self setActiveProject];
     if ([self isTImerEnabledForProject:self.parentProject]) {
         self.timer = [CoreData createNewTimerForProject:self.parentProject andTask:self.owningTask];
         [self timerTest];
@@ -171,14 +174,13 @@
     BOOL returnValue = NO;
     
     if ([project.active boolValue]) {
-        if (inactiveEnabled) { returnValue = YES; }
-    } else {
+        returnValue = YES;
+    } else if ( inactiveEnabled ) {
         returnValue = YES;
     }
     
     return returnValue;
 }
-
 
 #pragma mark - Lazy Getter
 -(CCSettingsControl *)defaults{

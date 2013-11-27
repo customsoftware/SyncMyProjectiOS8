@@ -27,7 +27,6 @@ typedef enum alertOptions {
 -(IBAction)changeFontSize:(UIStepper *)sender;
 -(IBAction)setHomeLocation:(UIButton *)sender;
 -(IBAction)email:(UITextField *)sender;
--(IBAction)setTimer:(UISwitch *)sender;
 
 -(void)releaseLogger;
 -(void)locationError:(NSError *)error;

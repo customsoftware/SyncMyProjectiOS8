@@ -24,6 +24,7 @@
 #import "iCloudStarterProtocol.h"
 #import "CCRecentTaskViewController.h"
 #import "CCSettingsControl.h"
+#import "ProjectCell.h"
 
 typedef enum kfilterModes{
     allProjectsMode = 0,
@@ -53,7 +54,6 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) NSString *lastProjectID;
 @property (strong, nonatomic) CCRecentTaskViewController *recentListController;
 @property (strong, nonatomic) CCSettingsControl *settings;
-
 @end
 
 @implementation CCMasterViewController
@@ -744,6 +744,8 @@ typedef enum kfilterModes{
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView
 {
+    ProjectCell *projectCell = (ProjectCell *)cell;
+    
     Project *newProject = nil;
     if (self.tableView == tableView) {
         newProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
@@ -772,6 +774,18 @@ typedef enum kfilterModes{
     } else {
         startDate = [formatter stringFromDate:newProject.dateStart];
     }
+    projectCell.statusIndicator.progress = [newProject.remainingHours floatValue];
+    NSTimeInterval interval = [newProject.dateFinish timeIntervalSinceDate:[NSDate date]];
+    
+    if ( [newProject.isOverDue boolValue]){
+        projectCell.statusIndicator.progressTintColor = [UIColor redColor];
+    } else if (projectCell.statusIndicator.progress < 0.8f && interval < 84600 ) {
+        projectCell.statusIndicator.progressTintColor = [UIColor yellowColor];
+    } else  {
+        projectCell.statusIndicator.progressTintColor = [UIColor greenColor];
+    }
+    
+    projectCell.statusIndicator.hidden = NO;
     
     NSString *caption;
     if (completeVal == NO & activeVal == YES) {
@@ -782,7 +796,8 @@ typedef enum kfilterModes{
         cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
         cell.detailTextLabel.textColor = kGreenColor;
     } else if ( completeVal == NO & activeVal == NO){
-        caption = [[NSString alloc] initWithFormat:@"Should start: %@", startDate];
+        caption = @"Inactive";
+        projectCell.statusIndicator.hidden = YES;
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == YES){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
@@ -813,6 +828,7 @@ typedef enum kfilterModes{
 
 - (IBAction)insertNewObject:(UIBarButtonItem *)sender
 {
+    // This is the regular code
     CCNewProjectViewController *newProject = [self.storyboard instantiateViewControllerWithIdentifier:@"newProjectName"];
     newProject.preferredContentSize = CGSizeMake(400, 175);
     newProject.popoverDelegate = self;
@@ -832,14 +848,22 @@ typedef enum kfilterModes{
 }
 
 - (void)savePopoverData{
+    // Uncheck the current project
+    if (self.controllingCell) {
+        [self.controllingCell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+        [self sendTimerStopNotification];
+        self.controllingCell = nil;
+        self.controllingCellIndex = nil;
+    }
+    
     [self.detailViewController.view endEditing:YES];
     [self.view endEditing:YES];
     CCNewProjectViewController *newProjectController = (CCNewProjectViewController *)self.projectPopover.contentViewController;
-
     Project *newProject = [CoreData createProjectWithName:newProjectController.projectName.text];
     newProject.projectName = newProjectController.projectName.text;
     newProject.dateStart = newProject.dateCreated;
     newProject.active = [NSNumber numberWithBool:YES];
+    newProject.projectUUID = [[CoreData sharedModel:nil] getUUID];
     
     [newProject.managedObjectContext save:nil];
     NSIndexPath *indexPath = nil;
@@ -854,6 +878,8 @@ typedef enum kfilterModes{
     
     if (indexPath) {
         [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+        UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
         [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
     }
     [self.projectPopover dismissPopoverAnimated:YES];

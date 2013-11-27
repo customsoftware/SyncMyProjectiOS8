@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Project.h"
+#import "Project+CategoryProject.h"
 #import "WorkTime.h"
 #import "CCGeneralCloser.h"
 #import "CCMainTaskViewController.h"

@@ -10,4 +10,6 @@
 
 @interface Project (CategoryProject)
 
+@property (strong, nonatomic, readonly) NSNumber *remainingHours;
+
 @end

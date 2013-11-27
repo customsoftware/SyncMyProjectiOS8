@@ -16,6 +16,11 @@
     return [formatter stringFromDate:self.start];
 }
 
+- (NSNumber *)elapseTime {
+    NSTimeInterval elapseTime = [self.end timeIntervalSinceDate:self.start];
+    return [NSNumber numberWithFloat:elapseTime];
+}
+
 //- (NSString *)taskDay {
 //    // Convert the start into a string "YYYYMMDD"
 //    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];

@@ -26,6 +26,7 @@
 #import "CCAppDelegate.h"
 #import "CCPrintNotesRender.h"
 #import "CCRecentTaskViewController.h"
+#import "ProjectCell.h"
 
 typedef enum kfilterModes{
     allProjectsMode,
@@ -281,6 +282,12 @@ typedef enum kfilterModes{
     if([buttonTitle isEqualToString:[self yesButtonTitle]]){
         if ([[alertView textFieldAtIndex:0].text isEqualToString:@""]) {
         } else {
+            // Uncheck the current project
+            if (self.controllingCell) {
+                self.controllingCell = nil;
+                self.controllingCellIndex = nil;
+            }
+            
             Project *newProject = [CoreData createProjectWithName:[alertView textFieldAtIndex:0].text];
 //            Project *newProject = [NSEntityDescription
 //                                   insertNewObjectForEntityForName:@"Project"
@@ -293,6 +300,8 @@ typedef enum kfilterModes{
                 newProject.dateCreated = [NSDate date];
                 newProject.dateStart = newProject.dateCreated;
                 newProject.active = [NSNumber numberWithBool:YES];
+                newProject.projectUUID = [[CoreData sharedModel:nil] getUUID];
+                
                 NSError *error = [[NSError alloc] init];
                 @try {
                     if (![newProject.managedObjectContext save:&error]){
@@ -301,6 +310,11 @@ typedef enum kfilterModes{
                     }
                     self.activeProject = newProject;
                     NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
+                    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+                    [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                    self.controllingCellIndex = indexPath;
+                    self.controllingCell = cell;
+                    [self.tableView reloadData];
                     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
                 }
                 @catch (NSException *exception) {
@@ -737,6 +751,8 @@ typedef enum kfilterModes{
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView
 {
+    ProjectCell *projectCell = (ProjectCell *)cell;
+    
     Project *newProject = nil;
     if (self.tableView == tableView) {
         newProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
@@ -766,6 +782,18 @@ typedef enum kfilterModes{
         startDate = [formatter stringFromDate:newProject.dateStart];
     }
     
+    projectCell.statusIndicator.progress = [newProject.remainingHours floatValue];
+    NSTimeInterval interval = [newProject.dateFinish timeIntervalSinceDate:[NSDate date]];
+    
+    if ( [newProject.isOverDue boolValue]){
+        projectCell.statusIndicator.progressTintColor = [UIColor redColor];
+    } else if (projectCell.statusIndicator.progress < 0.8f && interval < 84600 ) {
+        projectCell.statusIndicator.progressTintColor = [UIColor yellowColor];
+    } else  {
+        projectCell.statusIndicator.progressTintColor = [UIColor greenColor];
+    }
+    projectCell.statusIndicator.hidden = NO;
+    
     NSString *caption;
     if (completeVal == NO & activeVal == YES) {
         caption = [[NSString alloc] initWithFormat:@"Target date: %@", endDate];
@@ -774,7 +802,8 @@ typedef enum kfilterModes{
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
         cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
     } else if ( completeVal == NO & activeVal == NO){
-        caption = [[NSString alloc] initWithFormat:@"Should start: %@", startDate];
+        caption = @"Inactive";
+        projectCell.statusIndicator.hidden = YES;
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == YES){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
