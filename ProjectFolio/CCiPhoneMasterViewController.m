@@ -751,8 +751,6 @@ typedef enum kfilterModes{
 
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView
 {
-    ProjectCell *projectCell = (ProjectCell *)cell;
-    
     Project *newProject = nil;
     if (self.tableView == tableView) {
         newProject = [self.fetchedProjectsController objectAtIndexPath:indexPath];
@@ -782,17 +780,25 @@ typedef enum kfilterModes{
         startDate = [formatter stringFromDate:newProject.dateStart];
     }
     
-    projectCell.statusIndicator.progress = [newProject.remainingHours floatValue];
-    NSTimeInterval interval = [newProject.dateFinish timeIntervalSinceDate:[NSDate date]];
-    
-    if ( [newProject.isOverDue boolValue]){
-        projectCell.statusIndicator.progressTintColor = [UIColor redColor];
-    } else if (projectCell.statusIndicator.progress < 0.8f && interval < 84600 ) {
-        projectCell.statusIndicator.progressTintColor = [UIColor yellowColor];
-    } else  {
-        projectCell.statusIndicator.progressTintColor = [UIColor greenColor];
+    if ([cell isKindOfClass:[ProjectCell class]]) {
+        ProjectCell *projectCell = (ProjectCell *)cell;
+        
+        projectCell.statusIndicator.progress = [newProject.remainingHours floatValue];
+        NSTimeInterval interval = [newProject.dateFinish timeIntervalSinceDate:[NSDate date]];
+        
+        if ( [newProject.isOverDue boolValue]){
+            projectCell.statusIndicator.progressTintColor = [UIColor redColor];
+        } else if (projectCell.statusIndicator.progress < 0.8f && interval < 84600 ) {
+            projectCell.statusIndicator.progressTintColor = [UIColor yellowColor];
+        } else  {
+            projectCell.statusIndicator.progressTintColor = [UIColor greenColor];
+        }
+        if ( completeVal == NO & activeVal == NO){
+            projectCell.statusIndicator.hidden = YES;
+        } else {
+            projectCell.statusIndicator.hidden = NO;
+        }
     }
-    projectCell.statusIndicator.hidden = NO;
     
     NSString *caption;
     if (completeVal == NO & activeVal == YES) {
@@ -803,7 +809,6 @@ typedef enum kfilterModes{
         cell.imageView.image = [UIImage imageNamed:@"117-todo.png"];
     } else if ( completeVal == NO & activeVal == NO){
         caption = @"Inactive";
-        projectCell.statusIndicator.hidden = YES;
         cell.imageView.image = nil;
     } else if ( completeVal == YES & activeVal == YES){
         caption = [[NSString alloc] initWithFormat:@"Completed as of: %@", endDate];
