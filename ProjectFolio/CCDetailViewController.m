@@ -529,14 +529,18 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
     }
 }
 
--(void)textViewDidChange:(UITextView *)textView{
+/*-(void)textViewDidChange:(UITextView *)textView{
     self.project.projectNotes = textView.text;
-}
+}*/
 
 - (void)textViewDidEndEditing:(UITextView *)textView
 {
-    if (self.project != nil && self.projectNotes.text.length == 0) {
-        self.projectNotes.text = [NSString stringWithFormat:@"Enter notes for %@ project here", self.project.projectName];
+    if (self.project != nil ) {
+        if ( self.projectNotes.text.length == 0) {
+            self.projectNotes.text = [NSString stringWithFormat:@"Enter notes for %@ project here", self.project.projectName];
+        } else {
+            self.project.projectNotes = textView.text;
+        }
     }
     [self.projectNotes resignFirstResponder];
 }

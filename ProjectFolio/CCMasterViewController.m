@@ -46,6 +46,7 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) NSPredicate *openPredicate;
 @property (strong, nonatomic) CCHotListViewController *hotListController;
 @property NSInteger lastSelected;
+@property BOOL isFiltered;
 @property (strong, nonatomic) NSMutableArray *filteredProjects;
 @property (strong, nonatomic) CCErrorLogger *logger;
 @property (strong, nonatomic) CCProjectTimer *projectTimer;
@@ -54,6 +55,7 @@ typedef enum kfilterModes{
 @property (strong, nonatomic) NSString *lastProjectID;
 @property (strong, nonatomic) CCRecentTaskViewController *recentListController;
 @property (strong, nonatomic) CCSettingsControl *settings;
+@property (strong, nonatomic) UITableView *activeTableView;
 @end
 
 @implementation CCMasterViewController
@@ -118,9 +120,9 @@ typedef enum kfilterModes{
     if (self.activeProject != nil ){
         if (self.activeProject == self.detailViewController.project) {
             self.activeProject.projectNotes = self.detailViewController.projectNotes.text;
-            [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.tableView];
+            [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.activeTableView];
         } else {
-            [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.tableView];
+            [self updateDetailControllerForIndexPath:self.controllingCellIndex inTable:self.activeTableView];
         }
     }
 
@@ -260,6 +262,10 @@ typedef enum kfilterModes{
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString{
     [self filterContentForSearchText:searchString scope:[[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
     return YES;
+}
+
+- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller {
+    self.activeTableView = self.tableView;
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar{
@@ -465,6 +471,7 @@ typedef enum kfilterModes{
 }
 
 -(void)updateDetailControllerForIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView{
+    self.activeTableView = tableView;
     [self.detailViewController.projectNotes resignFirstResponder];
     if (tableView == self.tableView) {
         if (indexPath.row <= self.fetchedProjectsController.fetchedObjects.count) {
@@ -609,15 +616,10 @@ typedef enum kfilterModes{
             [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:[self.fetchedProjectsController objectAtIndexPath:indexPath]];
             
             // Save the context.
-            NSError *error = [[NSError alloc] init];
-            @try {
-                if (![[[CoreData sharedModel:nil] managedObjectContext] save:&error]){
-                    self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
-                    [self.logger releaseLogger];
-                }
-            }
-            @catch (NSException *exception) {
-                self.logger = [[CCErrorLogger alloc] initWithErrorString:exception.reason andDelegate:self];
+            NSError *error = nil;
+            [[[CoreData sharedModel:nil] managedObjectContext] save:&error];
+            if (error) {
+                self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                 [self.logger releaseLogger];
             }
         }
@@ -634,14 +636,19 @@ typedef enum kfilterModes{
     if (tableView == self.tableView) {
         UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
         [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+    } else {
+        
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    [self updateDetailControllerForIndexPath:indexPath inTable:tableView];
-    [self cleanCheckMarks:tableView];
-
+    if (tableView == self.tableView) {
+        [self updateDetailControllerForIndexPath:indexPath inTable:tableView];
+        [self cleanCheckMarks:tableView];
+    } else {
+        [self tableView:tableView accessoryButtonTappedForRowWithIndexPath:indexPath];
+    }
 }
 
 #pragma mark - Fetched results controller
