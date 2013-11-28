@@ -1,10 +1,5 @@
 !!!!! PLEASE READ !!!!
 
-This fixes a bug where opening a financial report from the Project notes view openned the wrong report: Yesterday and Last week were crossed.
-This fixes a bug where the app would sometimes crash on startup when there was no project selected when the app was terminated.
-This fixes a bug where two projects will be checked when creating a new project
-This fixes a bug in the display of the job time editor.
-
 This adds these new features:
 1.  You have the ability to disable the timer for inactive projects from the settings view and from the Settings app on your device.
 2.  There is now a progress indicator in the project cell in project list. It is hidden for inactive projects. The progress indicator is color keyed. If it is green, it means the project is not late. If the indicator is red, it means the project is late. If the indicator is yellow, it means you are a day away from the due date and there is more than 20 percent of the estimated time still to be  used.

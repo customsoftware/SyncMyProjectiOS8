@@ -1,8 +1,6 @@
 !!!!! PLEASE READ !!!!
 
 This fixes a bug in the display of task notes.
-This fixes a bug where two projects will be checked when creating a new project
-This fixes a bug in the display of the job time editor.
 
 This adds these new features:
 1.  You have the ability to disable the timer for inactive projects from the settings view and from the Settings app on your device.
