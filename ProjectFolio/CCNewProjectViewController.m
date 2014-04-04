@@ -38,6 +38,10 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     [self.projectName becomeFirstResponder];
+    if (self.passedProjectName != nil) {
+        self.projectName.text = self.passedProjectName;
+        self.saveButton.enabled = YES;
+    }
 }
 
 - (void)didReceiveMemoryWarning

@@ -13,6 +13,6 @@
 
 @property (weak, nonatomic) id<CCPopoverControllerDelegate>popoverDelegate;
 @property (weak, nonatomic) IBOutlet UITextField *projectName;
-
+@property (strong, nonatomic) NSString *passedProjectName;
 
 @end

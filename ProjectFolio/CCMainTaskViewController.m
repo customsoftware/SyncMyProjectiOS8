@@ -17,6 +17,7 @@
 @interface CCMainTaskViewController () <CCNotesDelegate>
 
 -(IBAction)toggleEditMode:(UIBarButtonItem *)sender;
+- (IBAction)tapButton:(UIButton *)sender;
 
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
 
@@ -60,6 +61,11 @@
     }
     
     self.navigationItem.rightBarButtonItem = newButton;
+}
+
+- (IBAction)tapButton:(UIButton *)sender {
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"You tapped the task button" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
+    [alert show];
 }
 
 -(void)cancelSummaryChart{
@@ -163,8 +169,9 @@
     [self.request setPredicate:self.allPredicate];
     // NSSortDescriptor *completeDescriptor = [[NSSortDescriptor alloc] initWithKey:@"completed" ascending:YES];
     NSSortDescriptor *rowOrderDescriptor = [[NSSortDescriptor alloc] initWithKey:@"displayOrder" ascending:YES];
+    NSSortDescriptor *dueOrderDescriptor = [[NSSortDescriptor alloc] initWithKey:@"dueDate" ascending:YES];
     NSSortDescriptor *nameOrderDescriptor = [[NSSortDescriptor alloc] initWithKey:@"title" ascending:YES];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects: rowOrderDescriptor, nameOrderDescriptor,nil];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects: rowOrderDescriptor, dueOrderDescriptor,nameOrderDescriptor,nil];
     [self.request setSortDescriptors:sortDescriptors];
     self.taskFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.request
                                                        managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]

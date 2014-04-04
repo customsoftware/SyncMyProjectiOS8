@@ -57,6 +57,7 @@ typedef enum kfilterModes{
 @property (weak, nonatomic) CCAuxSettingsViewController *settings;
 @property (nonatomic) BOOL inICloudMode;
 @property (strong, nonatomic) CCSettingsControl *systemSettings;
+@property (strong, nonatomic) NSString *searchedName;
 
 @property (strong, nonatomic) IBOutlet UIBarButtonItem *projectActionsButton;
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
@@ -75,8 +76,7 @@ typedef enum kfilterModes{
 @implementation CCiPhoneMasterViewController
 
 -(void)sendTimerStartNotificationForProject{
-    NSDictionary *projectDictionary = [[NSDictionary alloc] initWithObjectsAndKeys:self.activeProject, @"Project", nil];
-    NSNotification *startTimer = [NSNotification notificationWithName:kStartNotification object:nil userInfo:projectDictionary];
+    NSNotification *startTimer = [NSNotification notificationWithName:kStartNotification object:nil userInfo:@{@"Project":self.activeProject}];
     [[NSNotificationCenter defaultCenter] postNotification:startTimer];
 }
 
@@ -154,7 +154,7 @@ typedef enum kfilterModes{
     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
 }
 
-#pragma mark - Search Bar Functionality
+#pragma mark - Search Bar Functionality- iPhone
 -(void)filterContentForSearchText:(NSString *)searchText scope:(NSString *)scope{
     [self.filteredProjects removeAllObjects];
     NSPredicate *nameLikePredicate = nil;
@@ -165,6 +165,19 @@ typedef enum kfilterModes{
     }
     NSArray *workingList = self.fetchedProjectsController.fetchedObjects;
     self.filteredProjects = [[NSMutableArray alloc] initWithArray:[workingList filteredArrayUsingPredicate:nameLikePredicate]];
+    
+    // This calls the alert view
+    if (self.filteredProjects.count == 0 && searchText.length >= 3 && [self string:searchText endsWith:' '] && self.lastSelected != projectCategoryMode) {
+        self.searchedName = searchText;
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"New Record" message:@"Create a new project with the name?" delegate:self cancelButtonTitle:[self noButtonTitle] otherButtonTitles:[self yesButtonTitle], nil];
+        alert.tag = 2;
+        alert.alertViewStyle = UIAlertViewStylePlainTextInput;
+        UITextField *textField = [alert textFieldAtIndex:0];
+        textField.text = searchText;
+        [alert show];
+    } else {
+        self.searchedName = nil;
+    }
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString{
@@ -279,6 +292,10 @@ typedef enum kfilterModes{
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
     NSString *buttonTitle = [alertView buttonTitleAtIndex:buttonIndex];
+    if (alertView.tag == 2) {
+        [self.searchDisplayController setActive:NO animated:YES];
+    }
+    // This is the standard create place
     if([buttonTitle isEqualToString:[self yesButtonTitle]]){
         if ([[alertView textFieldAtIndex:0].text isEqualToString:@""]) {
         } else {
@@ -289,9 +306,6 @@ typedef enum kfilterModes{
             }
             
             Project *newProject = [CoreData createProjectWithName:[alertView textFieldAtIndex:0].text];
-//            Project *newProject = [NSEntityDescription
-//                                   insertNewObjectForEntityForName:@"Project"
-//                                   inManagedObjectContext:self.managedObjectContext];
             if (newProject == nil) {
                 self.logger = [[CCErrorLogger alloc] initWithErrorString:@"Failed to create a new project" andDelegate:self];
                 [self.logger releaseLogger];
@@ -316,6 +330,7 @@ typedef enum kfilterModes{
                     self.controllingCell = cell;
                     [self.tableView reloadData];
                     [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+                    [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
                 }
                 @catch (NSException *exception) {
                     self.logger = [[CCErrorLogger alloc] initWithErrorString:exception.reason andDelegate:self];
@@ -324,6 +339,7 @@ typedef enum kfilterModes{
             }
         }
     }
+
 }
 
 -(void)releaseLogger{
@@ -434,6 +450,11 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - Helper
+- (BOOL)string:(NSString *)testString endsWith:(unichar )c {
+    NSUInteger length = testString.length;
+    return (length > 0) && [testString characterAtIndex:length - 1] == c;
+}
+
 - (void)setTintForApp {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     float blueTint = [defaults floatForKey:kBlueTintNameKey];
@@ -786,7 +807,7 @@ typedef enum kfilterModes{
         projectCell.statusIndicator.progress = [newProject.remainingHours floatValue];
         NSTimeInterval interval = [newProject.dateFinish timeIntervalSinceDate:[NSDate date]];
         
-        if ( [newProject.isOverDue boolValue]){
+        if ( [newProject.isOverDue boolValue] && [newProject.complete boolValue] == NO){
             projectCell.statusIndicator.progressTintColor = [UIColor redColor];
         } else if (projectCell.statusIndicator.progress < 0.8f && interval < 84600 ) {
             projectCell.statusIndicator.progressTintColor = [UIColor yellowColor];
@@ -862,7 +883,7 @@ typedef enum kfilterModes{
                                          cancelButtonTitle:[self noButtonTitle]
                                          otherButtonTitles:[self yesButtonTitle],nil];
     alertViewProjectName.alertViewStyle = UIAlertViewStylePlainTextInput;
-    
+    alertViewProjectName.tag = 1;
     [alertViewProjectName show];
 }
 

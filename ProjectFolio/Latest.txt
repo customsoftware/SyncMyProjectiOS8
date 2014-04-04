@@ -1,5 +1,5 @@
 !!!!! PLEASE READ !!!!
 
 This adds these new features:
-1.  You have the ability to disable the timer for inactive projects from the settings view and from the Settings app on your device.
-2.  There is now a progress indicator in the project cell in project list. It is hidden for inactive projects. The progress indicator is color keyed. If it is green, it means the project is not late. If the indicator is red, it means the project is late. If the indicator is yellow, it means you are a day away from the due date and there is more than 20 percent of the estimated time still to be  used.
+1.  This fixes a bug in closing reports from the send button wherein the project time would not be closed out even when the emails were sent.
+2.  This adds the ability to create a new project from the search bar. If you search for a project and don't find it, you'll be given the option to create a project.

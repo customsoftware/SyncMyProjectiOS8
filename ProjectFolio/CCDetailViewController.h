@@ -44,7 +44,7 @@ typedef enum closeOptions {
     closeAll
 } closeOptions;
 
-@interface CCDetailViewController : UIViewController <CCProjectTaskDelegate,UIPopoverControllerDelegate, UISplitViewControllerDelegate,CCModalViewDelegate,UIActionSheetDelegate,CCEmailDelegate,CCLoggerDelegate,CCTaskSummaryDelegate,UIGestureRecognizerDelegate,UIPrintInteractionControllerDelegate,CCGeneralCloserProtocol>
+@interface CCDetailViewController : UIViewController <CCProjectTaskDelegate,UIPopoverControllerDelegate, UISplitViewControllerDelegate,CCModalViewDelegate,UIActionSheetDelegate,CCEmailDelegate,CCLoggerDelegate,CCTaskSummaryDelegate,UIGestureRecognizerDelegate,MFMailComposeViewControllerDelegate,UIPrintInteractionControllerDelegate,CCGeneralCloserProtocol>
 
 @property (strong, nonatomic) id detailItem;
 @property (strong, nonatomic) NSIndexPath *controllingCellIndex;

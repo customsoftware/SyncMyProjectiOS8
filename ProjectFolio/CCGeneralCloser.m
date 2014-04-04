@@ -7,12 +7,12 @@
 //
 
 #import "CCGeneralCloser.h"
-#import "CCiPhoneMasterViewController.h"
+#import "CCDetailViewController.h"
 #import "CCProjectTaskReport.h"
 
 @interface CCGeneralCloser()
 @property (strong, nonatomic) NSString *subjectLine;
-@property (assign, nonatomic) CCMasterViewController *callingView;
+@property (assign, nonatomic) CCDetailViewController *callingView;
 @property (assign, nonatomic) CCiPhoneMasterViewController *callingViewiPhone;
 @property (strong, nonatomic) NSMutableArray *projectResults;
 @property (strong, nonatomic) NSMutableArray *dailyResults;
@@ -26,16 +26,6 @@
 #pragma mark - Life Cycle
 -(void)viewDidLoad{
     [super viewDidLoad];
-}
-
--(void)viewDidUnload{
-    [super viewDidUnload];
-    self.mailComposer = nil;
-    self.subjectLine = nil;
-    self.callingView = nil;
-    self.projectResults = nil;
-    self.dailyResults = nil;
-    self.callingViewiPhone = nil;
 }
 
 #pragma mark - Init Variations
@@ -350,12 +340,13 @@
     return _mailComposer;
 }
 
--(CCMasterViewController *)callingView{
+-(CCDetailViewController *)callingView{
     if (_callingView == nil) {
         CCAppDelegate *appDelegate = (CCAppDelegate *)[UIApplication sharedApplication].delegate;
         UISplitViewController *svc = (UISplitViewController *)appDelegate.window.rootViewController;
         UINavigationController *nc = [svc.viewControllers objectAtIndex:0];
-        _callingView = (CCMasterViewController *)nc.topViewController;
+        CCMasterViewController *mc = (CCMasterViewController *)nc.topViewController;
+        _callingView = mc.detailViewController;
     }
     
     return _callingView;

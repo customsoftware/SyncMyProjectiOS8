@@ -31,8 +31,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	NSString* path = [[NSBundle mainBundle] pathForResource:@"Latest" ofType:@"txt"];
-
+	NSString* path = nil;
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad) {
+        path = [[NSBundle mainBundle] pathForResource:@"Latest" ofType:@"txt"];
+    } else if (UI_USER_INTERFACE_IDIOM() ==UIUserInterfaceIdiomPhone){
+        path = [[NSBundle mainBundle] pathForResource:@"Latest_iPhone" ofType:@"txt"];
+    }
+    
     NSString* content = [NSString stringWithContentsOfFile:path
                                                   encoding:NSUTF8StringEncoding
                                                      error:NULL];

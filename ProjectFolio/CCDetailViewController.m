@@ -520,6 +520,18 @@ void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
     self.logger = nil;
 }
 
+#pragma mark - <MFMail>
+-(void)mailComposeController:(MFMailComposeViewController *)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError *)error{
+    if (result == MFMailComposeResultCancelled) {
+        // NSLog(@"Leave the timers intact");
+    } else {
+        [self.closer billEvents];
+    }
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+
+
 #pragma mark - <UITextViewDelegate>
 - (void)textViewDidBeginEditing:(UITextView *)textView
 {
