@@ -166,6 +166,7 @@
 -(void)releaseTimer{
     if (self.timer != nil) {
         self.timer.end = [NSDate date];
+        [self.timer.managedObjectContext save:nil];
         // NSLog(@"Timer stopped");
         self.timer = nil;
         self.parentProject = nil;
