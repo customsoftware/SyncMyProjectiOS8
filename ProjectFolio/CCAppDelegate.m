@@ -184,6 +184,7 @@
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Saves changes in the application's managed object context before the application terminates.
+    [[NSUserDefaults standardUserDefaults] setObject:[NSDate date] forKey:kStoredStopTime];
     NSNotification *stopTimer = [NSNotification notificationWithName:kStopNotification object:nil];
     [[NSNotificationCenter defaultCenter] postNotification:stopTimer];
     [[CoreData sharedModel:nil] saveContext];

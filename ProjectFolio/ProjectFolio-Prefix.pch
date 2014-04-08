@@ -32,6 +32,7 @@
 #define kHotListFilterStatus    @"hotListFilterStatus"
 #define kSelectedProject        @"activeProject"
 #define kHelpTest               @"helpTest"
+#define kStoredStopTime         @"timeWhenAppShutDown"
 
 #define ONE_HOUR 1
 #define TWO_DAY 48*60*60

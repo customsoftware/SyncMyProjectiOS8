@@ -49,54 +49,12 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CCCanIDoIt.m"
-         timestampString = "381818190.456749"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "89"
-         endingLineNumber = "89"
-         landmarkName = "-analyzeProject:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;Fetch failed&quot;)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CCChart.m"
-         timestampString = "381818374.565097"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "107"
-         endingLineNumber = "107"
-         landmarkName = "-drawRect:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;Bailing: No Project name&quot;)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
          filePath = "ProjectFolio/CCDeliverableViewController.m"
-         timestampString = "381825421.701236"
+         timestampString = "397206885.116996"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "134"
-         endingLineNumber = "134"
+         startingLineNumber = "198"
+         endingLineNumber = "198"
          landmarkName = "-insertDeliverable"
          landmarkType = "5">
          <Actions>
@@ -112,97 +70,13 @@
          shouldBeEnabled = "Yes"
          ignoreCount = "0"
          continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CCExpenseDetailsViewController.m"
-         timestampString = "381818433.173239"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "294"
-         endingLineNumber = "294"
-         landmarkName = "-cameraSupportsMedia:sourceType:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;Media type is empty&quot;)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CCExpenseDetailsViewController.m"
-         timestampString = "381818459.791021"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "372"
-         endingLineNumber = "372"
-         landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;The receipt went nil due to memory&quot;)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CCExpenseDetailsViewController.m"
-         timestampString = "381818460.929627"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "374"
-         endingLineNumber = "374"
-         landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;The image went nil&quot;)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CCExpenseDetailsViewController.m"
-         timestampString = "381818529.025915"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "377"
-         endingLineNumber = "377"
-         landmarkName = "-imagePickerController:didFinishPickingMediaWithInfo:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;The receipt loaded: %f&quot;, self.receipt.image.size.height)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
          filePath = "ProjectFolio/CCiPhoneMasterViewController.m"
-         timestampString = "381818943.891919"
+         timestampString = "397544987.974284"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "343"
-         endingLineNumber = "343"
-         landmarkName = "-updateDetailControllerForIndexPath:inTable:"
+         startingLineNumber = "349"
+         endingLineNumber = "349"
+         landmarkName = "-shouldAutorotateToInterfaceOrientation:"
          landmarkType = "5">
          <Actions>
             <BreakpointActionProxy
@@ -218,11 +92,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "Yes"
          filePath = "ProjectFolio/CCiPhoneTaskViewController.m"
-         timestampString = "381822105.502601"
+         timestampString = "397266665.73621"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "443"
-         endingLineNumber = "443"
+         startingLineNumber = "470"
+         endingLineNumber = "470"
          landmarkName = "-tableView:moveRowAtIndexPath:toIndexPath:"
          landmarkType = "5">
          <Actions>
@@ -230,90 +104,6 @@
                ActionType = "Xcode.BreakpointAction.DebuggerCommand">
                <ActionContent
                   consoleCommand = "expr (void)NSLog(@&quot;Moving from: %d to %d&quot;, sourceIndexPath.row, destinationIndexPath.row)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CCMainTaskViewController.m"
-         timestampString = "381825421.701236"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "440"
-         endingLineNumber = "440"
-         landmarkName = "-tableView:moveRowAtIndexPath:toIndexPath:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;Moving from: %d to %d&quot;, sourceIndexPath.row, destinationIndexPath.row)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CCProjectTimer.m"
-         timestampString = "381825421.701236"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "63"
-         endingLineNumber = "63"
-         landmarkName = "-startTimingNameForProject:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;New parent timer: %@&quot;, self.parentProject.projectName)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CoreData.m"
-         timestampString = "381825421.701236"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "241"
-         endingLineNumber = "241"
-         landmarkName = "-mergeChangesFrom_iCloud:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;Merging in changes from iCloud...&quot;)">
-               </ActionContent>
-            </BreakpointActionProxy>
-         </Actions>
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "Yes"
-         filePath = "ProjectFolio/CoreData.m"
-         timestampString = "381825421.701236"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "398"
-         endingLineNumber = "398"
-         landmarkName = "-persistentStoreDidChange:"
-         landmarkType = "5">
-         <Actions>
-            <BreakpointActionProxy
-               ActionType = "Xcode.BreakpointAction.DebuggerCommand">
-               <ActionContent
-                  consoleCommand = "expr (void)NSLog(@&quot;Change Detected!&quot;)">
                </ActionContent>
             </BreakpointActionProxy>
          </Actions>

@@ -1,0 +1,32 @@
+
+MySQL Server Hostname (DSN): wxdata.db
+MySQL Admin Username: customsoftwa
+MySQL Admin Password: <Your member password>
+
+Your MySQL admin username has full privileges to manage this 
+process. 
+
+IMPORTANT NOTES:
+
+1) You MUST use your DSN when connecting to your MySQL process from PHP
+and CGI scripts.  If you use 'localhost' or do not specify a DSN, you 
+will get an error message.
+
+2) Change the MySQL admin password at your first opportunity to 
+be different from your member password.
+
+3) DO NOT use your MySQL admin username and password in PHP
+or CGI scripts.  Create additional usernames for your day-to-day 
+operations and leave your MySQL admin username as a backup in 
+case you accidentally lock yourself out of your process.  If 
+we have to reset your MySQL admin username permissions, you may lose 
+some or all of your data.
+
+4) NEVER remove the "mysql" database from your MySQL process.  Doing so
+will destroy your MySQL process and we are unlikely to be able to help you
+recover it.
+
+5) By default, your MySQL process contains no databases.  You will
+need to create one via our member interface or as part of the
+setup process of an application you are installing. 
+

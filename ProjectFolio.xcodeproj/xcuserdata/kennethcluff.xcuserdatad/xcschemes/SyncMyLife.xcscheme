@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "24A98B1B15B275B000ABBB85"
-               BuildableName = "synctask.app"
-               BlueprintName = "synctask"
+               BlueprintIdentifier = "901F081F1815BB7D00B20F99"
+               BuildableName = "SyncMyLife.app"
+               BlueprintName = "SyncMyLife"
                ReferencedContainer = "container:ProjectFolio.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,43 +28,13 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9017881E16D5FCED00D1CC64"
-               BuildableName = "CCProjectFolioTest.octest"
-               BlueprintName = "CCProjectFolioTest"
-               ReferencedContainer = "container:ProjectFolio.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "901F08451815BB8300B20F99"
-               BuildableName = "SyncMyLifeTests.xctest"
-               BlueprintName = "SyncMyLifeTests"
-               ReferencedContainer = "container:ProjectFolio.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "908E093818200C2000B67AD1"
-               BuildableName = "SyncMyProjectTests.xctest"
-               BlueprintName = "SyncMyProjectTests"
-               ReferencedContainer = "container:ProjectFolio.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "24A98B1B15B275B000ABBB85"
-            BuildableName = "synctask.app"
-            BlueprintName = "synctask"
+            BlueprintIdentifier = "901F081F1815BB7D00B20F99"
+            BuildableName = "SyncMyLife.app"
+            BlueprintName = "SyncMyLife"
             ReferencedContainer = "container:ProjectFolio.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -81,9 +51,9 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "24A98B1B15B275B000ABBB85"
-            BuildableName = "synctask.app"
-            BlueprintName = "synctask"
+            BlueprintIdentifier = "901F081F1815BB7D00B20F99"
+            BuildableName = "SyncMyLife.app"
+            BlueprintName = "SyncMyLife"
             ReferencedContainer = "container:ProjectFolio.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -99,9 +69,9 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "24A98B1B15B275B000ABBB85"
-            BuildableName = "synctask.app"
-            BlueprintName = "synctask"
+            BlueprintIdentifier = "901F081F1815BB7D00B20F99"
+            BuildableName = "SyncMyLife.app"
+            BlueprintName = "SyncMyLife"
             ReferencedContainer = "container:ProjectFolio.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

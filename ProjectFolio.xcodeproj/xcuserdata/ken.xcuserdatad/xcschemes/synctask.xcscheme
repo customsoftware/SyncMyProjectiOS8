@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
-   LastUpgradeVersion = "0500"
+   LastUpgradeVersion = "0510"
    version = "1.3">
    <BuildAction
       parallelizeBuildables = "YES"
@@ -28,36 +28,6 @@
       shouldUseLaunchSchemeArgsEnv = "YES"
       buildConfiguration = "Debug">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9017881E16D5FCED00D1CC64"
-               BuildableName = "CCProjectFolioTest.octest"
-               BlueprintName = "CCProjectFolioTest"
-               ReferencedContainer = "container:ProjectFolio.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "901F08451815BB8300B20F99"
-               BuildableName = "SyncMyLifeTests.xctest"
-               BlueprintName = "SyncMyLifeTests"
-               ReferencedContainer = "container:ProjectFolio.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "908E093818200C2000B67AD1"
-               BuildableName = "SyncMyProjectTests.xctest"
-               BlueprintName = "SyncMyProjectTests"
-               ReferencedContainer = "container:ProjectFolio.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference

@@ -44,7 +44,13 @@
 -(void)timerTest{
     if (self.timer != nil ) {
         self.timer.billed = [NSNumber numberWithBool:NO];
-        self.timer.start = [NSDate date];
+        NSDate *storedTime = [[NSUserDefaults standardUserDefaults] objectForKey:kStoredStopTime];
+        if (storedTime != nil) {
+            self.timer.start = storedTime;
+            [[NSUserDefaults standardUserDefaults] setObject:nil forKey:kStoredStopTime];
+        } else  {
+            self.timer.start = [NSDate date];
+        }
         if (self.owningTask) {
             [self.defaults saveString:self.owningTask.taskUUID atKey:kSelectedTask];
         } else {
