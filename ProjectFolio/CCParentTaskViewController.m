@@ -138,7 +138,7 @@
     Task *task = [self.displayList objectAtIndex:indexPath.row];
     self.activeTask.superTask = task;
     self.activeTask.visible = [NSNumber numberWithBool:[task isExpanded]];
-    int nextLevel = [task.level integerValue];
+    int nextLevel = [task.level intValue];
     nextLevel++;
     self.activeTask.level = [NSNumber numberWithInt:nextLevel];
     float newDisplayOrder = [task.displayOrder floatValue] + 0.1f;

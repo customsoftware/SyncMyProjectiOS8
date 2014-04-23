@@ -347,7 +347,7 @@
     }
     
     // Free the child tasks.. move them all up one level
-    int taskLevel = [self.currentTask.level integerValue];
+    int taskLevel = [self.currentTask.level intValue];
     for (Task * subTask in self.currentTask.subTasks) {
         [subTask setLevelWith:[NSNumber numberWithInt:taskLevel]];
         subTask.superTask = nil;

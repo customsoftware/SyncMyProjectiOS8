@@ -138,7 +138,7 @@
     
     if ([task.subTasks count] > 0) {
         cell = [tableView dequeueReusableCellWithIdentifier:groupCellIdentifier];
-        cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"Sub-Task count: %u", [task.subTasks count]];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"Sub-Task count: %lu", (unsigned long)[task.subTasks count]];
     } else {
         cell = [tableView dequeueReusableCellWithIdentifier:childCellIdentifier];
         cell.detailTextLabel.text = nil;

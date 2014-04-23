@@ -74,9 +74,9 @@
     NSInteger tensRow = [self.countDown selectedRowInComponent:kTensSpinner];
     NSInteger onesRow = [self.countDown selectedRowInComponent:kOnesSpinner];
     
-    value = [[self.numberFormatter numberFromString:[self.hundreds objectAtIndex:hundredsRow]] integerValue];
-    value = value + [[self.numberFormatter numberFromString:[self.tens objectAtIndex:tensRow]] integerValue];
-    value = value + [[self.numberFormatter numberFromString:[self.ones objectAtIndex:onesRow]] integerValue];
+    value = [[self.numberFormatter numberFromString:[self.hundreds objectAtIndex:hundredsRow]] intValue];
+    value = value + [[self.numberFormatter numberFromString:[self.tens objectAtIndex:tensRow]] intValue];
+    value = value + [[self.numberFormatter numberFromString:[self.ones objectAtIndex:onesRow]] intValue];
     
     self.spinnerValue = [NSNumber numberWithInt:value];
     self.navigationItem.title = [[NSString alloc] initWithFormat:@"Interval: %d", value];
@@ -106,7 +106,7 @@
     if ([self.spinnerValue integerValue] > 0) {
         int hundreds = round([self.spinnerValue integerValue]/100)*100;
         int tens = (round([self.spinnerValue integerValue]/10)*10) - hundreds;
-        int ones = [self.spinnerValue integerValue] - hundreds - tens;
+        int ones = [self.spinnerValue intValue] - hundreds - tens;
         
         NSInteger spinnerPointer = [self.hundreds indexOfObject:[[NSString alloc] initWithFormat:@"%d", hundreds]];
         if (spinnerPointer >= 0 && spinnerPointer < [self.hundreds count]) {
@@ -120,7 +120,7 @@
         if (spinnerPointer >= 0 && spinnerPointer < [self.ones count]) {
             [self.countDown selectRow:spinnerPointer inComponent:kOnesSpinner animated:NO];
         }
-        self.navigationItem.title = [[NSString alloc] initWithFormat:@"Interval: %d", [self.spinnerValue integerValue]];
+        self.navigationItem.title = [[NSString alloc] initWithFormat:@"Interval: %ld", (long)[self.spinnerValue integerValue]];
     } else {
         [self.countDown selectRow:0 inComponent:kHundredsSpinner animated:NO];
         [self.countDown selectRow:0 inComponent:kTensSpinner animated:NO];

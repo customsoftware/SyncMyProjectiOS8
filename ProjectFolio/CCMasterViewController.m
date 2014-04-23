@@ -817,12 +817,12 @@ typedef enum kfilterModes{
     } else {
         endDate = [formatter stringFromDate:newProject.dateFinish];
     }
-    NSString *startDate;
-    if (newProject.dateStart == nil) {
-        startDate = @"Not set";
-    } else {
-        startDate = [formatter stringFromDate:newProject.dateStart];
-    }
+//    NSString *startDate;
+//    if (newProject.dateStart == nil) {
+//        startDate = @"Not set";
+//    } else {
+//        startDate = [formatter stringFromDate:newProject.dateStart];
+//    }
     
     if ([cell isKindOfClass:[ProjectCell class]]) {
         ProjectCell *projectCell = (ProjectCell *)cell;

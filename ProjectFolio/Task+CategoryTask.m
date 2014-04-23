@@ -13,7 +13,7 @@
 -(void)setLevelWith:(NSNumber *)newLevel{
     self.level = newLevel;
     if (self.subTasks != nil && [self.subTasks count] > 0) {
-        int nextLevel = [newLevel integerValue];
+        int nextLevel = [newLevel intValue];
         nextLevel++;
         NSNumber *nextLevelNumber = [NSNumber numberWithInt:nextLevel];
         for (Task *subTask in self.subTasks) {

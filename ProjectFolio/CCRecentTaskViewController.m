@@ -66,13 +66,13 @@ typedef enum kChoiceModes{
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    int option = [[NSUserDefaults standardUserDefaults] integerForKey:kChoiceStorageKey];
+    int option = (int)[[NSUserDefaults standardUserDefaults] integerForKey:kChoiceStorageKey];
     [self runQuery:option];
     if (self.currentTask) {
         NSDictionary *dictionary = @{@"workProject.projectName":self.currentTask.taskProject.projectName,
                                      @"workTask.title":self.currentTask.title};
         
-        int rowNum = [self.recentTasks indexOfObject:dictionary];
+        int rowNum = (int)[self.recentTasks indexOfObject:dictionary];
         NSIndexPath *indexPath = [NSIndexPath indexPathForItem:rowNum inSection:0];
         [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
     }
@@ -161,7 +161,7 @@ typedef enum kChoiceModes{
 
 - (IBAction)selectFilterOption:(UISegmentedControl *)sender {
     [[NSUserDefaults standardUserDefaults] setInteger:sender.selectedSegmentIndex forKey:kChoiceStorageKey];
-    [self runQuery:sender.selectedSegmentIndex];
+    [self runQuery:(int)sender.selectedSegmentIndex];
 }
 
 #pragma mark - Helper

@@ -499,7 +499,7 @@
                     initWithStyle:UITableViewCellStyleValue1
                     reuseIdentifier:durationCellID];
         }
-        cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"%d Hours", [self.activeTask.duration integerValue]];
+        cell.detailTextLabel.text = [NSString stringWithFormat:@"%d Hours", [self.activeTask.duration intValue]];
     } else if (row == 3 ){
         cell = [tableView dequeueReusableCellWithIdentifier:priorityCellID];
         if (cell == nil) {

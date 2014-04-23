@@ -33,6 +33,7 @@
 
      
     */
+    int returnInt = (int)numberToReturn;
     NSSortDescriptor *resultSort = [[NSSortDescriptor alloc] initWithKey:kSortField ascending:NO];
     NSPredicate *filter = [NSPredicate predicateWithFormat:@"(end != NULL) AND ( workProject.complete = 0) AND ( workTask.completed = 0 )"];
 
@@ -46,9 +47,9 @@
     
     NSError *error = nil;
     NSArray *taskArray = [context executeFetchRequest:request error:&error];
-    NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:numberToReturn];
+    NSMutableArray *results = [[NSMutableArray alloc] initWithCapacity:returnInt];
     
-    int arrayLimit = MIN(numberToReturn, taskArray.count);
+    int arrayLimit = MIN(returnInt, (int)taskArray.count);
     
     for (int x = 0; x < arrayLimit; x++) {
         NSDictionary *dictionary = taskArray[x];

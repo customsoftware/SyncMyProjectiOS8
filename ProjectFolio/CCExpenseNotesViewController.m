@@ -55,7 +55,7 @@
         NSArray *componentsSeparatedByNewLines = [selectedString componentsSeparatedByCharactersInSet:[NSCharacterSet newlineCharacterSet]];
         Task *parentTask = [self.notesDelegate getParentTask];
         Project *owningProject = parentTask.taskProject;
-        int nextLevel = [parentTask.level integerValue];
+        int nextLevel = [parentTask.level intValue];
         nextLevel++;
         float newDisplayOrder = [parentTask.displayOrder floatValue] + 0.1f;
         for (NSString * taskString in componentsSeparatedByNewLines) {

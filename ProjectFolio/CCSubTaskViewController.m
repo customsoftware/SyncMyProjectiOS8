@@ -143,7 +143,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    int selectCell = indexPath.row;
+    int selectCell = (int)indexPath.row;
     if (selectCell > self.controllingTask.subTasks.count - 1) {
         NSLog(@"We are going to crash: tableViewCell");
     }

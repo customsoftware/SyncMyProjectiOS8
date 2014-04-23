@@ -149,7 +149,7 @@
         cell = [tableView dequeueReusableCellWithIdentifier:targetCellIdentifier];
     }
     cell.textLabel.text = newProject.projectName;
-    cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"No. of tasks %@", [self.formatter stringFromNumber:[NSNumber numberWithInt:[newProject.projectTask count]]]];
+    cell.detailTextLabel.text = [[NSString alloc] initWithFormat:@"No. of tasks %@", [self.formatter stringFromNumber:[NSNumber numberWithInt:(int)[newProject.projectTask count]]]];
     return cell;
 }
 

@@ -39,7 +39,7 @@
             // This is how many times the app runs before a reminder pops up
             self.appRunCount = [[NSUserDefaults standardUserDefaults] integerForKey:kRatingCounterReferenceKey];
         }
-        self.runCount = runCount;
+        self.runCount = (int)runCount;
         runCount++;
         [[NSUserDefaults standardUserDefaults] setInteger:runCount forKey:kRatingCounterKey];
     }

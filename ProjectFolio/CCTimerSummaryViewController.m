@@ -198,7 +198,7 @@
 }
 
 -(void)setCurrentBillingValues:(NSInteger)index{
-    double reportableTime;
+    double reportableTime = 0;
     NSDate *startRange = nil;
     NSDate *endRange = nil;
     self.billableTimers = [[NSMutableArray alloc] init];

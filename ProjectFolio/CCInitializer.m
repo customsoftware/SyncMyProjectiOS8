@@ -85,7 +85,7 @@
 -(void)loadTestData{
     CoreData *model = [CoreData sharedModel:nil];
     [model.projectFRC performFetch:nil];
-    int projectCount = model.projectFRC.fetchedObjects.count;
+    int projectCount = (int)model.projectFRC.fetchedObjects.count;
     if ( projectCount == 0){
         // Get Project
         Project *mainProject = [self addProjectWithName:@"Sample Project"];
