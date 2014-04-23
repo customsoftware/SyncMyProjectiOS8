@@ -849,7 +849,6 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                                 </connections>
                             </pickerView>
                         </subviews>
-                        <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     </view>
                     <navigationItem key="navigationItem" title="Duration" id="fq9-rE-gSe">
                         <barButtonItem key="leftBarButtonItem" systemItem="save" id="kbC-Ax-S6v">
@@ -1162,7 +1161,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
                         <segue destination="fG9-py-iw3" kind="push" identifier="pushPriorityController" id="Wjm-tS-ocb"/>
                         <segue destination="aXy-px-Tas" kind="push" identifier="calendarPush" id="94p-AB-cgB"/>
                         <segue destination="6V5-0a-amW" kind="push" identifier="pushPurchases" id="Mn2-Ep-skB"/>
-                        <segue destination="LmN-2c-s7n" kind="push" id="mcc-gW-4DU"/>
+                        <segue destination="LmN-2c-s7n" kind="push" identifier="pushUpgrades" id="mcc-gW-4DU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LKL-jP-dH3" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -4201,7 +4200,7 @@ AQABAAEAAQAB//+dkAEA//+PgAAE//+dkAEI//+dkAEMUERUAFBTVABQV1QAUFBUAAAAAAEAAAABA
     </simulatedMetricsContainer>
     <inferredMetricsTieBreakers>
         <segue reference="CAW-5q-vHi"/>
-        <segue reference="gY0-Ur-f3q"/>
-        <segue reference="sNg-Mf-0gY"/>
+        <segue reference="C7B-Gs-zUt"/>
+        <segue reference="Xxn-JQ-cDv"/>
     </inferredMetricsTieBreakers>
 </document>
