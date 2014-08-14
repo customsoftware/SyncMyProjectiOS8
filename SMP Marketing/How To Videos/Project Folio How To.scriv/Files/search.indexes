@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<SearchIndexes Version="1.0">
+    <Documents>
+        <Document ID="10">
+            <Title>Untitled</Title>
+        </Document>
+        <Document ID="15">
+            <Title>iTunes text 1</Title>
+            <Text>You have a million and one things to do… all of it due yesterday. There is a parade of meetings to attend, phone calls to make and in addition to all of this, you have to keep track of your time and expenses. 
+So, what do you do? Most project planners are either overkill or too expensive or too hard to use. You could use a spreadsheet, but that's hours of pain to set up and use. You could use paper, but that makes spreadsheets look easy. Or…
+You can use SyncMyProjects! It has intuitive task and note entry features that let you focus on taking notes in a meeting and then afterwords quickly organize and convert those notes into actions with just a couple of finger taps.
+Have complex, repetitive projects? No problem… every project is a template: just clone the tasks from one project into another with a couple of finger taps.
+It has a time tracking feature that’s easy to use: start a timer by just tapping on a project. Stop one timer and start another just by tapping on a different project.
+Need to answer the question “how soon can you get it done?” SyncMyProjects will give you an answer. Enter a due date and how many hours you think it will take and it will try to fit the project into your work week. It’ll tell you with a simple yes/no/or you can do it if you work overtime, answer. If you're well into the project and want to know if you can finish on time? Again, tap a button and it will tell you.
+Got more than one device and copying data from one device to another is a nightmare to consider? No problem, SyncMyProjects keeps data in sync between devices using Apple’s iCloud technology. Just enter your information on one device and when you get back to the other device… there it is ready to go. 
+Have a budget? SyncMyProjects will track not only hours and milage, but also expenses and show you how much budget is left with the tap of a button. 
+Want to assign a task to someone else? You can do that too.
+
+So, how would you rather track the work you do? By paper, by using several unrelated applications, or with a single, easy to use tool?
+If you prefer the last answer, SyncMyProjects is your answer. 
+It takes care of the details so you can focus on getting things done.
+
+These are the main features of the app:
+1. Tracking the time you spend on a project is virtually transparent. Tap on a project and the timer starts for that project and ends for any other. Tap on a task within a project, and the timer for that task starts.
+2. You can clone any or all tasks from one project into a new project.
+3. You can use your tasks to keep notes much as you would an outliner. You can also use the tasks as a checklist.
+4. You can keep notes on a project
+5. You can keep notes on a task in a project
+6. You can create tasks from your notes. (Select a phrase or a list of phrases, tap on the menu to create tasks and there you have them.) These new tasks become sub-tasks to the task in which the notes are written.
+7. You can track expenses for the project
+8. You can track milage from your home to the work site
+9. You can send reports via email or to a printer on time spent, expenses incurred and a lot of other aspects of the project.
+10. There's also a "hot list" that shows the tasks with due dates listed in order of due date.
+11. You can now assign a project or task to a category and mark that category with a color. By selecting the category button at the bottom of the project or Hot List task list, you can view projects and tasks by category.</Text>
+        </Document>
+        <Document ID="3">
+            <Title>New Project</Title>
+            <Text>To create a new project, swipe down from the navigation bar. For the iPad, enter the name of the project and tap the save button. For the iPhone, enter the name of the project and tap the OK button.</Text>
+        </Document>
+        <Document ID="11">
+            <Title>Untitled</Title>
+        </Document>
+        <Document ID="16">
+            <Title>The Task List</Title>
+            <Text>Start from “One More Project” 
+The task list presents a lot of information at a glance.
+It shows you all of the tasks associated with a project. As tasks lists look the same on either the iPad or iPhone versions of the app, this demonstration will use the iPhone task list.
+In this list, there are four tasks. The display tells you at a glance the status of all these tasks. Going from top to bottom, this is what the display tells you.
+The top task, “A New Task” has three sub-tasks under it. You can tap the task to collapse its sub-tasks if you just want to see the top-most task like this. &lt;Tap&gt; A task with subtasks will display the black triangle when the sub-tasks are collapsed and the subtasks and a red triangle when they are expanded. &lt;Tap&gt;
+The last/next task down “Three,” is a completed task. It’s indicated by the checked box icon and the green label.
+The next/last task below that “One,” is a regular task awaiting action on your part.
+The last/next task, “Two” has a notepad icon to its left. This indicates there are notes saved specific to this task. To see those notes, tap on the task &lt;tap&gt; then tap on the notepad icon &lt;tap&gt;. Here, you can review or enter notes for a specific task. &lt;Tap back to list&gt;
+You can also tell from the Owner: Anna Haro, that you’ve assigned the task to Anna Haro. With this version of the app, you can send her an email that will contain the specifics of the task and it’s associated notes. When she finishes the task, you will need to enter here that it is completed.
+
+At the bottom of the page, you’ll see a segmented button. In the iPhone version you’ll also see this notepad icon. I’ll explain these now.
+The segmented control is a set of pre-built filters for looking at the tasks. All shows, all of the tasks regardless of their status. &lt;Tap assigned&gt;
+Assigned shows all tasks that have been assigned to other people besides ourself. &lt;Tap Due&gt;
+Due shows all incomplete tasks regardless of who they are assigned to. &lt;Tap all&gt;
+For iPhone users, tapping on the notepad icon takes you to the project notes. That will be explained in a different video.</Text>
+        </Document>
+        <Document ID="4">
+            <Title>Edit Project Details</Title>
+            <Text>Select the project in the master list. In the iPhone, tap on the detail disclosure button. Make the changes you want to make, then click the “Projects” button to close the view.
+
+In the iPad, swipe down from the navigation bar of the notes view. Make the changes you want to make, then swipe up on the Project details view to close the view.</Text>
+        </Document>
+        <Document ID="5">
+            <Title>New Task</Title>
+            <Text>There are two ways to create a new task.
+You can create a task by converting a note into a task. You can create tasks by converting notes into tasks.
+You can also create a task by creating one directly. To create a task directly, swipe down from the navigation bar of the task list. This creates the task and presents the task details view. Enter the details of the task. Click the “Task” button to go back to the task list.</Text>
+        </Document>
+        <Document ID="12">
+            <Title>How Tos</Title>
+        </Document>
+        <Document ID="17">
+            <Title>Task Details</Title>
+            <Text>Task details are how you add additional information for a given task. There are two ways to get to a task’s details. The method you use depends upon the task. For a task with subtasks, tap on the detail disclosure button. You just tap the task for all other tasks to see the details.
+
+This is the detail view of a task. In the example, you can tell the task is not complete and that it was a due on Oct. 5, 2013. The task is assigned to yourself. You’ve estimated it will take 10 hours to complete. And you’ve set it’s Category to Medium. The last entry indicates whether the task is a top-level task or a sub-task. When “Child of:” says “Itself” it means the task is a top-level task. If you tap on the notepad icon &lt;tap&gt; it will show a view in which you can enter notes specific to this task.
+
+You can change the name of the task
+You can mark the task complete. When you mark a task with subtasks complete, the subtasks will display as being completed. However their actual status is not changed.
+The due date of the task is when you want to finish the task. You set this by tapping on the due date. &lt;Tap&gt; this opens a view with a date spinner. Here you can set the task due date. Tapping cancel at the top removes the due date.
+If you want to move the due date forward a pre-defined amount of time, you can tap on any of the four buttons in the segment control above the date spinner. You can move the due date forward one hour, one day, one week or four weeks.
+You can also set a reminder for yourself about the task using the segmented control beneath the spinner. The four options available are: to be reminded at the time the task is due, one hour before, one day before or one week before it is due.
+Any task with a due date set will appear in a special list known as the “Hot List”. This will be discussed in a different video.
+
+By default tasks are assigned to yourself. You can assign a task to anyone in your device’s contact app. &lt;Tap&gt; To assign it to someone, tap on their name. To unassign a task, tap on “Assigned to”. When the contact list appears, tap the cancel button.
+
+The duration is set using a spinner. Tap Save to save the new value and go back to the detail view. Tap cancel to set the value to zero.
+
+The category is set by picking on from a list. To select the category you want, tap on it. To remove any category selection you’ve made, tap cancel.
+
+Tasks can be assigned as a sub-task to any task other than one of it’s own subtasks. When a task with subtasks is assigned to a different parent task, all of the sub-tasks associated with it, move with it to the new parent task.
+
+When you tap on the notepad icon, you’ll see the notes for this specific task. If you choose to create tasks from this window, all you need to do is do a long tap on a word, select it, then extend the selection area to include all of the words you want to turn into sub-tasks.</Text>
+        </Document>
+        <Document ID="6">
+            <Title>New Task by Select Text</Title>
+        </Document>
+        <Document ID="13">
+            <Title>Marketing</Title>
+        </Document>
+        <Document ID="7">
+            <Title>Settings</Title>
+        </Document>
+        <Document ID="18">
+            <Title>ITunes text 2</Title>
+            <Text>SyncMyProject is a powerful tool that helps you keep track of many different projects. It’s key features are: Seamless iCloud sync between multiple devices, Intuitive note taking and task organization. Easy to use time, milage and expense tracking. It’s integrated with reminders and the notification center. Customizable categories. Easily accessed reports. UI optimized for iOS 7. Gesture support and a LOT more.
+
+It makes your life easier through..
+Powerful note taking  - With SyncMyProject, you can keep notes at the project level and at the task level. You can assign or create tasks as sub-tasks from within your notes. You can print or email those notes with the tap of your finger. 
+Transparent time tracking - Keeping track of time spent on a project with SyncMyProject, is as easy as selecting a project. It works on the assumption that if you’re working on a project in the app, you are going to bill that time against the project. When you’re working on a project, your time is being billed against that project.
+Always being ready and available - Data from one device seamlessly syncs between devices using Apple’s iCloud technology. Even when your devices are sleeping the data syncs in the background so your data is ready to go no matter which device you use.
+Easily converting notes into tasks - As you study your notes, select a word or a phrase then, with a long press, open a menu which lets to create a task with a tap.
+Intuitive Gestures - SyncMyProject makes it easy. You can add or delete records with the swipe of a finger. Drill into details with a swipe. Expand and hide sub-tasks with a long-press gesture.
+Tracking expenses, hours and milage - Set a budget for time and expenses. See at a glance remaining time and funds. SyncMyProject uses iOS location services so you can record milage with the tap of a button.
+Easy searching and filtering - Intelligent filters that show you tasks due today, this week or tasks that are late. Show most recently worked tasks. Filter projects by status. Search projects by name or category. Search for tasks in Hot list by task name or category.
+Personalization - Change tints and back ground color of notes to fit your personality or mood. Change fonts and font size of notes so you can either see more or see notes more easily.
+
+What makes our app powerful:
+. 	Data syncs across devices
+.	User definable categories for projects and tasks. 
+.	When you set a reminder for a task, it appears in the Reminder app and in your device’s notification center
+.	It’s use of GPS technology computes milage for you with the tap of a button.
+.	Meetings can be planned in the app and assigned to an Exchange or CalDAV or iCal calendar for sharing with others.</Text>
+        </Document>
+        <Document ID="8">
+            <Title>Can We Do It?</Title>
+        </Document>
+        <Document ID="14">
+            <Title>Web Page</Title>
+            <Text>You have a million and one things to do… all of it due yesterday. There are a parade of meetings to attend, phone calls to make and in addition to all of this, you have to keep track of your time for the bean counters. (Or for billing purposes, which makes it much more important but no easier.) You live in a digital society where sharing and collaborating is vital so paper just wont cut it since you have to transcribe notes from paper to email which takes more of your already precious time.
+So, what do you do?
+You can do it the “old” way: take notes in a text editor on your notebook. Copy and paste that information into an email to collaborate with others. Then you can use some other task tracker to try and remember all the things you promised you’d do. And finally, you use some time tracking app to track your hours, or if you were like me, you try to reconstruct how you spent your time several weeks after the fact from memory.
+Or, you can use ProjectFolio. Need to track multiple projects with different due dates and priorities? No problem. ProjectFolio can track as many different projects as your iPhone or iPad’s memory will allow… that’s a lot. Need to take notes associated with each project? ProjectFolio lets you enter notes for the project or for a task within a project. Tap a button in the app, enter an address and you can send some or all of the information to someone else. Need to track time? ProjectFolio has you covered there as well. ProjectFolio automatically remembers how much time you spend on each project. All you have to do is select the project and go to work.
+This alone makes a compelling package for tracking projects, but it does even more. Have some projects that are repetitive? ProjectFolio can “clone” the tasks from one project into another project with just a couple taps, saving you hours of effort. Or how about tracking expenses. ProjectFolio gives you a way to track expenses and milage traveled and then report on that from a single point in the app.
+Have a budget? ProjectFolio will track not only hours but also expenses and show you your burn down as work on the project proceeds. Want to assign a task to someone else? You can do that too.
+Have multiple devices, an iPhone and an iPad? Got you covered there too. With Apple’s iCloud and CoreData’s ability to sync over the cloud between devices, information you enter on one device will show up on the other device. 
+So, how would you rather track the work you do? By paper, by using several unrelated applications, or with a single, easy to use tool?
+If you prefer the last answer, check ProjectFolio out in the iTunes App store. You’ll be glad you did.</Text>
+        </Document>
+        <Document ID="9">
+            <Title>Clone Tasks</Title>
+            <Text>ProjectFolio - Time and Task Tracking plus Note Taking</Text>
+        </Document>
+    </Documents>
+</SearchIndexes>
