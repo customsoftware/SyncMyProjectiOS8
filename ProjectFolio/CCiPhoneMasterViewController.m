@@ -856,11 +856,11 @@ typedef enum kfilterModes{
         }
     }
     
-    if (newProject == self.activeProject) {
-        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-    } else {
-        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
-    }
+//    if (newProject == self.activeProject) {
+//        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+//    } else {
+//        [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+//    }
     
     UIColor *projectColor = [newProject.projectPriority getCategoryColor];
     if (!projectColor) projectColor = [UIColor whiteColor];

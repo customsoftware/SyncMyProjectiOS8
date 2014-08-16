@@ -33,10 +33,7 @@
 
 @property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) IBOutlet UISegmentedControl *displayOptions;
--(IBAction)cancelPopover;
--(IBAction)savePopoverData;
--(IBAction)clickSummaryButton:(UIBarButtonItem *)sender;
--(IBAction)clickTableDisplayOptions:(UISegmentedControl *)sender;
+
 -(void)releaseLogger;
 -(BOOL)shouldShowCancelButton;
 

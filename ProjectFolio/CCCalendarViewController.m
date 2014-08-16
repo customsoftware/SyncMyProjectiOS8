@@ -11,13 +11,15 @@
 @interface CCCalendarViewController ()
 @property (strong, nonatomic) CCErrorLogger *logger;
 
+-(IBAction)insertEvent:(id)sender;
+
 @end
 
 @implementation CCCalendarViewController
 
 #pragma mark - IBActions
 
--(IBAction)insertEvent{
+-(IBAction)insertEvent:(id)sender{
     Calendar *newMeeting = [NSEntityDescription insertNewObjectForEntityForName:@"Calendar" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     if (newMeeting != nil) {
         newMeeting.event = @"New meeting";
@@ -69,9 +71,13 @@
     [self.endDateFormatter setDateStyle:NSDateFormatterNoStyle];
     
     // Add swipe gesture recognizer to add expenses
-    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertEvent)];
+    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertEvent:)];
     [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
     [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
+    
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertEvent:)];
+    self.navigationItem.rightBarButtonItem = addButton;
+    
 }
 
 -(void)viewWillAppear:(BOOL)animated{

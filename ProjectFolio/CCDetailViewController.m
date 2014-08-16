@@ -409,14 +409,11 @@
             [self presentViewController:self.emailer.mailComposer animated:YES completion:nil];
         } else if (buttonIndex == closeProjects) {
             // Present action sheet to close projects
-            if ([self.sysSettings isTimeAuthorized]) {
+ 
                 UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:@"Report Time Spent on Projects" delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Yesterday", @"This Week", @"All Active", nil];
                 actionSheet.tag = closeOptionSheet;
                 [actionSheet showFromBarButtonItem:self.navigationItem.rightBarButtonItem animated:YES];
-            } else {
-                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Premium Feature" message:@"This report is part of the time tracking upgrade." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
-                [alert show];
-            }
+     
         }
     } else if (actionSheet.tag == sendOptionSheet){
         // Put code here to email or print notes

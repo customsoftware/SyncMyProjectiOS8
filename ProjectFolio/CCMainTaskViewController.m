@@ -16,10 +16,9 @@
 
 @interface CCMainTaskViewController () <CCNotesDelegate>
 
--(IBAction)toggleEditMode:(UIBarButtonItem *)sender;
+- (IBAction)toggleEditMode:(UIButton *)sender;
 - (IBAction)tapButton:(UIButton *)sender;
-
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *editButton;
+- (IBAction)insertTask:(UIButton *)sender;
 
 @property (strong, nonatomic) NSPredicate *allPredicate;
 @property (strong, nonatomic) NSPredicate *incompletePredicate;
@@ -49,18 +48,22 @@
     return self.sourceProject;
 }
 
-- (IBAction)toggleEditMode:(UIButton *)sender
-{
+- (IBAction)toggleEditMode:(UIButton *)sender {
     self.tableView.editing = !self.tableView.editing;
-    
-    UIBarButtonItem *newButton = nil;
     if (self.tableView.editing) {
-        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleEditMode:)];
+        [sender setTitle:@"Done" forState:UIControlStateNormal];
     } else {
-        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
+        [sender setTitle:@"Edit" forState:UIControlStateNormal];
     }
     
-    self.navigationItem.rightBarButtonItem = newButton;
+//    UIBarButtonItem *newButton = nil;
+//    if (self.tableView.editing) {
+//        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleEditMode:)];
+//    } else {
+//        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
+//    }
+//    
+//    self.navigationItem.rightBarButtonItem = newButton;
 }
 
 - (IBAction)tapButton:(UIButton *)sender {

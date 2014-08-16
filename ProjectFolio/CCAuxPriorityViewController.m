@@ -11,6 +11,9 @@
 
 @interface CCAuxPriorityViewController ()
 
+- (IBAction)insertPriority:(UIButton *)sender;
+- (IBAction)setEditState:(UIButton *)sender;
+
 @property (strong, nonatomic) NSFetchedResultsController *priorityFRC;
 @property (strong, nonatomic) NSFetchRequest *fetchRequest;
 @property (strong, nonatomic) CCAuxPriorityEditorViewController *editor;
@@ -22,7 +25,7 @@
 
 @implementation CCAuxPriorityViewController
 
--(IBAction)insertPriority:(UIBarButtonItem *)sender{
+-(IBAction)insertPriority:(UIButton *)sender{
     Priority * newPriority = [NSEntityDescription
                               insertNewObjectForEntityForName:@"Priority"
                               inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
@@ -30,6 +33,15 @@
     self.theNewPriority = newPriority;
     self.editor.preferredContentSize = self.view.bounds.size;
     [self.navigationController pushViewController:self.editor animated:YES];
+}
+
+- (IBAction)setEditState:(UIButton *)sender {
+    self.tableView.editing = !self.tableView.editing;
+    if (self.tableView.editing) {
+        [sender setTitle:@"Done" forState:UIControlStateNormal];
+    } else {
+        [sender setTitle:@"Edit" forState:UIControlStateNormal];
+    }
 }
 
 #pragma mark - <CCPriorityDetailDelegate>

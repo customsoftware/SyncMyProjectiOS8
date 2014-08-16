@@ -15,6 +15,25 @@
 
 @interface CCExpenseDetailsViewController ()
 
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (weak, nonatomic) IBOutlet UITextField *itemPurchased;
+@property (weak, nonatomic) IBOutlet UITextField *paidTo;
+@property (weak, nonatomic) IBOutlet UITextField *amountPaid;
+@property (weak, nonatomic) IBOutlet UITextField *milage;
+@property (weak, nonatomic) IBOutlet UISwitch *billed;
+@property (weak, nonatomic) IBOutlet UIImageView *receipt;
+@property (weak, nonatomic) IBOutlet UILabel *notes;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *utilityControll;
+
+-(IBAction)itemPurchased:(UITextField *)sender;
+-(IBAction)paidTo:(UITextField *)sender;
+-(IBAction)amountPaid:(UITextField *)sender;
+-(IBAction)billed:(UISwitch *)sender;
+-(IBAction)utilities:(UISegmentedControl *)sender;
+-(IBAction)milage:(UITextField *)sender;
+-(IBAction)removePicture:(UIButton *)sender;
+-(void)releaseNotes;
+
 @property (strong, nonatomic) CCExpenseNotesViewController *notesController;
 @property (strong, nonatomic) UIImagePickerController *imageController;
 @property (strong, nonatomic) CCLocationController *locationManager;
@@ -63,7 +82,8 @@
     } else{
         self.expense.dateExpensed = nil;
     }
-    [self.tableView reloadData];
+    NSIndexPath *ipath = [NSIndexPath indexPathForRow:1 inSection:0];
+    [self.tableView reloadRowsAtIndexPaths:@[ipath] withRowAnimation:NO];
 }
 
 -(IBAction)utilities:(UISegmentedControl *)sender{

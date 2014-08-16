@@ -15,10 +15,11 @@
 #define SWITCH_OFF [[NSNumber alloc] initWithInt:0]
 #define runningOnIPad    UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad
 
-@interface CCDateSetterViewController ()
+@interface CCDateSetterViewController ()<UIScrollViewDelegate>
 
 @property (strong, nonatomic) CCAuxDurationViewController *durationController;
 @property (strong, nonatomic) CCCategoryTaskViewController *categoryController;
+@property (weak, nonatomic) IBOutlet UIScrollView *scroller;
 @property (strong, nonatomic) UISwipeGestureRecognizer *hideSwipe;
 @property (weak, nonatomic) IBOutlet UILabel *costBudgetLabel;
 @property (weak, nonatomic) IBOutlet UILabel *rateBudgetLabel;
@@ -300,6 +301,12 @@
     [self setViewControlValues];
 }
 
+- (void)viewDidLayoutSubviews {
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        self.scroller.contentSize = CGSizeMake(320, 600);
+    }
+}
+
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
     if (self.project) {
@@ -426,7 +433,7 @@
     self.hourlyRateField.enabled = [self.settings isExpenseAuthorized];
     self.projectCostBudget.enabled = [self.settings isExpenseAuthorized];
     
-    self.projectCostBudget.text = [self.project.costBudget stringValue];
+    self.projectCostBudget.text = [NSString stringWithFormat:@"%.2f", [self.project.costBudget floatValue]];
     [self.activeSwitch setOn:[self.project.active boolValue]];
     [self.completeSwitch setOn:[self.project.complete boolValue]];
     [self.billableSwitch setOn:[self.project.billable boolValue]];

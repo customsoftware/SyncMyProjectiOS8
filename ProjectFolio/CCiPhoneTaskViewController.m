@@ -37,7 +37,8 @@
 @property (strong, nonatomic) UIToolbar *holderBar;
 @property (strong, nonatomic) CCExpenseNotesViewController *notesController;
 
-- (IBAction)toggleEditMode:(UIBarButtonItem *)sender;
+- (IBAction)toggleEditMode:(UIButton *)sender;
+- (IBAction)insertTask:(UIButton *)sender;
 
 @end
 
@@ -58,21 +59,18 @@
     // Any config stuff goes here...
 }
 
-- (IBAction)toggleEditMode:(UIBarButtonItem *)sender
+- (IBAction)toggleEditMode:(UIButton *)sender
 {
     self.tableView.editing = !self.tableView.editing;
     
-    UIBarButtonItem *newButton = nil;
     if (self.tableView.editing) {
-        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(toggleEditMode:)];
+        [sender setTitle:@"Done" forState:UIControlStateNormal];
     } else {
-        newButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemEdit target:self action:@selector(toggleEditMode:)];
+        [sender setTitle:@"Edit" forState:UIControlStateNormal];
     }
-    
-    self.navigationItem.rightBarButtonItem = newButton;
 }
 
--(IBAction)insertTask{
+-(IBAction)insertTask:(UIButton *)sender{
     // Show task detail form
     Task *newTask = [NSEntityDescription insertNewObjectForEntityForName:@"Task" inManagedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]];
     newTask.completed = [NSNumber numberWithBool:NO];
@@ -187,7 +185,7 @@
     [self.tableView addGestureRecognizer:showExtrasSwipe];
     
     // Add swipe to add records
-    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertTask)];
+    self.swiper = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(insertTask:)];
     [self.swiper setDirection:UISwipeGestureRecognizerDirectionDown];
     [self.navigationController.navigationBar addGestureRecognizer:self.swiper];
     

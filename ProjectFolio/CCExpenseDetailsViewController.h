@@ -20,7 +20,6 @@
 @interface CCExpenseDetailsViewController : UIViewController<CCSaveDate,UITableViewDataSource,UITableViewDelegate,UINavigationControllerDelegate,UIImagePickerControllerDelegate,UIApplicationDelegate,CCLocationDelegate,CCNotesDelegate>
 
 @property (strong, nonatomic) Deliverables *expense;
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
 @property (strong, nonatomic) NSDateFormatter *dateFormatter;
 @property (strong, nonatomic) NSNumberFormatter *numberFormatter;
 @property (strong, nonatomic) CCAuxDateViewController *dateController;
@@ -29,23 +28,7 @@
 @property (weak, nonatomic) NSIndexPath *controllingIndex;
 @property BOOL * isNew;
 
-@property (strong, nonatomic) IBOutlet UITextField *itemPurchased;
-@property (strong, nonatomic) IBOutlet UITextField *paidTo;
-@property (strong, nonatomic) IBOutlet UITextField *amountPaid;
-@property (strong, nonatomic) IBOutlet UITextField *milage;
-@property (strong, nonatomic) IBOutlet UISwitch *billed;
-@property (strong, nonatomic) IBOutlet UIImageView *receipt;
-@property (strong, nonatomic) IBOutlet UILabel *notes;
-@property (strong, nonatomic) IBOutlet UISegmentedControl *utilityControll;
 
--(IBAction)itemPurchased:(UITextField *)sender;
--(IBAction)paidTo:(UITextField *)sender;
--(IBAction)amountPaid:(UITextField *)sender;
--(IBAction)billed:(UISwitch *)sender;
--(IBAction)utilities:(UISegmentedControl *)sender;
--(IBAction)milage:(UITextField *)sender;
--(IBAction)removePicture:(UIButton *)sender;
--(void)releaseNotes;
 -(NSString *)getNotes;
 -(BOOL)isTaskClass;
 

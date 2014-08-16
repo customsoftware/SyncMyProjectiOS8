@@ -37,6 +37,8 @@ typedef enum kfilterModes{
 @interface CCMasterViewController () <iCloudStarterProtocol>
 - (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath inTable:(UITableView *)tableView;
 
+- (IBAction)insertNewObject:(UIButton *)sender;
+
 @property (strong, nonatomic) IBOutlet UISearchBar *searchBar;
 @property (strong, nonatomic) CCGeneralCloser *closer;
 @property (strong, nonatomic) CCMainTaskViewController *mainTaskController;
@@ -94,6 +96,10 @@ typedef enum kfilterModes{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     self.lastSelected = [defaults integerForKey:kProjectFilterStatus];
     self.lastProjectID = [defaults objectForKey:kSelectedProject];
+    // Set up long press to see tasks
+    UILongPressGestureRecognizer *showTaskPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(swipeRight:)];
+    [self.tableView addGestureRecognizer:showTaskPress];
+    
     
     // Set up swipe to see tasks
     // Add swipe gesture recognizer to default, unfiltered table view
@@ -171,6 +177,20 @@ typedef enum kfilterModes{
 }
 
 #pragma mark - IBActions
+- (IBAction)insertNewObject:(UIButton *)sender {
+    // This is the regular code
+    CCNewProjectViewController *newProject = [self.storyboard instantiateViewControllerWithIdentifier:@"newProjectName"];
+    newProject.preferredContentSize = CGSizeMake(400, 175);
+    newProject.popoverDelegate = self;
+    self.projectPopover = [[UIPopoverController alloc] initWithContentViewController:newProject];
+    NSMutableArray *passThrough = [[NSMutableArray alloc] init];
+    [passThrough addObject:self.view];
+    [passThrough addObject:self.detailViewController.view];
+    newProject.passedProjectName = self.searchedName;
+    self.projectPopover.passthroughViews = passThrough;
+    [self.projectPopover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
+}
+
 -(IBAction)filterActions:(UISegmentedControl *)sender{
     if (sender.selectedSegmentIndex == hotListMode){
         self.hotListController.projectDetailController = self.detailViewController;
@@ -557,6 +577,10 @@ typedef enum kfilterModes{
 
 - (void)swipeRight:(UISwipeGestureRecognizer *)gesture
 {
+    if (gesture.state != UIGestureRecognizerStateEnded) {
+        return;
+    }
+    
     CGPoint location = [gesture locationInView:self.tableView];
     NSIndexPath *swipedIndexPath = [self.tableView indexPathForRowAtPoint:location];
     [self tableView:self.tableView accessoryButtonTappedForRowWithIndexPath:swipedIndexPath];
@@ -880,21 +904,6 @@ typedef enum kfilterModes{
     }
     
     cell.detailTextLabel.text = caption;
-}
-
-- (IBAction)insertNewObject:(UIBarButtonItem *)sender
-{
-    // This is the regular code
-    CCNewProjectViewController *newProject = [self.storyboard instantiateViewControllerWithIdentifier:@"newProjectName"];
-    newProject.preferredContentSize = CGSizeMake(400, 175);
-    newProject.popoverDelegate = self;
-    self.projectPopover = [[UIPopoverController alloc] initWithContentViewController:newProject];
-    NSMutableArray *passThrough = [[NSMutableArray alloc] init];
-    [passThrough addObject:self.view];
-    [passThrough addObject:self.detailViewController.view];
-    newProject.passedProjectName = self.searchedName;
-    self.projectPopover.passthroughViews = passThrough;
-    [self.projectPopover presentPopoverFromBarButtonItem:sender permittedArrowDirections:UIPopoverArrowDirectionAny animated:YES];
 }
 
 #pragma mark - <CCPopoverControllerDelegate>

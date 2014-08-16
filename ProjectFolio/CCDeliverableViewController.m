@@ -15,6 +15,12 @@
 #define DELIVER_ACTIVE [[NSNumber alloc] initWithInt:0]
 
 @interface CCDeliverableViewController ()
+
+- (IBAction)insertDeliverable;
+- (IBAction)clickSummaryButton:(UIBarButtonItem *)sender;
+- (IBAction)clickTableDisplayOptions:(UISegmentedControl *)sender;
+- (IBAction)iPhoneClickSummaryButton:(UIButton *)sender;
+
 @property (strong, nonatomic) CCExpenseReporterViewController *expenseCalculator;
 @property (strong, nonatomic) CCEmailer *emailer;
 @property (strong, nonatomic) CCErrorLogger *logger;
@@ -141,6 +147,10 @@
     }
     
     [self resetTableView];
+}
+
+- (IBAction)iPhoneClickSummaryButton:(UIButton *)sender {
+    [self clickSummaryButton:nil];
 }
 
 - (void)resetTableView {

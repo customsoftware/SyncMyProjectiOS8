@@ -118,6 +118,7 @@
 		24FC163415F566A800BB86AB /* CCAuxSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24FC163315F566A800BB86AB /* CCAuxSettingsViewController.m */; };
 		24FC595A15BE0C9A00606750 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FC595915BE0C9900606750 /* Settings.bundle */; };
 		24FCDF0016639B9B005919D0 /* iPhone_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */; };
+		40FFE2C6199F7CEC002D8CC8 /* Small ActionButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 40FFE2C5199F7CEC002D8CC8 /* Small ActionButton.png */; };
 		9017882116D5FCED00D1CC64 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9017882016D5FCED00D1CC64 /* SenTestingKit.framework */; };
 		9017882216D5FCED00D1CC64 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24A98B2015B275B000ABBB85 /* UIKit.framework */; };
 		9017882316D5FCED00D1CC64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24A98B2215B275B000ABBB85 /* Foundation.framework */; };
@@ -382,6 +383,7 @@
 		24FC595915BE0C9900606750 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone_Storyboard.storyboard; sourceTree = "<group>"; };
 		24FCFD5615D0BACC00D42060 /* PF201208061.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF201208061.xcdatamodel; sourceTree = "<group>"; };
+		40FFE2C5199F7CEC002D8CC8 /* Small ActionButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Small ActionButton.png"; sourceTree = "<group>"; };
 		9017881F16D5FCED00D1CC64 /* CCProjectFolioTest.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CCProjectFolioTest.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9017882016D5FCED00D1CC64 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		9017882616D5FCED00D1CC64 /* CCProjectFolioTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CCProjectFolioTest-Info.plist"; sourceTree = "<group>"; };
@@ -878,6 +880,7 @@
 		9059ECD416D93803000A3A42 /* Icons */ = {
 			isa = PBXGroup;
 			children = (
+				40FFE2C5199F7CEC002D8CC8 /* Small ActionButton.png */,
 				90ABA19E16C38053009AB966 /* 179-notepad.png */,
 				90D387F217E74895007855AF /* DownArrow.png */,
 				90D387F317E74895007855AF /* UpArrow.png */,
@@ -1008,7 +1011,7 @@
 			name = CCProjectFolioTest;
 			productName = CCProjectFolioTest;
 			productReference = 9017881F16D5FCED00D1CC64 /* CCProjectFolioTest.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -1088,6 +1091,7 @@
 				2458DAAE161B067300FE66B7 /* Expanded.png in Resources */,
 				90C3A072182C463300B16B51 /* 72 icon.png in Resources */,
 				247DFA18165A64A800CDC998 /* configuration.png in Resources */,
+				40FFE2C6199F7CEC002D8CC8 /* Small ActionButton.png in Resources */,
 				24FCDF0016639B9B005919D0 /* iPhone_Storyboard.storyboard in Resources */,
 				90ADE54D177C66630040D701 /* plane.png in Resources */,
 				90ABA19F16C38054009AB966 /* 179-notepad.png in Resources */,
@@ -1367,7 +1371,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectFolio/ProjectFolio-Prefix.pch";
 				INFOPLIST_FILE = "ProjectFolio/ProjectFolio-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F27D4E72-803F-4AAE-8DF8-D55BA7D2FCA1";
@@ -1387,7 +1391,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectFolio/ProjectFolio-Prefix.pch";
 				INFOPLIST_FILE = "ProjectFolio/ProjectFolio-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A7FF18A5-2669-4DF4-9353-F46D61BF26E3";

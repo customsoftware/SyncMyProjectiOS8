@@ -9,7 +9,8 @@
 #import "CCAuxPriorityEditorViewController.h"
 
 @interface CCAuxPriorityEditorViewController ()
--(IBAction)updatePriority:(UITextField * )sender;
+- (IBAction)updatePriority:(UITextField * )sender;
+
 @property (weak, nonatomic) IBOutlet UIView *colorPad;
 @property (weak, nonatomic) IBOutlet UITextField *textField;
 
