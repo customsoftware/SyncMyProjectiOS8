@@ -37,6 +37,8 @@
 	<string>100</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCalendarsUsageDescription</key>
+	<string>SyncMyProject uses your calendar to store meetings you create and to show you meetings for which you may bill a client.</string>
 	<key>NSLocationUsageDescription</key>
 	<string>SyncMyProject needs to know where you are so it can compute milage for you when you want to record milage traveled for business purposes.</string>
 	<key>UIBackgroundModes</key>

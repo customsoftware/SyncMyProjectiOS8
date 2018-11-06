@@ -30,46 +30,40 @@
     return self;
 }
 
-- (void)viewDidUnload
-{
-    [super viewDidUnload];    
-    self.eventStore = nil;
-}
-
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    self.calendarTypes = @[@"Local", @"iCloud/CalDAV", @"Exchange", @"Subscription", @"Birthday"];
+    self.calendarTypes = @[@"Local", @"CalDAV", @"Exchange"];
     NSMutableArray *workingList = [[NSMutableArray alloc] init];
     for (EKCalendar *thisCalendar in [self.eventStore calendarsForEntityType:EKEntityTypeEvent]) {
-        [workingList addObject:thisCalendar];
+        if (thisCalendar.type == EKCalendarTypeCalDAV || thisCalendar.type == EKCalendarTypeExchange || thisCalendar.type == EKCalendarTypeLocal) {
+            [workingList addObject:thisCalendar];
+        }
     }
     self.calendarList = [NSArray arrayWithArray:workingList];
-    [self.tableView reloadData];
+//    [self.tableView reloadData];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     NSString *currentCalendar = [self.defaults objectForKey:kDefaultCalendar];
     if (currentCalendar != nil) {
         NSUInteger index = -1;
+        BOOL found = NO;
         for (EKCalendar *calendar in self.calendarList) {
-            NSString *comparisonString = [[NSString alloc] initWithFormat:@"%@ in (%@)", calendar.title, [self.calendarTypes objectAtIndex:calendar.type]];
+            NSString *comparisonString = [[NSString alloc] initWithFormat:@"%@: %@", calendar.title, [self.calendarTypes objectAtIndex:calendar.type]];
             if ([comparisonString isEqualToString:currentCalendar]) {
                 index = [self.calendarList indexOfObject:calendar];
+                found = YES;
                 break;
             }
         }
-        NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
-        [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        if (found) {
+            NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionNone];
+        }
     } else {
         [self.tableView selectRowAtIndexPath:nil animated:NO scrollPosition:UITableViewScrollPositionNone];
     }
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 -(IBAction)cancelCalendar:(UIBarButtonItem *)sender{
@@ -96,7 +90,7 @@
     static NSString *CellIdentifier = @"calendarCell";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     EKCalendar *calendar = [self.calendarList objectAtIndex:indexPath.row];
-    cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@ in (%@)", calendar.title, [self.calendarTypes objectAtIndex:calendar.type]];
+    cell.textLabel.text = [[NSString alloc] initWithFormat:@"%@: %@", calendar.title, [self.calendarTypes objectAtIndex:calendar.type]];
     return cell;
 }
 
