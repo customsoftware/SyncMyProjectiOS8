@@ -47,6 +47,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     self.projectFRC = [[NSFetchedResultsController alloc] initWithFetchRequest:self.fetchRequest
                                                           managedObjectContext:[[CoreData sharedModel:nil] managedObjectContext]
                                                             sectionNameKeyPath:nil

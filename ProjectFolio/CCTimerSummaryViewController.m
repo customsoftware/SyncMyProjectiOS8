@@ -324,6 +324,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     double totalBilled = 0;
     double totalUnBilled = 0;
     double remainingHours = 0;

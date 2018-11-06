@@ -186,6 +186,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     self.timeSelector.selectedSegmentIndex = [self.timeSelectorDelegate getSelectedSegment];
     [self timeTypeSelected:self.timeSelector];
 }

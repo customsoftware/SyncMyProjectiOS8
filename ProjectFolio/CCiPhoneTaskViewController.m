@@ -208,6 +208,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
+    [super viewWillDisappear:animated];
     if (self.sourceProject) {
         [self.sourceProject.managedObjectContext save:nil];
     }

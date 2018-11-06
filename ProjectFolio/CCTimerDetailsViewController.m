@@ -147,6 +147,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self.tableView reloadData];
     [self.billed setOn:[self.timer.billed boolValue]];
 }

@@ -121,6 +121,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self setDisplayBackGroundColor];
     [self setFontForDisplay];
     self.notes.text = [self.notesDelegate getNotes];

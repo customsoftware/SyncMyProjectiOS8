@@ -45,6 +45,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     NSString *currentCalendar = [self.defaults objectForKey:kDefaultCalendar];
     if (currentCalendar != nil) {
         NSUInteger index = -1;

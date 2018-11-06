@@ -281,7 +281,7 @@
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:tintCellID];
         }
-    } else if (indexPath.row == settingBGColorOption){
+    } else /*if (indexPath.row == settingBGColorOption)*/ {
         cell = [tableView dequeueReusableCellWithIdentifier:colorCellID];
         if (cell == nil) {
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:colorCellID];

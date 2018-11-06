@@ -100,6 +100,7 @@
 		24FC163415F566A800BB86AB /* CCAuxSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24FC163315F566A800BB86AB /* CCAuxSettingsViewController.m */; };
 		24FC595A15BE0C9A00606750 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FC595915BE0C9900606750 /* Settings.bundle */; };
 		24FCDF0016639B9B005919D0 /* iPhone_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */; };
+		4E018F8F2192445F00D6DCB5 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4E018F8E2192445F00D6DCB5 /* CloudKit.framework */; };
 		4EF967FB21922578003CB697 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4EF967FA21922578003CB697 /* Launch Screen.storyboard */; };
 		9022438E17ADDA3700A5019F /* Latest.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9022438D17ADDA3700A5019F /* Latest.txt */; };
 		9022439117ADDA5100A5019F /* CCLatestNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9022439017ADDA5100A5019F /* CCLatestNewsViewController.m */; };
@@ -320,6 +321,7 @@
 		24FC595915BE0C9900606750 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone_Storyboard.storyboard; sourceTree = "<group>"; };
 		24FCFD5615D0BACC00D42060 /* PF201208061.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF201208061.xcdatamodel; sourceTree = "<group>"; };
+		4E018F8E2192445F00D6DCB5 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		4EF967FA21922578003CB697 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		9017882016D5FCED00D1CC64 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		9017882616D5FCED00D1CC64 /* CCProjectFolioTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CCProjectFolioTest-Info.plist"; sourceTree = "<group>"; };
@@ -411,6 +413,7 @@
 				24FAA17515E03DC400ED7B61 /* MessageUI.framework in Frameworks */,
 				24FAA17315E03DB600ED7B61 /* AddressBookUI.framework in Frameworks */,
 				24FAA17115E03DAD00ED7B61 /* AddressBook.framework in Frameworks */,
+				4E018F8F2192445F00D6DCB5 /* CloudKit.framework in Frameworks */,
 				2454479A15BB60C300BC6EF4 /* EventKit.framework in Frameworks */,
 				2454479B15BB60C300BC6EF4 /* EventKitUI.framework in Frameworks */,
 				24A98B2115B275B000ABBB85 /* UIKit.framework in Frameworks */,
@@ -651,6 +654,7 @@
 		24A98B1F15B275B000ABBB85 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4E018F8E2192445F00D6DCB5 /* CloudKit.framework */,
 				90AB432E17EAA10E0036B987 /* StoreKit.framework */,
 				2490F2BA160B445900506A75 /* MobileCoreServices.framework */,
 				2490F2B8160B444900506A75 /* AssetsLibrary.framework */,
@@ -850,13 +854,20 @@
 		24A98B1315B275AF00ABBB85 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				CLASSPREFIX = synctask;
 				LastTestingUpgradeCheck = 0510;
 				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = CustomSoftware;
 				TargetAttributes = {
 					24A98B1B15B275B000ABBB85 = {
-						DevelopmentTeam = 4MAEKVPSTZ;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.Push = {
+								enabled = 1;
+							};
+							com.apple.iCloud = {
 								enabled = 1;
 							};
 						};
@@ -1152,8 +1163,8 @@
 				CODE_SIGN_ENTITLEMENTS = synctask.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 4MAEKVPSTZ;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectFolio/ProjectFolio-Prefix.pch";
 				INFOPLIST_FILE = "ProjectFolio/ProjectFolio-Info.plist";
@@ -1162,7 +1173,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F27D4E72-803F-4AAE-8DF8-D55BA7D2FCA1";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = SyncMyProjectDeveloper;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1175,8 +1186,8 @@
 				CODE_SIGN_ENTITLEMENTS = synctask.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 4MAEKVPSTZ;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectFolio/ProjectFolio-Prefix.pch";
 				INFOPLIST_FILE = "ProjectFolio/ProjectFolio-Info.plist";
@@ -1185,7 +1196,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A7FF18A5-2669-4DF4-9353-F46D61BF26E3";
-				PROVISIONING_PROFILE_SPECIFIER = "";
+				PROVISIONING_PROFILE_SPECIFIER = SyncMyProjectDistribution;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};

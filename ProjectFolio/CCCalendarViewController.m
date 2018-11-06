@@ -81,6 +81,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     if ([self.meeting.event isEqualToString:@"Delete me"]) {
         [[[CoreData sharedModel:nil] managedObjectContext] deleteObject:self.meeting];
         

@@ -64,6 +64,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     self.donorProject = [self.projectDelegate getActiveProject];
     self.parentTask = [self.projectDelegate getSelectedTask];
     if (self.parentTask == nil) {

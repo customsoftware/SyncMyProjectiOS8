@@ -47,6 +47,7 @@
  }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     // self.navBar = [[NSString alloc]initWithFormat:@"Task Chart For: %@", self.aProject.projectName ];
 }
 

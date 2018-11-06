@@ -60,6 +60,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     NSString *filterProject = self.activeTask.taskProject.projectName;
     NSString *filterTask = self.activeTask.title;
     NSPredicate *completedPredicate = [NSPredicate predicateWithFormat:@"taskProject.projectName == %@ AND completed == 0 AND title !=%@",

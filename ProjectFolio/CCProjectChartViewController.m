@@ -41,9 +41,6 @@
     self.chartView.barDelegate = self;
 }
 
--(void)viewWillAppear:(BOOL)animated{
-}
-
 - (void)viewDidUnload
 {
     [super viewDidUnload];

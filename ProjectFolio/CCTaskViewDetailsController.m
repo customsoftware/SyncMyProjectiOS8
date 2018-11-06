@@ -330,6 +330,7 @@
 #pragma mark - View Lifecycle
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     if (self.activeTask.superTask != nil) {
         [self.activeTask.superTask setNewDisplayOrderWith:self.activeTask.superTask.displayOrder];
     }
@@ -353,6 +354,7 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
     self.activeTask.notes = self.notes;
     [self.taskDelegate savePopoverData];
     [self.view endEditing:YES];
@@ -512,7 +514,7 @@
         } else {
             cell.detailTextLabel.text = self.activeTask.taskPriority.priority;
         }
-    } else if (row == 4){
+    } else /*if (row == 4) */ {
         cell = [tableView dequeueReusableCellWithIdentifier:childOfID];
         if (cell == nil) {
             cell = [[UITableViewCell alloc]

@@ -48,19 +48,9 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     self.navigationItem.title = self.controllingTask.title;
     [self.tableView reloadData];
-}
-
--(void)viewDidUnload{
-    self.tableView = nil;
-    self.dateFormatter = nil;
-    self.currentTask = nil;
-    self.selectedPath = nil;
-    self.currentTask = nil;
-    self.detailViewController = nil;
-    self.subTaskController = nil;
-    self.controllingTask = nil;
 }
 
 - (void)didReceiveMemoryWarning

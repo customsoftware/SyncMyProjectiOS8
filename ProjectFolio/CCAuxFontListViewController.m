@@ -40,6 +40,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     // Find the selected font from settings
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     NSUInteger rowPointer = -1;

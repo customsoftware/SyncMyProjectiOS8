@@ -104,6 +104,7 @@ typedef enum khotlistfilterModes{
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self updateDisplayedItemsInHotList];
 
     if (self.selectedIndex != nil) {

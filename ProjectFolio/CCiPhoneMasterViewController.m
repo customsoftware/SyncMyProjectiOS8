@@ -189,8 +189,12 @@ typedef enum kfilterModes{
             [self createNewProject:projectName];
         }
     }];
+    UIAlertAction *canxAction = [UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil];
+    
     [alert addAction:createAction];
+    [alert addAction:canxAction];
     [self presentViewController:alert animated:YES completion:nil];
+    
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString{
@@ -733,6 +737,8 @@ typedef enum kfilterModes{
         case NSFetchedResultsChangeDelete:
             [self.tableView deleteSections:[NSIndexSet indexSetWithIndex:sectionIndex] withRowAnimation:UITableViewRowAnimationFade];
             break;
+        default:
+            break;
     }
 }
 
@@ -755,10 +761,10 @@ typedef enum kfilterModes{
             [self configureCell:[tableView cellForRowAtIndexPath:indexPath] atIndexPath:indexPath inTable:tableView];
             break;
             
-//        case NSFetchedResultsChangeMove:
+        case NSFetchedResultsChangeMove:
 //            [tableView deleteRowsAtIndexPaths:[NSArray arrayWithObject:indexPath] withRowAnimation:UITableViewRowAnimationFade];
 //            [tableView insertRowsAtIndexPaths:[NSArray arrayWithObject:newIndexPath]withRowAnimation:UITableViewRowAnimationFade];
-//            break;
+            break;
     }
 }
 

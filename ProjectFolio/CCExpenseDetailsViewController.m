@@ -186,7 +186,7 @@
 
 -(IBAction)milage:(UITextField *)sender{
     self.expense.milage = [self.numberFormatter numberFromString:sender.text];
-    if (self.expense.milage > 0) {
+    if (self.expense.milage.integerValue > 0) {
         self.milage.text = [self.numberFormatter stringFromNumber:self.expense.milage];
         self.itemPurchased.text = [[NSString alloc] initWithFormat:@"Milage: %@", self.milage.text];
         self.amountPaid.text = @"0.00";
@@ -245,6 +245,7 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
     if (self.expense) {
         self.expense.paidTo = self.paidTo.text;
         self.expense.pmtDescription = self.itemPurchased.text;
@@ -255,6 +256,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self.tableView reloadData];
     [self releaseFirstResponders];
     [self loadExpenseValues];

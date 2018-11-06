@@ -80,11 +80,13 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     [self reloadViewProperties];
     // [self.deliverableParameters reloadData];
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
     self.expense.notes = self.notes.text;
 }
 

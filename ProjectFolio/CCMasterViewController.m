@@ -115,6 +115,7 @@ typedef enum kfilterModes{
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     NSString *enableNotification = @"EnableControlsNotification";
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(enableControls) name:enableNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateMinimumRecordSet) name:kAppString object:nil];

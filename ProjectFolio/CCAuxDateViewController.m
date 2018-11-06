@@ -39,6 +39,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     self.navigationController.title = self.barCaption;
     if (self.dateValue ==  nil) {
         self.dateValue = [NSDate date ];

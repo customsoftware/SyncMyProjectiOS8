@@ -141,6 +141,7 @@
 }
 
 -(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
     if (self.activeTask.dueDate == nil) {
         self.activeTask.dueDate = [NSDate date];
     }
@@ -155,6 +156,7 @@
 }
 
 -(void)viewWillDisappear:(BOOL)animated{
+    [super viewWillDisappear:animated];
     if (self.activeTask.taskProject.dateFinish == nil && self.activeTask.dueDate != nil){
         NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
         [formatter setDateStyle:NSDateFormatterMediumStyle];
