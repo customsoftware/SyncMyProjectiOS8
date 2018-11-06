@@ -100,6 +100,7 @@
 		24FC163415F566A800BB86AB /* CCAuxSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 24FC163315F566A800BB86AB /* CCAuxSettingsViewController.m */; };
 		24FC595A15BE0C9A00606750 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FC595915BE0C9900606750 /* Settings.bundle */; };
 		24FCDF0016639B9B005919D0 /* iPhone_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */; };
+		4EF967FB21922578003CB697 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4EF967FA21922578003CB697 /* Launch Screen.storyboard */; };
 		9022438E17ADDA3700A5019F /* Latest.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9022438D17ADDA3700A5019F /* Latest.txt */; };
 		9022439117ADDA5100A5019F /* CCLatestNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9022439017ADDA5100A5019F /* CCLatestNewsViewController.m */; };
 		90243A8317EB24E6002D9F1D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90243A8217EB24E6002D9F1D /* Images.xcassets */; };
@@ -319,6 +320,7 @@
 		24FC595915BE0C9900606750 /* Settings.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = Settings.bundle; sourceTree = "<group>"; };
 		24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone_Storyboard.storyboard; sourceTree = "<group>"; };
 		24FCFD5615D0BACC00D42060 /* PF201208061.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF201208061.xcdatamodel; sourceTree = "<group>"; };
+		4EF967FA21922578003CB697 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		9017882016D5FCED00D1CC64 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		9017882616D5FCED00D1CC64 /* CCProjectFolioTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CCProjectFolioTest-Info.plist"; sourceTree = "<group>"; };
 		9017882816D5FCED00D1CC64 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -817,6 +819,7 @@
 			children = (
 				24A98B3415B275B000ABBB85 /* MainStoryboard.storyboard */,
 				24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */,
+				4EF967FA21922578003CB697 /* Launch Screen.storyboard */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -889,6 +892,7 @@
 				24FC595A15BE0C9A00606750 /* Settings.bundle in Resources */,
 				90AB432917E9D3900036B987 /* ProjectDetails.txt in Resources */,
 				2433944315E5DE6A0064126B /* CCProjectChartViewController.xib in Resources */,
+				4EF967FB21922578003CB697 /* Launch Screen.storyboard in Resources */,
 				907AE6591823F57700230C21 /* HowTo_iPhone.txt in Resources */,
 				90243A8317EB24E6002D9F1D /* Images.xcassets in Resources */,
 				24FCDF0016639B9B005919D0 /* iPhone_Storyboard.storyboard in Resources */,
@@ -1145,7 +1149,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = synctask.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
@@ -1169,7 +1172,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = synctask.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
