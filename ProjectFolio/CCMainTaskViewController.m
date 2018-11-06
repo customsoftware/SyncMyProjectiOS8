@@ -67,8 +67,11 @@
 }
 
 - (IBAction)tapButton:(UIButton *)sender {
-    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"You tapped the task button" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil];
-    [alert show];
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Alert" message:@"You tapped the task button" preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction *canxAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil];
+    [alert addAction:canxAction];
+    
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 -(void)cancelSummaryChart{
@@ -232,12 +235,6 @@
 - (void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-}
-
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 -(void)sendTimerStartNotificationForTask{
@@ -519,8 +516,11 @@
     [self reSortSubTasksWithTasks:things];
     self.currentTask = [[CoreData sharedModel:nil] saveLastModified:self.currentTask];
     if (![[CoreData sharedModel:self] saveContext]){
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Core Data Error" message:@"The save failed your data didn't persist" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
-        [alert show];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Core Data Error" message:@"The save failed your data didn't persist" preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertAction *canxAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil];
+        [alert addAction:canxAction];
+        
+        [self presentViewController:alert animated:YES completion:nil];
     }
     [self.taskFRC performFetch:nil];
     [self.tableView reloadData];

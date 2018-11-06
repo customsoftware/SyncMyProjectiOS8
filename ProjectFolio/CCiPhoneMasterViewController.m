@@ -169,15 +169,28 @@ typedef enum kfilterModes{
     // This calls the alert view
     if (self.filteredProjects.count == 0 && searchText.length >= 3 && [self string:searchText endsWith:' '] && self.lastSelected != projectCategoryMode) {
         self.searchedName = searchText;
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"New Record" message:@"Create a new project with the name?" delegate:self cancelButtonTitle:[self noButtonTitle] otherButtonTitles:[self yesButtonTitle], nil];
-        alert.tag = 2;
-        alert.alertViewStyle = UIAlertViewStylePlainTextInput;
-        UITextField *textField = [alert textFieldAtIndex:0];
-        textField.text = searchText;
-        [alert show];
+        [self promptToCreateProject:searchText];
+        
     } else {
         self.searchedName = nil;
     }
+}
+
+- (void)promptToCreateProject: (NSString*) candidateNameForProject  {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"New Project" message:@"Create a new project with the name?" preferredStyle:UIAlertControllerStyleAlert];
+    [alert addTextFieldWithConfigurationHandler:nil];
+    
+    if (candidateNameForProject != nil && candidateNameForProject.length > 0) {
+        alert.textFields[0].text = candidateNameForProject;
+    }
+    UIAlertAction *createAction = [UIAlertAction actionWithTitle:@"Create" style:UIAlertActionStyleDestructive handler:^(UIAlertAction * _Nonnull action) {
+        NSString *projectName = alert.textFields[0].text;
+        if (projectName.length > 0) {
+            [self createNewProject:projectName];
+        }
+    }];
+    [alert addAction:createAction];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 - (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString{
@@ -265,7 +278,6 @@ typedef enum kfilterModes{
     renderer.fontSize = [defaults integerForKey:kFontSize];
     [renderer addPrintFormatter:notesFormatter startingAtPageAtIndex:0];
     pic.printPageRenderer = renderer;
-    pic.showsPageRange = YES;
     
     void (^completionHandler)(UIPrintInteractionController *, BOOL, NSError *) =
     ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
@@ -282,64 +294,44 @@ typedef enum kfilterModes{
 
 
 #pragma mark - Alert Functionality
--(NSString *)yesButtonTitle{
-    return @"OK";
-}
-
--(NSString *)noButtonTitle{
-    return @"Not now";
-}
-
--(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex{
-    NSString *buttonTitle = [alertView buttonTitleAtIndex:buttonIndex];
-    if (alertView.tag == 2) {
-        [self.searchDisplayController setActive:NO animated:YES];
+-(void)createNewProject: (NSString*)projectName {
+    if (self.controllingCell) {
+        self.controllingCell = nil;
+        self.controllingCellIndex = nil;
     }
-    // This is the standard create place
-    if([buttonTitle isEqualToString:[self yesButtonTitle]]){
-        if ([[alertView textFieldAtIndex:0].text isEqualToString:@""]) {
-        } else {
-            // Uncheck the current project
-            if (self.controllingCell) {
-                self.controllingCell = nil;
-                self.controllingCellIndex = nil;
-            }
-            
-            Project *newProject = [CoreData createProjectWithName:[alertView textFieldAtIndex:0].text];
-            if (newProject == nil) {
-                self.logger = [[CCErrorLogger alloc] initWithErrorString:@"Failed to create a new project" andDelegate:self];
+    
+    Project *newProject = [CoreData createProjectWithName:projectName];
+    if (newProject == nil) {
+        self.logger = [[CCErrorLogger alloc] initWithErrorString:@"Failed to create a new project" andDelegate:self];
+        [self.logger releaseLogger];
+    } else {
+//        newProject.projectName = projectName;
+        newProject.dateCreated = [NSDate date];
+        newProject.dateStart = newProject.dateCreated;
+        newProject.active = [NSNumber numberWithBool:YES];
+        newProject.projectUUID = [[CoreData sharedModel:nil] getUUID];
+        
+        NSError *error = [[NSError alloc] init];
+        @try {
+            if (![newProject.managedObjectContext save:&error]){
+                self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
                 [self.logger releaseLogger];
-            } else {
-                newProject.projectName = [alertView textFieldAtIndex:0].text;
-                newProject.dateCreated = [NSDate date];
-                newProject.dateStart = newProject.dateCreated;
-                newProject.active = [NSNumber numberWithBool:YES];
-                newProject.projectUUID = [[CoreData sharedModel:nil] getUUID];
-                
-                NSError *error = [[NSError alloc] init];
-                @try {
-                    if (![newProject.managedObjectContext save:&error]){
-                        self.logger = [[CCErrorLogger alloc] initWithError:error andDelegate:self];
-                        [self.logger releaseLogger];
-                    }
-                    self.activeProject = newProject;
-                    NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
-                    UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
-                    [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-                    self.controllingCellIndex = indexPath;
-                    self.controllingCell = cell;
-                    [self.tableView reloadData];
-                    [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
-                    [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
-                }
-                @catch (NSException *exception) {
-                    self.logger = [[CCErrorLogger alloc] initWithErrorString:exception.reason andDelegate:self];
-                    [self.logger releaseLogger];
-                }
             }
+            self.activeProject = newProject;
+            NSIndexPath *indexPath = [self.fetchedProjectsController indexPathForObject:self.activeProject];
+            UITableViewCell *cell = [self.tableView cellForRowAtIndexPath:indexPath];
+            [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+            self.controllingCellIndex = indexPath;
+            self.controllingCell = cell;
+            [self.tableView reloadData];
+            [self.tableView selectRowAtIndexPath:indexPath animated:YES scrollPosition:UITableViewScrollPositionMiddle];
+            [self updateDetailControllerForIndexPath:indexPath inTable:self.tableView];
+        }
+        @catch (NSException *exception) {
+            self.logger = [[CCErrorLogger alloc] initWithErrorString:exception.reason andDelegate:self];
+            [self.logger releaseLogger];
         }
     }
-
 }
 
 -(void)releaseLogger{
@@ -876,15 +868,7 @@ typedef enum kfilterModes{
 
 - (IBAction)insertNewObject:(UIButton *)sender
 {
-    UIAlertView *alertViewProjectName = [[UIAlertView alloc]
-                                         initWithTitle:@"Project Name"
-                                         message:@"Please enter a name for the project"
-                                         delegate:self
-                                         cancelButtonTitle:[self noButtonTitle]
-                                         otherButtonTitles:[self yesButtonTitle],nil];
-    alertViewProjectName.alertViewStyle = UIAlertViewStylePlainTextInput;
-    alertViewProjectName.tag = 1;
-    [alertViewProjectName show];
+    [self promptToCreateProject:nil];
 }
 
 #pragma mark - Accessors
