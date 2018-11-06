@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -119,11 +119,6 @@
 		24FC595A15BE0C9A00606750 /* Settings.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 24FC595915BE0C9900606750 /* Settings.bundle */; };
 		24FCDF0016639B9B005919D0 /* iPhone_Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */; };
 		40FFE2C6199F7CEC002D8CC8 /* Small ActionButton.png in Resources */ = {isa = PBXBuildFile; fileRef = 40FFE2C5199F7CEC002D8CC8 /* Small ActionButton.png */; };
-		9017882116D5FCED00D1CC64 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9017882016D5FCED00D1CC64 /* SenTestingKit.framework */; };
-		9017882216D5FCED00D1CC64 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24A98B2015B275B000ABBB85 /* UIKit.framework */; };
-		9017882316D5FCED00D1CC64 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 24A98B2215B275B000ABBB85 /* Foundation.framework */; };
-		9017882916D5FCED00D1CC64 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9017882716D5FCED00D1CC64 /* InfoPlist.strings */; };
-		9017882C16D5FCED00D1CC64 /* CCProjectFolioTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 9017882B16D5FCED00D1CC64 /* CCProjectFolioTest.m */; };
 		9022438E17ADDA3700A5019F /* Latest.txt in Resources */ = {isa = PBXBuildFile; fileRef = 9022438D17ADDA3700A5019F /* Latest.txt */; };
 		9022439117ADDA5100A5019F /* CCLatestNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9022439017ADDA5100A5019F /* CCLatestNewsViewController.m */; };
 		90243A8317EB24E6002D9F1D /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90243A8217EB24E6002D9F1D /* Images.xcassets */; };
@@ -170,7 +165,6 @@
 		90B7A18E1804336B00E8A361 /* HowTo.txt in Resources */ = {isa = PBXBuildFile; fileRef = 90B7A18D1804336B00E8A361 /* HowTo.txt */; };
 		90B89F5A1812676200A63CD4 /* CCProjectTaskReport.m in Sources */ = {isa = PBXBuildFile; fileRef = 90B89F591812676200A63CD4 /* CCProjectTaskReport.m */; };
 		90BE7B5416D973EF00421003 /* CCLocalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BE7B5316D973EF00421003 /* CCLocalData.m */; };
-		90BE7B5516D973EF00421003 /* CCLocalData.m in Sources */ = {isa = PBXBuildFile; fileRef = 90BE7B5316D973EF00421003 /* CCLocalData.m */; };
 		90C3452D1846531800028C91 /* ProjectCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 90C3452C1846531800028C91 /* ProjectCell.m */; };
 		90C3A071182C463300B16B51 /* 57 icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90C3A06D182C463300B16B51 /* 57 icon.png */; };
 		90C3A072182C463300B16B51 /* 72 icon.png in Resources */ = {isa = PBXBuildFile; fileRef = 90C3A06E182C463300B16B51 /* 72 icon.png */; };
@@ -384,7 +378,6 @@
 		24FCDEFF16639B9B005919D0 /* iPhone_Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = iPhone_Storyboard.storyboard; sourceTree = "<group>"; };
 		24FCFD5615D0BACC00D42060 /* PF201208061.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = PF201208061.xcdatamodel; sourceTree = "<group>"; };
 		40FFE2C5199F7CEC002D8CC8 /* Small ActionButton.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Small ActionButton.png"; sourceTree = "<group>"; };
-		9017881F16D5FCED00D1CC64 /* CCProjectFolioTest.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CCProjectFolioTest.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9017882016D5FCED00D1CC64 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		9017882616D5FCED00D1CC64 /* CCProjectFolioTest-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CCProjectFolioTest-Info.plist"; sourceTree = "<group>"; };
 		9017882816D5FCED00D1CC64 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -502,16 +495,6 @@
 				24A98B2315B275B000ABBB85 /* Foundation.framework in Frameworks */,
 				24A98B2515B275B000ABBB85 /* CoreGraphics.framework in Frameworks */,
 				24A98B2715B275B000ABBB85 /* CoreData.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		9017881B16D5FCED00D1CC64 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9017882116D5FCED00D1CC64 /* SenTestingKit.framework in Frameworks */,
-				9017882216D5FCED00D1CC64 /* UIKit.framework in Frameworks */,
-				9017882316D5FCED00D1CC64 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -739,7 +722,6 @@
 			isa = PBXGroup;
 			children = (
 				24A98B1C15B275B000ABBB85 /* synctask.app */,
-				9017881F16D5FCED00D1CC64 /* CCProjectFolioTest.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -995,24 +977,6 @@
 			productReference = 24A98B1C15B275B000ABBB85 /* synctask.app */;
 			productType = "com.apple.product-type.application";
 		};
-		9017881E16D5FCED00D1CC64 /* CCProjectFolioTest */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 9017882E16D5FCED00D1CC64 /* Build configuration list for PBXNativeTarget "CCProjectFolioTest" */;
-			buildPhases = (
-				9017881A16D5FCED00D1CC64 /* Sources */,
-				9017881B16D5FCED00D1CC64 /* Frameworks */,
-				9017881C16D5FCED00D1CC64 /* Resources */,
-				9017881D16D5FCED00D1CC64 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = CCProjectFolioTest;
-			productName = CCProjectFolioTest;
-			productReference = 9017881F16D5FCED00D1CC64 /* CCProjectFolioTest.octest */;
-			productType = "com.apple.product-type.bundle.ocunit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -1020,7 +984,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastTestingUpgradeCheck = 0510;
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 1010;
 				TargetAttributes = {
 					24A98B1B15B275B000ABBB85 = {
 						DevelopmentTeam = 4MAEKVPSTZ;
@@ -1033,7 +997,7 @@
 				};
 			};
 			buildConfigurationList = 24A98B1615B275AF00ABBB85 /* Build configuration list for PBXProject "ProjectFolio" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 10.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -1046,7 +1010,6 @@
 			projectRoot = "";
 			targets = (
 				24A98B1B15B275B000ABBB85 /* synctask */,
-				9017881E16D5FCED00D1CC64 /* CCProjectFolioTest */,
 			);
 		};
 /* End PBXProject section */
@@ -1110,31 +1073,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9017881C16D5FCED00D1CC64 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9017882916D5FCED00D1CC64 /* InfoPlist.strings in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		9017881D16D5FCED00D1CC64 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		24A98B1815B275B000ABBB85 /* Sources */ = {
@@ -1249,15 +1188,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9017881A16D5FCED00D1CC64 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				9017882C16D5FCED00D1CC64 /* CCProjectFolioTest.m in Sources */,
-				90BE7B5516D973EF00421003 /* CCLocalData.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
@@ -1293,17 +1223,31 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Kenneth Cluff";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Kenneth Cluff (4MAEKVPSTZ)";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -1318,7 +1262,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				ONLY_ACTIVE_ARCH = YES;
 				PROVISIONING_PROFILE = "D6DBCF27-E7EA-4DC0-9A18-3E78DAE1E7C8";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "D6DBCF27-E7EA-4DC0-9A18-3E78DAE1E7C8";
@@ -1332,16 +1276,29 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution: Kenneth Cluff (4MAEKVPSTZ)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: Kenneth Cluff (4MAEKVPSTZ)";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
@@ -1350,7 +1307,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				PROVISIONING_PROFILE = "30B5A1F1-D9E1-41BE-AAD4-DD4124786998";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "30B5A1F1-D9E1-41BE-AAD4-DD4124786998";
@@ -1368,13 +1325,17 @@
 				CODE_SIGN_ENTITLEMENTS = synctask.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectFolio/ProjectFolio-Prefix.pch";
 				INFOPLIST_FILE = "ProjectFolio/ProjectFolio-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.customsoftware.projectfolio.synctask;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "F27D4E72-803F-4AAE-8DF8-D55BA7D2FCA1";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
 			};
@@ -1386,56 +1347,21 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_ENTITLEMENTS = synctask.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "ProjectFolio/ProjectFolio-Prefix.pch";
 				INFOPLIST_FILE = "ProjectFolio/ProjectFolio-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				PRODUCT_BUNDLE_IDENTIFIER = com.customsoftware.projectfolio.synctask;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				"PROVISIONING_PROFILE[sdk=iphoneos*]" = "A7FF18A5-2669-4DF4-9353-F46D61BF26E3";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
-			};
-			name = Release;
-		};
-		9017882F16D5FCED00D1CC64 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_EMPTY_BODY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "CCProjectFolioTest/CCProjectFolioTest-Prefix.pch";
-				INFOPLIST_FILE = "CCProjectFolioTest/CCProjectFolioTest-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		9017883016D5FCED00D1CC64 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_EMPTY_BODY = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"\"$(SDKROOT)/Developer/Library/Frameworks\"",
-					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "CCProjectFolioTest/CCProjectFolioTest-Prefix.pch";
-				INFOPLIST_FILE = "CCProjectFolioTest/CCProjectFolioTest-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};
@@ -1456,15 +1382,6 @@
 			buildConfigurations = (
 				24A98B4315B275B000ABBB85 /* Debug */,
 				24A98B4415B275B000ABBB85 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		9017882E16D5FCED00D1CC64 /* Build configuration list for PBXNativeTarget "CCProjectFolioTest" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				9017882F16D5FCED00D1CC64 /* Debug */,
-				9017883016D5FCED00D1CC64 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
